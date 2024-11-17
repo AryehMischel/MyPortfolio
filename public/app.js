@@ -85,7 +85,7 @@ camera.position.y = 1.6;
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-const composer = new EffectComposer( renderer );
+const composer = new EffectComposer(renderer);
 const renderPass = new RenderPass(scene, camera);
 composer.addPass(renderPass);
 const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
@@ -97,49 +97,49 @@ let loader = new GLTFLoader();
 
 
 loader.load(
-  './assets/AryehAvatarNonInteractive2.glb', //
+  './assets/models/AryehAvatarNonInteractive2.glb', //
   function (gltf) {
     avatar = gltf.scene;
     // avatar.scale.set(0.01, 0.01, 0.01);
- 
+
     avatar.traverse((node) => {
-      if (node.isMesh){
+      if (node.isMesh) {
         console.log(node.name)
       }
-      if(node.name == "avaturn_body_1") {
+      if (node.name == "avaturn_body_1") {
         ourBodyBaseMaterial = node.material.clone()
         ourBodyBaseMaterial.emissiveIntensity = 10;
         node.material.visible = false;
         console.log(node)
-       // node.material.transparent = true
+        // node.material.transparent = true
         ourBodyNode = node;
       }
-      if(node.name == "avaturn_body_4") {
+      if (node.name == "avaturn_body_4") {
         ourClothesBaseMaterial = node.material.clone()
 
         // ourBaseMaterial.emissiveIntensity = 10;
         node.material.visible = false;
         ourClothesNode = node;
-      //  // node.material.transparent = true
+        //  // node.material.transparent = true
       }
-      if(node.name == "avaturn_body_3") {
+      if (node.name == "avaturn_body_3") {
         ourShoesBaseMaterial = node.material.clone()
         ourShoesNode = node;
         // ourBaseMaterial.emissiveIntensity = 10;
         node.material.visible = false;
-      //  // node.material.transparent = true
+        //  // node.material.transparent = true
       }
-      if(node.name == "avaturn_body_2") {
+      if (node.name == "avaturn_body_2") {
         ourHairBaseMaterial = node.material.clone()
         ourHairNode = node;
         // ourBaseMaterial.emissiveIntensity = 10;
         node.material.visible = false;
-      //   console.log(node)
-      //  // node.material.transparent = true
-      //   ourNode = node;
+        //   console.log(node)
+        //  // node.material.transparent = true
+        //   ourNode = node;
       }
-    
-   
+
+
     });
     createShaders()
     scene.add(avatar);
@@ -151,12 +151,12 @@ loader.load(
 
 );
 
-loader.load( replacementAvatarURL, function (gltf) {
+loader.load(replacementAvatarURL, function (gltf) {
   replacementAvatar = gltf.scene;
   replacementAvatar.visible = false;
   scene.add(replacementAvatar);
 
-  },
+},
   undefined,
   function (error) {
     console.error(error);
@@ -164,15 +164,15 @@ loader.load( replacementAvatarURL, function (gltf) {
   }
 );
 
-function createShaders(){
- 
+function createShaders() {
+
   shoesDissolveShader = new CustomShaderMaterial({
     baseMaterial: ourShoesBaseMaterial,
     uniforms: {
       time: { value: 0.2 },
       threshold: { value: 2.0 },
       uColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
-      noiseTexture: { value: noiseTexture2},
+      noiseTexture: { value: noiseTexture2 },
     },
     vertexShader: vs,
     fragmentShader: fs,
@@ -224,7 +224,7 @@ function createShaders(){
   ourClothesNode.material = clothesDissolveShader;
   ourShoesNode.material = shoesDissolveShader;
   ourHairNode.material = hairDissolveShader;
-  
+
 }
 
 
@@ -235,7 +235,7 @@ let vs = `
       }
     `;
 
-let fs =   `
+let fs = `
       uniform float time;
       uniform vec3 uColor; // Declare the uniform
       varying vec2 vUv;
@@ -262,25 +262,23 @@ let fs =   `
         csm_Emissive = vec3(0.0, 1.0, 0.0);
         csm_FragColor = csm_FragColor;
      }
-    `;  
+    `;
 
-const clock = new THREE.Clock();
-let time = 0;
 
 // Animation loop
 function animate() {
 
-  if(!animatedInAvatar && avatar){
+  if (!animatedInAvatar && avatar) {
     animateTogether()
     animatedInAvatar = true;
   }
 
-if(animationComplete && replacementAvatar){
-  console.log("replacing avatar")
-  avatar.visible = false;
-  replacementAvatar.visible = true;
-  animationComplete = false;
-}
+  if (animationComplete && replacementAvatar) {
+    console.log("replacing avatar")
+    avatar.visible = false;
+    replacementAvatar.visible = true;
+    animationComplete = false;
+  }
 
 
 
@@ -297,30 +295,14 @@ if(animationComplete && replacementAvatar){
   if (tweenShoesAnimation) {
     tweenShoesAnimation.update()
   }
-	
-// if(TWEEN){
-//  TWEEN.update();
-// }
-    // if (dissolveBodyShader && start) {
 
-    //     const delta = clock.getDelta();
-    //     time += delta;
-    //     dissolveMaterial.uniforms.time.value += delta; // Slow down the animation
-    //     dissolveMaterial.uniforms.threshold.value = (Math.sin(dissolveMaterial.uniforms.time.value) + 1) / 2; // Animate threshold
-
-
-    //     if(dissolveMaterial.uniforms.threshold.value < 0.00001){
-    //       start = false;
-
-    //     }
-
-    //     console.log("threshold", dissolveMaterial.uniforms.threshold.value )
-    // }
-    composer.render();
-    requestAnimationFrame(animate);
-    // renderer.render(scene, camera);
+  composer.render();
+  requestAnimationFrame(animate);
 }
+
 animate();
+
+
 
 // Handle window resize
 window.addEventListener('resize', () => {
@@ -331,67 +313,66 @@ window.addEventListener('resize', () => {
 });
 
 
-function animateBodyIn(){
-  
+
+//animations 
+
+function animateBodyIn() {
   tweenBodyAnimation = new TWEEN.Tween({ x: 1 })
-  .to({ x: 0 }, 2000)
-  .easing(TWEEN.Easing.Cubic.InOut)
-  .onUpdate((object) => {
-    // updateMaterial(object.x);
-    console.log("object", object.x)
-    bodyDissolveShader.uniforms.threshold.value = object.x;
+    .to({ x: 0 }, 2000)
+    .easing(TWEEN.Easing.Cubic.InOut)
+    .onUpdate((object) => {
+      // updateMaterial(object.x);
+      console.log("object", object.x)
+      bodyDissolveShader.uniforms.threshold.value = object.x;
 
-  });
+    });
   tweenBodyAnimation.start();
-
 
 }
 
 
-function animateClothesIn(){
-    
-    tweenClothesAnimation = new TWEEN.Tween({ x: 1 })
+function animateClothesIn() {
+
+  tweenClothesAnimation = new TWEEN.Tween({ x: 1 })
     .to({ x: 0 }, 1000)
     .easing(TWEEN.Easing.Sinusoidal.InOut)
 
     .onUpdate((object) => {
-      // updateMaterial(object.x);
       clothesDissolveShader.uniforms.threshold.value = object.x;
-  
+
     });
-    tweenClothesAnimation.start();
+  tweenClothesAnimation.start();
 }
 
-function animateShoesIn(){
-  
+
+function animateShoesIn() {
+
   tweenShoesAnimation = new TWEEN.Tween({ x: 1 })
-  .to({ x: 0 }, 400)
-  .easing(TWEEN.Easing.Cubic.InOut)
-  .delay(1400)
-  .onComplete(() => {
-    console.log("animation complete")
-     animationComplete = true
-   })
-  .onUpdate((object) => {
-    // updateMaterial(object.x);
-          shoesDissolveShader.uniforms.threshold.value = object.x;
-  });
+    .to({ x: 0 }, 400)
+    .easing(TWEEN.Easing.Cubic.InOut)
+    .delay(1400)
+    .onComplete(() => {
+      console.log("animation complete")
+      animationComplete = true
+    })
+    .onUpdate((object) => {
+      shoesDissolveShader.uniforms.threshold.value = object.x;
+    });
   tweenShoesAnimation.start();
+
 }
 
-async function animateAll(){
-   await waitForSeconds(1.5)
-    animateClothesIn();
-    await waitForSeconds(1.5) 
+async function animateAll() {
+  await waitForSeconds(1.5)
+  animateClothesIn();
+  await waitForSeconds(1.5)
   animateBodyIn();
-  await waitForSeconds(1.5) 
-  // animateHairIn();
+  await waitForSeconds(1.5)
   animateShoesIn();
 }
 
-function animateTogether(){
+function animateTogether() {
   animateBodyIn();
-  // animateHairIn();
   animateClothesIn();
   animateShoesIn();
 }
@@ -405,7 +386,6 @@ const waitForSeconds = (seconds) => {
 };
 
 window.animateBodyIn = animateBodyIn;
-// window.animateHairIn = animateHairIn;
 window.animateClothesIn = animateClothesIn;
 window.animateShoesIn = animateShoesIn;
 
@@ -425,7 +405,7 @@ window.updateMaterial = updateMaterial;
 
 
 
-//create return controller
+//create orbit controller
 function createControls() {
   let controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 2.3, 0);
@@ -449,22 +429,29 @@ function createControls() {
 }
 
 function createSceneLighting() {
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-  directionalLight.position.set(5, 10, 7.5);
-  directionalLight.castShadow = true;
-  directionalLight.shadow.mapSize.width = 2048;
-  directionalLight.shadow.mapSize.height = 2048;
-  directionalLight.shadow.camera.near = 0.5;
-  directionalLight.shadow.camera.far = 500;
+  // const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+  // directionalLight.position.set(5, 10, 7.5);
+  // directionalLight.castShadow = true;
+  // directionalLight.shadow.mapSize.width = 2048;
+  // directionalLight.shadow.mapSize.height = 2048;
+  // directionalLight.shadow.camera.near = 0.5;
+  // directionalLight.shadow.camera.far = 500;
   // scene.add(directionalLight);
+
+
+  // const hemiLight = new THREE.HemisphereLight(0x0000ff, 0x00ff00, 0.4);
+
   // Ambient light for soft global illumination
-  const hemiLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 0.4 );
   const ambientLight = new THREE.AmbientLight("#666666", 10); // Soft white light
-  scene.add(ambientLight, hemiLight);
+  scene.add(ambientLight);
+
+
   // Hemisphere light for sky and ground lighting
-  // const hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 1);
-  // hemisphereLight.position.set(0, 20, 0);
-  // scene.add(hemisphereLight);
+  const hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 1);
+  hemisphereLight.position.set(0, 20, 0);
+  scene.add(hemisphereLight);
+ 
+ 
   // Spotlight to focus on the subject
   const spotLight = new THREE.SpotLight("#CDCDCD", 5);
 
