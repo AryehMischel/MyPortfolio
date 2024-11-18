@@ -10,10 +10,10 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
-
-
-
-
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js';
 
 
 const customCursorDataURL = 'data:image/x-icon;base64,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'
@@ -122,12 +122,44 @@ const mouse = new THREE.Vector2();
 const previousMouseIntersectionPoint = new THREE.Vector2();
 // Create a scene
 const scene = new THREE.Scene();
+scene.background = new THREE.Color("#fbdad9");
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
 camera.position.set(0.005, 1.6, 0.5); // Adjust the camera position 0.005, 1.6, 0.5
 window.camera = camera;
+
+console.log("anything new cheif")
 const renderer = createRenderer()
-createSceneLighting();
+// renderer.setClearColor("#fbdad9", 1); // Set clear color to the desired background color
+renderer.outputEncoding = THREE.SRGBColorSpace; // Ensure correct color encoding
+renderer.toneMapping = THREE.ACESFilmicToneMapping; // Set tone mapping
+renderer.toneMappingExposure = 1.0; // Adjust exposure as needed
+// renderer.setClearColor("#fbdad9", 1);
+const composer = new EffectComposer(renderer);
+const renderPass = new RenderPass(scene, camera);
+// renderPass.alpha = 0; // Set the alpha value to 0
+renderPass.clear = true; // Ensure the render pass clears the buffer
+renderPass.clearDepth = true;
+// renderPass.clearColor = new THREE.Color("#fbdad9"); // Set the clear color to a light pink
+// renderPass.clearDepth = true; // Ensure the render pass clears the depth buffer
+// renderPass.clearColor = new THREE.Color("#fbdad9"); // Set the clear color to a light pink
+
+composer.addPass(renderPass);
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 1.5, 0.4, 0.85);
+
+// const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+composer.addPass(bloomPass);
+
+
+// FXAA Pass
+const fxaaPass = new ShaderPass(FXAAShader);
+fxaaPass.uniforms['resolution'].value.set(1 / canvas.clientWidth, 1 / canvas.clientHeight);
+composer.addPass(fxaaPass);
+
+
+const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
+composer.addPass(gammaCorrectionPass);
+ createSceneLighting();
 // Mirrors the eyes rotation and position, used for checking valid rotations
 const checkRightEye = new THREE.Object3D();
 const checkLeftEye = new THREE.Object3D();
@@ -150,7 +182,7 @@ function animate(time) {
     mixer.update(deltaSeconds);
   }
 
-  if (model && eyeBoneLeft && cube) {
+  if (InteractiveAvatar && eyeBoneLeft && cube) {
 
     headBoneHelper.lookAt(targetPosition);
     let [yaw, pitch] = calculateYawAndPitchDifference(headBoneHelper.rotation, headBoneOriginHelper.rotation);
@@ -220,15 +252,21 @@ function animate(time) {
     animateTogether()
   }
 
-  if(InteractiveAvatar && dissolveEffectFinished){
-    dissolveEffectFinished = false;
+  if (InteractiveAvatar && dissolveEffectFinished &&  NonInteractiveAvatar.visible) {
     NonInteractiveAvatar.visible = false;
     InteractiveAvatar.visible = true;
+    animateHeadBackToCenter()
+    action.play();
+    startBlinking()
     //handle swap
   }
 
+  if(dissolveEffectFinished){
+    renderer.render(scene, camera);
+  }else{
+  composer.render();
 
-  renderer.render(scene, camera);
+  }
   requestAnimationFrame(animate);
 }
 animate();
@@ -260,16 +298,14 @@ function calculateYawAndPitchDifference(euler1, euler2) {
   return [yawDifference, pitchDifference];
 }
 //functions for rotating towards target position
-function rotateEyes(leftEye = eyeBoneLeft, rightEye = eyeBoneRight) {
-  // cube.getWorldPosition(targetPosition)
+function rotateEyes() {
 
   cube.getWorldPosition(targetPosition)
 
   eyeBoneLeft.lookAt(targetPosition);
   eyeBoneRight.lookAt(targetPosition);
+
   //imported eyebones foward direction is set to the y axis and therefor need rotated
-
-
   eyeBoneLeft.rotateOnAxis(new THREE.Vector3(-1, 0, 0), Math.PI * -0.55);
   eyeBoneRight.rotateOnAxis(new THREE.Vector3(-1, 0, 0), Math.PI * -0.55);
 }
@@ -293,7 +329,7 @@ function addArrowHelpers(object) {
 
 //create return renderer
 function createRenderer() {
-  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
   renderer.setClearColor(0x000000, 0); // The second parameter is the alpha value
   renderer.physicallyCorrectLights = true;
   renderer.shadowMap.enabled = true;
@@ -304,7 +340,9 @@ function createRenderer() {
   // Set the pixel ratio to the device's pixel ratio
   renderer.setPixelRatio(window.devicePixelRatio);
   // Set the size of the renderer
-  renderer.setSize(canvas.width, canvas.height);
+  // renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
   return renderer;
 }
 //create return controller
@@ -338,7 +376,7 @@ function createSceneLighting() {
   directionalLight.shadow.camera.far = 500;
   // scene.add(directionalLight);
   // Ambient light for soft global illumination
-  const hemiLight = new THREE.HemisphereLight(0x0000ff, 0x00ff00, 0.4);
+  const hemiLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 0.4 ); 
   const ambientLight = new THREE.AmbientLight("#666666", 10); // Soft white light
   scene.add(ambientLight, hemiLight);
   // Hemisphere light for sky and ground lighting
@@ -347,7 +385,7 @@ function createSceneLighting() {
   // scene.add(hemisphereLight);
   // Spotlight to focus on the subject
   const spotLight = new THREE.SpotLight("#CDCDCD", 5);
-
+  
   spotLight.position.set(0, 1.2, 0);
   spotLight.target.position.set(0, 1.2, -1.5); // Point the spotlight at the subject
   spotLight.castShadow = true;
@@ -358,18 +396,23 @@ function createSceneLighting() {
   // scene.add(spotLight);
   // scene.add(spotLight.target);
   // Point light for additional localized lighting
-
+ 
   // const pointLight = new THREE.PointLight(0xffffff, 1, 100);
   // pointLight.position.set(0, 3, -2); // Position the point light above the subject
   // pointLight.castShadow = true;
   // scene.add(pointLight);
-
-
+ 
+ 
   // Fill light to reduce shadows under the eyes
   const fillLight = new THREE.PointLight(0xffffff, 0.5, 50);
   fillLight.position.set(0, 1.5, -1); // Position the fill light in front of the subject
   scene.add(fillLight);
 }
+
+
+
+
+
 // event listeners
 setCanvasSize()
 window.addEventListener('resize', resizeCanvas);
@@ -395,8 +438,15 @@ function resizeCanvas() {
   if (isMobile && window.matchMedia("(orientation: landscape)").matches) {
     camera.zoom = 1.5;
   }
+  // renderer.setSize(canvas.width, canvas.height);
   renderer.setSize(window.innerWidth, window.innerHeight);
+
   camera.aspect = window.innerWidth / window.innerHeight;
+
+  // renderPass.setSize(canvas.clientWidth, canvas.clientHeight);
+  renderPass.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+
   camera.updateProjectionMatrix();
 }
 
@@ -766,7 +816,7 @@ function loadModels() {
         }
         if (node.name == "avaturn_body_1") {
           ourBodyBaseMaterial = node.material.clone()
-          ourBodyBaseMaterial.emissiveIntensity = 10;
+          // ourBodyBaseMaterial.emissiveIntensity = 10;
           // node.material.visible = false;
           console.log(node)
           // node.material.transparent = true
@@ -809,7 +859,131 @@ function loadModels() {
     }
 
   );
+
+
+
+
+
+
+
+
+
+  //load in interactive avatar
+  loader.load(avatarPath, function (gltf) {
+
+    InteractiveAvatar = gltf.scenes[0];
+    let face = InteractiveAvatar.children[0]
+
+    gltf.animations.forEach((clip) => {
+
+      console.log(clip.name); // Log the name of each animation
+      if (clip.name === "ArmatureAction") {
+        randomAnimationClip = clip;
+        action = mixer.clipAction(randomAnimationClip, InteractiveAvatar);
+
+      }
+
+    });
+
+
+    InteractiveAvatar.traverse((object) => {
+      if (object.morphTargetInfluences) {
+        if (faceMesh === null) {
+          faceMesh = object;
+          targetInfluences = faceMesh.morphTargetInfluences;
+          morphTargetDictionary = faceMesh.morphTargetDictionary;
+          window.targetInfluences = targetInfluences;
+          window.morphTargetDictionary = morphTargetDictionary;
+          leftEyeBlink = { "value": targetInfluences[0] };
+        }
+      }
+
+      if (object.isSkinnedMesh) {
+        if (neckBone === null) {
+          neckBone = object.skeleton.bones.find(bone => bone.name === 'Neck');
+          window.neckBone = neckBone;
+          console.log(neckBone);
+        }
+        if (headBone === null) {
+          headBone = object.skeleton.bones.find(bone => bone.name === 'Head');
+          window.headBone = headBone;
+          console.log(headBone);
+        }
+      }
+    });
+
+    InteractiveAvatar.scale.set(1, 1, 1);
+    InteractiveAvatar.position.set(0, 0, -2);
+
+    headBone.parent.add(headBoneHelper);
+    headBoneHelper.position.copy(headBone.position);
+    headBone.parent.add(headBoneOriginHelper);
+    headBoneOriginHelper.position.copy(headBone.position);
+    headBoneOriginHelper.rotation.copy(headBone.rotation);
+
+    neckBone.parent.add(neckBoneOriginHelper);
+    neckBoneOriginHelper.position.copy(neckBone.position);
+    neckBoneOriginHelper.rotation.copy(neckBone.rotation);
+
+    InteractiveAvatar.visible = false;
+    scene.add(InteractiveAvatar);
+
+    
+    //load in eyeball model
+    loader.load(eyeModelPath, function (gltf) {
+      const eyeModel = gltf.scenes[0];
+      eyeModel.traverse((object) => {
+        if (object.isSkinnedMesh) {
+          if (eyeBoneRight === null) {
+            eyeBoneRight = object.skeleton.bones.find(bone => bone.name === 'DEF_eyeR'); //DEF_eyeR
+            window.eyeBoneRight = eyeBoneRight;
+          }
+          if (eyeBoneLeft === null) {
+            eyeBoneLeft = object.skeleton.bones.find(bone => bone.name === 'MCH-eyeL'); //DEF_eyeL
+            window.eyeBoneLeft = eyeBoneLeft;
+            console.log(eyeBoneLeft);
+          }
+        }
+      });
+      eyeModel.scale.set(1, 1, 1);
+      eyeModel.position.set(0, 0, -2);
+
+
+
+
+      // Store the eyeModel's world position
+      const eyeModelWorldPosition = new THREE.Vector3();
+      eyeModel.getWorldPosition(eyeModelWorldPosition);
+
+
+      // Add the eyeModel to the headBone
+      headBone.add(eyeModel);
+
+
+
+      // Convert the stored world position to the local position relative to the headBone
+      const eyeModelLocalPosition = new THREE.Vector3();
+      headBone.worldToLocal(eyeModelLocalPosition.copy(eyeModelWorldPosition));
+
+
+      // Set the eyeModel's position to the calculated local position
+      eyeModel.position.copy(eyeModelLocalPosition);
+      headBone.add(eyeModel);
+      eyeBoneRight.parent.add(eyeBoneRightHelper);
+      eyeBoneRightHelper.position.copy(eyeBoneRight.position);
+      eyeBoneRightHelper.rotation.copy(eyeBoneRight.rotation);
+
+      //
+
+
+    })
+  })
 }
+
+
+
+
+
 
 // loader.load(avatarPath, function (gltf) {
 //   console.log("starting")
@@ -817,91 +991,8 @@ function loadModels() {
 //   let face = model.children[0]
 
 
-//   gltf.animations.forEach((clip) => {
-
-//           console.log(clip.name); // Log the name of each animation
-//           if(clip.name === "ArmatureAction"){
-//               console.log("neckmove loaded");
-//               randomAnimationClip = clip;
-//               action = mixer.clipAction(randomAnimationClip, model);
-
-//           }
-
-//       });
-
-
-//   model.traverse((object) => {
-//     if (object.morphTargetInfluences) {
-//       if (faceMesh === null) {
-//         faceMesh = object;
-//         targetInfluences = faceMesh.morphTargetInfluences;
-//         morphTargetDictionary = faceMesh.morphTargetDictionary;
-//         window.targetInfluences = targetInfluences;
-//         window.morphTargetDictionary = morphTargetDictionary;
-//         leftEyeBlink = { "value": targetInfluences[0] };
-//       }
-//     }
-//     if (object.isSkinnedMesh) {
-//       if (neckBone === null) {
-//         neckBone = object.skeleton.bones.find(bone => bone.name === 'Neck');
-//         window.neckBone = neckBone;
-//         console.log(neckBone);
-//       }
-//       if (headBone === null) {
-//         headBone = object.skeleton.bones.find(bone => bone.name === 'Head');
-//         window.headBone = headBone;
-//         console.log(headBone);
-//       }
-//     }
-//   });
-
-
-//   model.scale.set(1, 1, 1);
-//   model.position.set(0, 0, -2);
-//   headBone.parent.add(headBoneHelper);
-//   headBoneHelper.position.copy(headBone.position);
-//   headBone.parent.add(headBoneOriginHelper);
-//   headBoneOriginHelper.position.copy(headBone.position);
-//   headBoneOriginHelper.rotation.copy(headBone.rotation);
-//   neckBone.parent.add(neckBoneOriginHelper);
-//   neckBoneOriginHelper.position.copy(neckBone.position);
-//   neckBoneOriginHelper.rotation.copy(neckBone.rotation);
-//   scene.add(model);
-
 // loader.load(eyeModelPath, function (gltf) {
-//   const eyeModel = gltf.scenes[0];
-//   eyeModel.traverse((object) => {
-//     if (object.isSkinnedMesh) {
-//       if (eyeBoneRight === null) {
-//         eyeBoneRight = object.skeleton.bones.find(bone => bone.name === 'DEF_eyeR'); //DEF_eyeR
-//         window.eyeBoneRight = eyeBoneRight;
-//       }
-//       if (eyeBoneLeft === null) {
-//         eyeBoneLeft = object.skeleton.bones.find(bone => bone.name === 'MCH-eyeL'); //DEF_eyeL
-//         window.eyeBoneLeft = eyeBoneLeft;
-//         console.log(eyeBoneLeft);
-//       }
-//     }
-//   });
-//   eyeModel.scale.set(1, 1, 1);
-//   eyeModel.position.set(0, 0, -2);
-//   // Store the eyeModel's world position
-//   const eyeModelWorldPosition = new THREE.Vector3();
-//   eyeModel.getWorldPosition(eyeModelWorldPosition);
-//   // Add the eyeModel to the headBone
-//   headBone.add(eyeModel);
-//   // Convert the stored world position to the local position relative to the headBone
-//   const eyeModelLocalPosition = new THREE.Vector3();
-//   headBone.worldToLocal(eyeModelLocalPosition.copy(eyeModelWorldPosition));
-//   // Set the eyeModel's position to the calculated local position
-//   eyeModel.position.copy(eyeModelLocalPosition);
-//   headBone.add(eyeModel);
-//   eyeBoneRight.parent.add(eyeBoneRightHelper);
-//   eyeBoneRightHelper.position.copy(eyeBoneRight.position);
-//   eyeBoneRightHelper.rotation.copy(eyeBoneRight.rotation);
-//    animateHeadBackToCenter()
-//   //
-//   action.play();
+
 // });
 
 
