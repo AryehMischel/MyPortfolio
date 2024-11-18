@@ -81,6 +81,9 @@ let ourShoesNode = null;
 let ourHairNode = null;
 
 //tween for shaders
+let brightenTween = null;
+let fadeOutTween = null;
+
 let tweenBodyDissolveShader = null;
 let tweenHairDissolveShader = null;
 let tweenClothesDissolveShader = null;
@@ -116,8 +119,8 @@ const morphTargetsDict = {};
 // Raycaster and mouse vector
 const raycaster = new THREE.Raycaster();
 const raycaster2 = new THREE.Raycaster();
-raycaster.layers.set(1); // insure it only detects intersection with objects on layer 1 aka our target sphere
-raycaster2.layers.set(1); // insure it only detects intersection with objects on layer 1 aka our target sphere
+raycaster.layers.set(2); // insure it only detects intersection with objects on layer 1 aka our target sphere
+raycaster2.layers.set(2); // insure it only detects intersection with objects on layer 1 aka our target sphere
 const mouse = new THREE.Vector2();
 const previousMouseIntersectionPoint = new THREE.Vector2();
 // Create a scene
@@ -173,8 +176,8 @@ let faceMesh = null;
 //load and set 3d models (the avatar and it's eyes are seperate models)
 loadModels()
 let freezeEyes = false;
-
-
+let animateHead = false
+let interactiveAvatarLoaded = false;
 var clock = new THREE.Clock();
 // Render the scene
 function animate(time) {
@@ -183,7 +186,7 @@ function animate(time) {
     mixer.update(deltaSeconds);
   }
 
-  if (InteractiveAvatar && eyeBoneLeft && cube) {
+  if (InteractiveAvatar && animateHead) {
 
     headBoneHelper.lookAt(targetPosition);
     let [yaw, pitch] = calculateYawAndPitchDifference(headBoneHelper.rotation, headBoneOriginHelper.rotation);
@@ -248,27 +251,56 @@ function animate(time) {
   }
 
 
-  if (NonInteractiveAvatar && !dissolveEffectStarted) {
-    dissolveEffectStarted = true;
-    animateTogether()
+  if(brightenTween){
+    brightenTween.update()
+  }
+  
+  if(fadeOutTween){
+    fadeOutTween.update()
   }
 
-  if (InteractiveAvatar && dissolveEffectFinished &&  NonInteractiveAvatar.visible) {
-    NonInteractiveAvatar.visible = false;
-    InteractiveAvatar.visible = true;
-    animateHeadBackToCenter()
-    action.play();
-    startBlinking()
+
+
+
+  if (NonInteractiveAvatar && !dissolveEffectStarted) {
+      dissolveEffectStarted = true;
+      animateTogether()
+  }
+
+  if (!interactiveAvatarLoaded && eyeBoneLeft &&  InteractiveAvatar && dissolveEffectFinished ) {
+    // NonInteractiveAvatar.visible = false;
+    interactiveAvatarLoaded = true;
+    growFade()
+   // dissolveEffectFinished = false //lol this is stupid
+
+    // InteractiveAvatar.visible = true;
+    // animateHeadBackToCenter()
+    // action.play();
+    // startBlinking()
+   
     //handle swap
   }
 
-  if(dissolveEffectFinished){
-    renderer.render(scene, camera);
-  }else{
+  renderer.clear();
+  
+  camera.layers.set(0);
   composer.render();
+  
+  renderer.clearDepth();
+  camera.layers.set(0);
+  renderer.render(scene, camera);
 
-  }
+  
   requestAnimationFrame(animate);
+
+
+  // if(dissolveEffectFinished){
+  //   renderer.render(scene, camera);
+  // }else{
+  // composer.render();
+
+  // }
+
 }
 animate();
 //functions for calculating head and neck movement
@@ -298,6 +330,10 @@ function calculateYawAndPitchDifference(euler1, euler2) {
   const pitchDifference = euler2.x - euler1.x;
   return [yawDifference, pitchDifference];
 }
+
+
+
+
 //functions for rotating towards target position
 function rotateEyes() {
 
@@ -801,7 +837,7 @@ const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 sphere.position.set(0, 1, -1.2); //0, 1.6, -1
 sphere.scale.set(7.75, 5, 1); //1.5, 1.5, 0.5
 scene.add(sphere);
-sphere.layers.set(1); // Only check layer 0
+sphere.layers.set(2); // Only check layer 0
 // Apply the shader material to the sphere
 sphere.material = edgeHighlightMaterial;
 // load in and set our gltf models
@@ -822,40 +858,37 @@ function loadModels() {
         }
         if (node.name == "avaturn_body_1") {
           ourBodyBaseMaterial = node.material.clone()
-          // ourBodyBaseMaterial.emissiveIntensity = 10;
-          // node.material.visible = false;
+          ourBodyBaseMaterial.transparent = true;
+          node.material.visible = false;
           console.log(node)
-          // node.material.transparent = true
           ourBodyNode = node;
         }
         if (node.name == "avaturn_body_4") {
           ourClothesBaseMaterial = node.material.clone()
-
-          // ourBaseMaterial.emissiveIntensity = 10;
+          ourClothesBaseMaterial.transparent = true;
           node.material.visible = false;
           ourClothesNode = node;
           //  // node.material.transparent = true
         }
         if (node.name == "avaturn_body_3") {
           ourShoesBaseMaterial = node.material.clone()
-          ourShoesNode = node;
-          // ourBaseMaterial.emissiveIntensity = 10;
+          ourShoesBaseMaterial.transparent = true
           node.material.visible = false;
+          ourShoesNode = node;
           //  // node.material.transparent = true
         }
         if (node.name == "avaturn_body_2") {
           ourHairBaseMaterial = node.material.clone()
-          ourHairNode = node;
-          // ourBaseMaterial.emissiveIntensity = 10;
+          ourHairBaseMaterial.transparent = true
           node.material.visible = false;
-          //   console.log(node)
-          //  // node.material.transparent = true
+          ourHairNode = node;
           //   ourNode = node;
         }
 
 
       });
       createShaders()
+      NonInteractiveAvatar.layers.set(1);
       NonInteractiveAvatar.position.set(0, 0, -2);
       scene.add(NonInteractiveAvatar);
     },
@@ -932,6 +965,7 @@ function loadModels() {
     neckBoneOriginHelper.rotation.copy(neckBone.rotation);
 
     InteractiveAvatar.visible = false;
+    InteractiveAvatar.layers.set(0);
     scene.add(InteractiveAvatar);
 
     
@@ -955,7 +989,7 @@ function loadModels() {
       eyeModel.position.set(0, 0, -2);
 
 
-
+      eyeModel.layers.set(0);
 
       // Store the eyeModel's world position
       const eyeModelWorldPosition = new THREE.Vector3();
@@ -1090,12 +1124,15 @@ function animateBodyIn() {
   tweenBodyDissolveShader = new TWEEN.Tween({ x: 1 })
     .to({ x: 0 }, 2000)
     .easing(TWEEN.Easing.Cubic.InOut)
+    .onComplete(() => {
+      dissolveEffectFinished = true;
+    })
     .onUpdate((object) => {
-      // updateMaterial(object.x);
-      console.log("object", object.x)
       bodyDissolveShader.uniforms.threshold.value = object.x;
 
     });
+
+
   tweenBodyDissolveShader.start();
 
 }
@@ -1122,7 +1159,7 @@ function animateShoesIn() {
     .easing(TWEEN.Easing.Cubic.InOut)
     .delay(1400)
     .onComplete(() => {
-      dissolveEffectFinished = true
+     
     })
     .onUpdate((object) => {
       shoesDissolveShader.uniforms.threshold.value = object.x;
@@ -1130,6 +1167,67 @@ function animateShoesIn() {
   tweenShoesDissolveShader.start();
 
 }
+
+//function for fading out dummy avatar
+function growFade() {
+  
+  if(tweenBodyDissolveShader.isPlaying()){
+    tweenBodyDissolveShader.stop()
+  }
+  if(tweenClothesDissolveShader.isPlaying()){
+    tweenClothesDissolveShader.stop()
+  }
+  if(tweenShoesDissolveShader.isPlaying()){
+    tweenShoesDissolveShader.stop()
+  }
+  // if(tweenHairDissolveShader.isPlaying()){
+  //   tweenHairDissolveShader.stop()
+  // }
+  //InteractiveAvatar.visible = true;
+  shoesDissolveShader.uniforms.growFade.value = true;
+  bodyDissolveShader.uniforms.growFade.value = true;
+  hairDissolveShader.uniforms.growFade.value = true;
+  clothesDissolveShader.uniforms.growFade.value = true;
+  fadeOutShaders()
+
+}
+
+function fadeOutShaders() {
+  InteractiveAvatar.visible = true;
+  brightenTween = new TWEEN.Tween({ x: 55 })
+    .to({ x: 0 }, 600)
+    .easing(TWEEN.Easing.Cubic.Out)
+    .onComplete(() => {console.log("First tween completed")
+        animateHead = true;
+        animateHeadBackToCenter();
+        NonInteractiveAvatar.visible = false;
+    })
+    .onUpdate((object) => {
+      console.log("First tween going")
+      clothesDissolveShader.uniforms.brightness.value = object.x
+      bodyDissolveShader.uniforms.brightness.value = object.x
+      hairDissolveShader.uniforms.brightness.value = object.x
+      shoesDissolveShader.uniforms.brightness.value = object.x
+    });
+
+  // fadeOutTween = new TWEEN.Tween({ x: 105 })
+  //   .to({ x: 0 }, 1200)
+  //   // .easing(TWEEN.Easing.Exponential.In)
+  //   .onComplete(() => {
+  //     NonInteractiveAvatar.visible = false;
+  //   })
+  //   .onUpdate((object) => {
+  //     console.log("Second tween running")
+  //     clothesDissolveShader.uniforms.brightness.value = object.x
+  //     bodyDissolveShader.uniforms.brightness.value = object.x
+  //     hairDissolveShader.uniforms.brightness.value = object.x
+  //     shoesDissolveShader.uniforms.brightness.value = object.x
+  //   });
+// brightenTween.chain(fadeOutTween)
+    brightenTween.start();
+
+}
+window.growFade = growFade;
 
 async function animateAll() {
   await waitForSeconds(1.5)
@@ -1188,7 +1286,7 @@ let fs = `
       void main() {
 
         if(growFade){
-             vec4 returnColor = vec4(vec3(1.0, 1.0 , 1.0), 0.1);
+             vec4 returnColor = vec4(vec3(csm_FragColor), 0.4);
              csm_FragColor = returnColor * brightness;
         }else{
         
