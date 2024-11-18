@@ -1012,19 +1012,25 @@ function createShaders() {
   shoesDissolveShader = new CustomShaderMaterial({
     baseMaterial: ourShoesBaseMaterial,
     uniforms: {
+      growFade: { value: false },
+      brightness: { value: 1.0 },
       time: { value: 0.2 },
       threshold: { value: 2.0 },
       uColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
       noiseTexture: { value: noiseTexture2 },
     },
+
     vertexShader: vs,
     fragmentShader: fs,
-
+    transparent: true, // Enable transparency
+    blending: THREE.NormalBlending, // Set blending mode
   });
 
   hairDissolveShader = new CustomShaderMaterial({
     baseMaterial: ourHairBaseMaterial,
     uniforms: {
+      growFade: { value: false },
+      brightness: { value: 1.0 },
       time: { value: 0.2 },
       threshold: { value: 2.0 },
       uColor: { value: new THREE.Color(0.4, 0.4, 0.4) }, // Add a uniform for the color
@@ -1032,8 +1038,10 @@ function createShaders() {
     },
     vertexShader: vs,
     fragmentShader: fs,
-
+    transparent: true, // Enable transparency
+    blending: THREE.NormalBlending, // Set blending mode
   });
+
 
   clothesDissolveShader = new CustomShaderMaterial({
     baseMaterial: ourClothesBaseMaterial,
@@ -1042,15 +1050,20 @@ function createShaders() {
       threshold: { value: 2.0 },
       uColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
       noiseTexture: { value: doubleNoise },
+      brightness: { value: 1.0 },
+      growFade: { value: false },
     },
     vertexShader: vs,
     fragmentShader: fs,
-
+    transparent: true, // Enable transparency
+    blending: THREE.NormalBlending, // Set blending mode
   });
 
   bodyDissolveShader = new CustomShaderMaterial({
     baseMaterial: ourBodyBaseMaterial,
     uniforms: {
+      growFade: { value: false },
+      brightness: { value: 1.0 },
       time: { value: 0.2 },
       threshold: { value: 2.0 },
       uColor: { value: new THREE.Color(0.4, 0.4, 0.4) }, // Add a uniform for the color
@@ -1058,7 +1071,8 @@ function createShaders() {
     },
     vertexShader: vs,
     fragmentShader: fs,
-
+    transparent: true, // Enable transparency
+    blending: THREE.NormalBlending, // Set blending mode
   });
 
 
