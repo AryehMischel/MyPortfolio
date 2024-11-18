@@ -1,7 +1,7 @@
 import * as THREE from 'three'; window.THREE = THREE;
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import TWEEN from '@tweenjs/tween.js'
+import * as TWEEN from '@tweenjs/tween.js'
 const customCursorDataURL = 'data:image/x-icon;base64,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'
 const avatarPath = "https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/avatarWithAnimation.glb"  //"./avatarWithAnimation.glb" //"https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AvatarNoEyesNormalPose.glb"; //"https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AvatarSemiSmile.glb"  
 const eyeModelPath = "https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AryehAvatarFullBodyJustEyesAndFaceRig.glb"
@@ -28,6 +28,11 @@ let model = null;
 const mixer = new THREE.AnimationMixer();
 let randomAnimationClip;
 let action;
+
+//tween for head movement
+let tween = null;
+let eyeBlinkingTween = null;
+
 
 function play(){
   console.log("plaing animation")
@@ -113,8 +118,12 @@ function animate(time) {
     rotateEyes();
     // }
   }
-  if (TWEEN) {
-    TWEEN.update()
+  if (tween) {
+    tween.update()
+  }
+
+  if(eyeBlinkingTween){
+    eyeBlinkingTween.update()
   }
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
@@ -161,6 +170,7 @@ function rotateEyes(leftEye = eyeBoneLeft, rightEye = eyeBoneRight) {
   eyeBoneLeft.rotateOnAxis(new THREE.Vector3(-1, 0, 0), Math.PI * -0.55);
   eyeBoneRight.rotateOnAxis(new THREE.Vector3(-1, 0, 0), Math.PI * -0.55);
 }
+
 //scene helper functions
 function addArrowHelpers(object) {
   const arrowHelperX = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 0), 30, 0xff0000);
@@ -176,7 +186,8 @@ function addArrowHelpers(object) {
     console.log("error adding arrow helpers")
   }
 }
-// our main scene settings
+
+
 //create return renderer
 function createRenderer() {
   const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
@@ -186,7 +197,7 @@ function createRenderer() {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Soft shadows
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1;
-  renderer.outputEncoding = THREE.sRGBEncoding;
+  // renderer.outputEncoding = THREE.sRGBEncoding;
   // Set the pixel ratio to the device's pixel ratio
   renderer.setPixelRatio(window.devicePixelRatio);
   // Set the size of the renderer
@@ -291,7 +302,7 @@ function setCustomCursor() {
   document.body.style.cursor = `url(${customCursorDataURL}), auto`;
 }
 function setCursor() {
-  console.log("setting cursor, what the actual fuckl")
+  console.log("setting cursor, what the actual")
   document.body.style.cursor = 'default';
 }
 window.setCustomCursor = setCustomCursor;
@@ -323,7 +334,6 @@ for (var i = 0; i < containersOverlappingWithTriggerColl.length; i++) {
         animateHeadBackToCenter()
         customCursorShowing = false;
         mouseOverElementOverlappingCollider = false;
-        console.log("what the actual fuck")
         setCursor()
       }
     }
@@ -346,7 +356,6 @@ for (var i = 0; i < containersOverlappingWithTriggerColl.length; i++) {
         animateHeadBackToCenter()
         customCursorShowing = false;
         mouseOverElementOverlappingCollider = false;
-        console.log("what the fuck")
         setCursor()
       }
     }
@@ -375,7 +384,6 @@ for (var i = 0; i < containersOverlappingWithTriggerColl.length; i++) {
         animateHeadBackToCenter()
         customCursorShowing = false;
         mouseOverElementOverlappingCollider = false;
-        console.log("what the fuck")
         setCursor()
       }
     }
@@ -409,7 +417,6 @@ let workSection = document.getElementById("work-section")
 workSection.addEventListener("mouseenter", (event) =>{
 if (customCursorShowing) {
     customCursorShowing = false;
-    console.log("what the fuck")
     setCursor();
     animateHeadBackToCenter()
   }
@@ -446,7 +453,6 @@ animateHeadTriggerRectColl.addEventListener('mousemove', (event) => {
         animateHeadBackToCenter()
         customCursorShowing = false;
         mouseOverElementOverlappingCollider = false;
-        console.log("what the fuck")
         setCursor()
       }
     }
@@ -499,44 +505,36 @@ function detectMouseOverSphereColl(mouse) {
   if (customCursorShowing) {
     customCursorShowing = false;
     setCursor();
-    console.log("what the fuck")
     animateHeadBackToCenter()
   }
 }
 window.detectMouseOverSphereColl = detectMouseOverSphereColl;
 //resets head back to center
-let mouse2 = new THREE.Vector2(0.4, 0.0);
-let tween = null;
-let animateHeadToCenterTween = null;
 
 function animateHeadBackToCenter() {
-  console.log("what is mouse initially", previousMouseIntersectionPoint)
-  // //instead of animate the head we should just find the last mouse uv coords and just animate them to to 0, 0
-  // if (tween && tween.isPlaying()) {
-  //   tween.stop()
-  // }
-  // let originalPosition = new THREE.Vector2(0.0, 0.0);
-  // let mouse2 = { u: previousMouseIntersectionPoint.x, v: previousMouseIntersectionPoint.y };
-  // let center = { u: 0, v: 0 };
-  // tween = new TWEEN.Tween(mouse2)
-  //   .to(center, 1000) // Interpolating to the end vector
-  //   .easing(TWEEN.Easing.Circular.InOutt)           // Ease-out for smooth animation
-  //   .onUpdate(() => {
-  //     console.log(mouse2)
-  //     let mouse2Vector = new THREE.Vector2(mouse2.u, mouse2.v);
-  //     raycaster2.setFromCamera(mouse2Vector, camera);
-  //     // Calculate objects intersecting the ray
-  //     const intersects = raycaster2.intersectObjects(scene.children, true);
-  //     // Check if the sphere is intersected
-  //     for (let i = 0; i < intersects.length; i++) {
-  //       console.log('intersected')
-  //       if (intersects[i].object === sphere) {
-  //         const hitPoint = intersects[i].point;
-  //         cube.position.copy(hitPoint);
-  //       }
-  //     }
-  //   })
-  // tween.start();
+  //instead of animate the head we should just find the last mouse uv coords and just animate them to to 0, 0
+  if (tween && tween.isPlaying()) {
+    tween.stop()
+  }
+  let mouse2 = { u: previousMouseIntersectionPoint.x, v: previousMouseIntersectionPoint.y };
+  let center = { u: 0, v: 0 };
+  tween = new TWEEN.Tween(mouse2)
+    .to(center, 1000) // Interpolating to the end vector
+    .easing(TWEEN.Easing.Circular.InOutt)           // Ease-out for smooth animation
+    .onUpdate(() => {
+      let mouse2Vector = new THREE.Vector2(mouse2.u, mouse2.v);
+      raycaster2.setFromCamera(mouse2Vector, camera);
+      // Calculate objects intersecting the ray
+      const intersects = raycaster2.intersectObjects(scene.children, true);
+      // Check if the sphere is intersected
+      for (let i = 0; i < intersects.length; i++) {
+        if (intersects[i].object === sphere) {
+          const hitPoint = intersects[i].point;
+          cube.position.copy(hitPoint);
+        }
+      }
+    })
+  tween.start();
 }
 //adds random blinking animation
 let leftEyeBlink = null;
@@ -550,7 +548,7 @@ function fireEvent() {
   const currentTime = Date.now();
   // Check if enough time has passed since the last event
   if (currentTime - lastEventTime >= minInterval) {
-    let tween = new TWEEN.Tween(leftEyeBlink)
+    eyeBlinkingTween = new TWEEN.Tween(leftEyeBlink)
       .to({ value: 1 }, 100) // 250 milliseconds
       .easing(TWEEN.Easing.In) // Apply quadratic easing
       .onUpdate(() => {
@@ -564,8 +562,8 @@ function fireEvent() {
         targetInfluences[0] = leftEyeBlink.value;
         targetInfluences[7] = leftEyeBlink.value;
       });
-    tween.chain(tweenBack);
-    tween.start();
+      eyeBlinkingTween.chain(tweenBack);
+      eyeBlinkingTween.start();
     // Update the last event time
     lastEventTime = currentTime;
     // Schedule the next event
