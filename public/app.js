@@ -25,7 +25,7 @@ let NonInteractiveAvatarPath = "https://aryehmischel-portfolio-bucket.s3.us-east
 
 let NonInteractiveAvatar = null;
 let InteractiveAvatar = null;
-
+let interactiveAvatarInScene = false;
 
 
 
@@ -57,7 +57,7 @@ let action;
 //tween for head movement
 let tween = null;
 let eyeBlinkingTween = null;
-
+let tweenBack = null;
 
 
 //shaders,Materials & Meshes for avatar
@@ -134,7 +134,7 @@ createSceneLighting();
 console.log("anything new cheif")
 const renderer = createRenderer()
 // renderer.setClearColor("#fbdad9", 1); // Set clear color to the desired background color
-renderer.outputEncoding = THREE.SRGBColorSpace; // Ensure correct color encoding
+// renderer.outputEncoding = THREE.SRGBColorSpace; // Ensure correct color encoding
 renderer.toneMapping = THREE.ACESFilmicToneMapping; // Set tone mapping
 renderer.toneMappingExposure = 1.0; // Adjust exposure as needed
 // renderer.setClearColor("#fbdad9", 1);
@@ -235,6 +235,10 @@ function animate(time) {
     eyeBlinkingTween.update()
   }
 
+  if(tweenBack){
+    tweenBack.update()
+  }
+
 
   //dissolve shaders
   if (tweenBodyDissolveShader) {
@@ -267,19 +271,38 @@ function animate(time) {
       animateTogether()
   }
 
-  if (!interactiveAvatarLoaded && eyeBoneLeft &&  InteractiveAvatar && dissolveEffectFinished ) {
-    // NonInteractiveAvatar.visible = false;
-    interactiveAvatarLoaded = true;
-    growFade()
-   // dissolveEffectFinished = false //lol this is stupid
+  // if (!interactiveAvatarLoaded && eyeBoneLeft &&  interactiveAvatarInScene && dissolveEffectFinished) {
+  //   console.log("loading interactive avatar")
 
-    // InteractiveAvatar.visible = true;
-    // animateHeadBackToCenter()
-    // action.play();
-    // startBlinking()
+  //   interactiveAvatarLoaded = true;
+
+  //   //insure looped animation stops at next break and loads in InteractiveAvatar
+
+
+
+  //   // tweenBodyDissolveShader.stop()
+  //   // tweenShoesDissolveShader.stop()
+  //   // tweenClothesDissolveShader.stop()
+
+  //   // NonInteractiveAvatar.visible = false;
+  //   // InteractiveAvatar.visible = true;
+
+  //   // // NonInteractiveAvatar.parent.remove(NonInteractiveAvatar)
+
+
+  //   // animateHead = true;
+  //   // animateHeadBackToCenter()
+  //   // action.play();
+  //   // startBlinking()
+  
+  //   // // NonInteractiveAvatar.visible = false;
+  //   // interactiveAvatarLoaded = true;
+  //  // growFade()
+  //  // dissolveEffectFinished = false //lol this is stupid
+
    
-    //handle swap
-  }
+  //   //handle swap
+  // }
 
   renderer.clear();
   
@@ -731,6 +754,7 @@ let leftEyeBlink = null;
 let lastEventTime = 0;
 const minInterval = 250; // Minimum interval between events in milliseconds
 const targetInterval = 4000; // Average interval for 15 events per minute (4000 ms)
+
 function fireEvent() {
   if (!leftEyeBlink) {
     setTimeout(fireEvent, minInterval);
@@ -749,7 +773,8 @@ function fireEvent() {
         targetInfluences[0] = leftEyeBlink.value;
         targetInfluences[7] = leftEyeBlink.value;
       });
-    let tweenBack = new TWEEN.Tween(leftEyeBlink)
+
+    tweenBack = new TWEEN.Tween(leftEyeBlink)
       .to({ value: 0 }, randomNumber2Between200And350) // 250 milliseconds
       .easing(TWEEN.Easing.Sinusoidal.InOut) // Apply quadratic easing
       .delay(randomDelay)
@@ -757,6 +782,7 @@ function fireEvent() {
         targetInfluences[0] = leftEyeBlink.value;
         targetInfluences[7] = leftEyeBlink.value;
       });
+
     eyeBlinkingTween.chain(tweenBack);
     eyeBlinkingTween.start();
     // Update the last event time
@@ -768,7 +794,10 @@ function fireEvent() {
     setTimeout(fireEvent, minInterval);
   }
 }
+
+
 function scheduleNextEvent() {
+  console.log("blinking time")
   const randomDelay = Math.random() * 2000; // Random delay up to 2 seconds
   const nextEventDelay = targetInterval + randomDelay - 1000; // Ensure it's still around 15/min
   setTimeout(fireEvent, nextEventDelay);
@@ -967,6 +996,7 @@ function loadModels() {
     InteractiveAvatar.visible = false;
     InteractiveAvatar.layers.set(0);
     scene.add(InteractiveAvatar);
+    interactiveAvatarInScene = true;
 
     
     //load in eyeball model
@@ -1119,22 +1149,72 @@ function createShaders() {
 }
 
 
+function swapAvatars(){
+  // NonInteractiveAvatar.visible = false;
+  // InteractiveAvatar.visible = true;
+  growFade()
+  // animateHead = true;
+  // animateHeadBackToCenter();
+  // startBlinking();
+
+  // brightenTween = new TWEEN.Tween({ x: 55 })
+  //   .to({ x: 0 }, 600)
+  //   .easing(TWEEN.Easing.Cubic.Out)
+  //   .onComplete(() => {
+
+  //   })
+  //   .onUpdate((object) => {
+  //     clothesDissolveShader.uniforms.brightness.value = object.x
+  //     bodyDissolveShader.uniforms.brightness.value = object.x
+  //     hairDissolveShader.uniforms.brightness.value = object.x
+  //     shoesDissolveShader.uniforms.brightness.value = object.x
+  //   });
+  // brightenTween.start();
+
+}
+
+function loadingShader(){
+  
+}
+
 
 function animateBodyIn() {
   tweenBodyDissolveShader = new TWEEN.Tween({ x: 1 })
-    .to({ x: 0 }, 2000)
-    .easing(TWEEN.Easing.Cubic.InOut)
+    .to({ x: 0 }, 1800)
+    // .easing(TWEEN.Easing.Cubic.InOut)
     .onComplete(() => {
-      dissolveEffectFinished = true;
+      // console.log("complete hat animation", performance.now())
+      //   dissolveEffectFinished = true
+      //   if(!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene){
+      //     swapAvatars()
+      //   }else{
+      //     console.log("start the animation shader")
+      //     loadingShader()
+      //   }
+      
+        // if(!interactiveAvatarLoaded){
+        //   //animateBodyIn()
+        // }else{
+        //   swapAvatars()
+        // }
+      // if(!interactiveAvatarLoaded){
+      //   animateBodyIn()
+      // }else{
+      //   
+      // }
+      // tweenBodyDissolveShader.stop();
+      // tweenBodyDissolveShader.start();
     })
     .onUpdate((object) => {
       bodyDissolveShader.uniforms.threshold.value = object.x;
+    })
+    .start();
+  
 
-    });
+  // tweenBodyDissolveShader.yoyo(true) 
 
-
-  tweenBodyDissolveShader.start();
-
+  // tweenBodyDissolveShader.repeat(10)
+  // tweenBodyDissolveShader.start();
 }
 
 
@@ -1143,7 +1223,7 @@ function animateClothesIn() {
   tweenClothesDissolveShader = new TWEEN.Tween({ x: 1 })
     .to({ x: 0 }, 1000)
     .easing(TWEEN.Easing.Sinusoidal.InOut)
-
+    .onComplete(() =>{ })
     .onUpdate((object) => {
       clothesDissolveShader.uniforms.threshold.value = object.x;
 
@@ -1155,11 +1235,31 @@ function animateClothesIn() {
 function animateShoesIn() {
 
   tweenShoesDissolveShader = new TWEEN.Tween({ x: 1 })
-    .to({ x: 0 }, 400)
+    .to({ x: 0 }, 500)
     .easing(TWEEN.Easing.Cubic.InOut)
     .delay(1400)
     .onComplete(() => {
-     
+      console.log("complete hat animation", performance.now())
+        dissolveEffectFinished = true
+        if(!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene){
+          swapAvatars()
+        }else{
+          console.log("start the animation vertex shader loop...")
+          loadingShader()
+        }
+      
+        // if(!interactiveAvatarLoaded){
+        //   //animateBodyIn()
+        // }else{
+        //   swapAvatars()
+        // }
+      // if(!interactiveAvatarLoaded){
+      //   animateBodyIn()
+      // }else{
+      //   
+      // }
+      // tweenBodyDissolveShader.stop();
+      // tweenBodyDissolveShader.start();
     })
     .onUpdate((object) => {
       shoesDissolveShader.uniforms.threshold.value = object.x;
@@ -1180,6 +1280,8 @@ function growFade() {
   if(tweenShoesDissolveShader.isPlaying()){
     tweenShoesDissolveShader.stop()
   }
+
+
   // if(tweenHairDissolveShader.isPlaying()){
   //   tweenHairDissolveShader.stop()
   // }
@@ -1193,39 +1295,48 @@ function growFade() {
 }
 
 function fadeOutShaders() {
-  InteractiveAvatar.visible = true;
-  brightenTween = new TWEEN.Tween({ x: 55 })
-    .to({ x: 0 }, 600)
-    .easing(TWEEN.Easing.Cubic.Out)
-    .onComplete(() => {console.log("First tween completed")
-        animateHead = true;
-        animateHeadBackToCenter();
-        NonInteractiveAvatar.visible = false;
+
+
+  // brightenTween = new TWEEN.Tween({ x: 1})
+  //   .to({ x: 55}, 100)
+  //   // .easing(TWEEN.Easing.Cubic.Out)
+  //   .onComplete(() => {console.log("First tween completed")
+    
+  //       // NonInteractiveAvatar.visible = false;
+  //   })
+
+  //   .onUpdate((object) => {
+  //     console.log("First tween going")
+  //     clothesDissolveShader.uniforms.brightness.value = object.x
+  //     bodyDissolveShader.uniforms.brightness.value = object.x
+  //     hairDissolveShader.uniforms.brightness.value = object.x
+  //     shoesDissolveShader.uniforms.brightness.value = object.x
+  //   });
+
+  fadeOutTween = new TWEEN.Tween({ x: 75 })
+    .to({ x: -2}, 1000)
+   .easing(TWEEN.Easing.Elastic.InOut)
+    .onComplete(() => {
+     
+      NonInteractiveAvatar.visible = false;
+      animateHead = true;
+      animateHeadBackToCenter();
     })
     .onUpdate((object) => {
-      console.log("First tween going")
+      console.log("Second tween running")
+      if(object.x < 50 && !InteractiveAvatar.visible){
+        InteractiveAvatar.visible = true;
+      }
       clothesDissolveShader.uniforms.brightness.value = object.x
       bodyDissolveShader.uniforms.brightness.value = object.x
       hairDissolveShader.uniforms.brightness.value = object.x
       shoesDissolveShader.uniforms.brightness.value = object.x
     });
 
-  // fadeOutTween = new TWEEN.Tween({ x: 105 })
-  //   .to({ x: 0 }, 1200)
-  //   // .easing(TWEEN.Easing.Exponential.In)
-  //   .onComplete(() => {
-  //     NonInteractiveAvatar.visible = false;
-  //   })
-  //   .onUpdate((object) => {
-  //     console.log("Second tween running")
-  //     clothesDissolveShader.uniforms.brightness.value = object.x
-  //     bodyDissolveShader.uniforms.brightness.value = object.x
-  //     hairDissolveShader.uniforms.brightness.value = object.x
-  //     shoesDissolveShader.uniforms.brightness.value = object.x
-  //   });
-// brightenTween.chain(fadeOutTween)
-    brightenTween.start();
-
+    // brightenTween.chain(fadeOutTween)
+    fadeOutTween.start();
+    console.log("starting fade out ", performance.now())
+   
 }
 window.growFade = growFade;
 
@@ -1286,7 +1397,7 @@ let fs = `
       void main() {
 
         if(growFade){
-             vec4 returnColor = vec4(vec3(csm_FragColor), 0.4);
+             vec4 returnColor = vec4(1.0, 0.0, 0.0, 0.2);
              csm_FragColor = returnColor * brightness;
         }else{
         
