@@ -21,7 +21,7 @@ const avatarPath = "https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws
 const eyeModelPath = "https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AryehAvatarFullBodyJustEyesAndFaceRig.glb"
 
 
-let NonInteractiveAvatarPath = "./assets/models/AryehAvatarNonInteractive2.glb"
+let NonInteractiveAvatarPath = "https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AryehAvatarNonInteractive2.glb"
 
 let NonInteractiveAvatar = null;
 let InteractiveAvatar = null;
@@ -87,18 +87,18 @@ let tweenClothesDissolveShader = null;
 let tweenShoesDissolveShader = null;
 
 //noise textures for dissolve shaders
-const noiseTexture = new THREE.TextureLoader().load('./assets/noise6.png');
-noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
+// const noiseTexture = new THREE.TextureLoader().load('./assets/noise6.png');
+// noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
 
-const noiseTexture2 = new THREE.TextureLoader().load('./assets/noiseCircle.png');
+const noiseTexture2 = new THREE.TextureLoader().load('https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/noiseCircle.png');
 noiseTexture2.wrapS = noiseTexture2.wrapT = THREE.RepeatWrapping;
 
-const noiseTexture3 = new THREE.TextureLoader().load('./assets/noise4.png');
+const noiseTexture3 = new THREE.TextureLoader().load('https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/noise4.png');
 noiseTexture3.wrapS = noiseTexture3.wrapT = THREE.RepeatWrapping;
 
 
-const directionNoise = new THREE.TextureLoader().load('./assets/noise7.jpeg');
-const doubleNoise = new THREE.TextureLoader().load('./assets/doubleNoise2.png');
+const directionNoise = new THREE.TextureLoader().load('https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/noise7.jpeg');
+const doubleNoise = new THREE.TextureLoader().load('https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/doubleNoise2.png');
 
 
 
@@ -127,7 +127,7 @@ scene.background = new THREE.Color("#fbdad9");
 const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
 camera.position.set(0.005, 1.6, 0.5); // Adjust the camera position 0.005, 1.6, 0.5
 window.camera = camera;
-
+createSceneLighting();
 console.log("anything new cheif")
 const renderer = createRenderer()
 // renderer.setClearColor("#fbdad9", 1); // Set clear color to the desired background color
@@ -159,7 +159,8 @@ composer.addPass(fxaaPass);
 
 const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
 composer.addPass(gammaCorrectionPass);
- createSceneLighting();
+
+
 // Mirrors the eyes rotation and position, used for checking valid rotations
 const checkRightEye = new THREE.Object3D();
 const checkLeftEye = new THREE.Object3D();
@@ -693,7 +694,7 @@ function animateHeadBackToCenter() {
 let leftEyeBlink = null;
 let lastEventTime = 0;
 const minInterval = 250; // Minimum interval between events in milliseconds
-const targetInterval = 3000; // Average interval for 15 events per minute (4000 ms)
+const targetInterval = 4000; // Average interval for 15 events per minute (4000 ms)
 function fireEvent() {
   if (!leftEyeBlink) {
     setTimeout(fireEvent, minInterval);
@@ -701,16 +702,21 @@ function fireEvent() {
   const currentTime = Date.now();
   // Check if enough time has passed since the last event
   if (currentTime - lastEventTime >= minInterval) {
+
+    // let randomNumberBetween50And100 = Math.floor(Math.random() * 100) + 50; 
+    let randomNumber2Between200And350 = Math.floor(Math.random() * 350) + 200; 
+    let randomDelay =  Math.floor(Math.random() * 150) + 50; 
     eyeBlinkingTween = new TWEEN.Tween(leftEyeBlink)
-      .to({ value: 1 }, 100) // 250 milliseconds
-      .easing(TWEEN.Easing.In) // Apply quadratic easing
+      .to({ value: 1 }, 100) 
+      .easing(TWEEN.Easing.Sinusoidal.InOut) // Apply quadratic easing
       .onUpdate(() => {
         targetInfluences[0] = leftEyeBlink.value;
         targetInfluences[7] = leftEyeBlink.value;
       });
     let tweenBack = new TWEEN.Tween(leftEyeBlink)
-      .to({ value: 0 }, 100) // 250 milliseconds
-      .easing(TWEEN.Easing.Out) // Apply quadratic easing
+      .to({ value: 0 }, randomNumber2Between200And350) // 250 milliseconds
+      .easing(TWEEN.Easing.Sinusoidal.InOut) // Apply quadratic easing
+      .delay(randomDelay)
       .onUpdate(() => {
         targetInfluences[0] = leftEyeBlink.value;
         targetInfluences[7] = leftEyeBlink.value;
