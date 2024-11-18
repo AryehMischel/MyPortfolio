@@ -26,11 +26,20 @@ let tweenHairAnimation = null;
 let tweenClothesAnimation = null;
 let tweenShoesAnimation = null;
 
+
+
+
+
+let brightenTween = null;
+let fadeOutTween = null;
 // Shader material
 let bodyDissolveShader = null;
 let clothesDissolveShader = null;
 let shoesDissolveShader = null;
 let hairDissolveShader = null;
+
+
+
 
 
 let ourBodyBaseMaterial = null;
@@ -100,6 +109,7 @@ loader.load(
   './assets/models/AryehAvatarNonInteractive2.glb', //
   function (gltf) {
     avatar = gltf.scene;
+    avatar.layers.set(1);
     // avatar.scale.set(0.01, 0.01, 0.01);
 
     avatar.traverse((node) => {
@@ -108,7 +118,8 @@ loader.load(
       }
       if (node.name == "avaturn_body_1") {
         ourBodyBaseMaterial = node.material.clone()
-        ourBodyBaseMaterial.emissiveIntensity = 10;
+        // ourBodyBaseMaterial.emissiveIntensity = 10;
+        ourBodyBaseMaterial.transparent = true;
         node.material.visible = false;
         console.log(node)
         // node.material.transparent = true
@@ -116,7 +127,7 @@ loader.load(
       }
       if (node.name == "avaturn_body_4") {
         ourClothesBaseMaterial = node.material.clone()
-
+        ourBodyBaseMaterial.transparent = true;
         // ourBaseMaterial.emissiveIntensity = 10;
         node.material.visible = false;
         ourClothesNode = node;
@@ -153,6 +164,7 @@ loader.load(
 
 loader.load(replacementAvatarURL, function (gltf) {
   replacementAvatar = gltf.scene;
+  replacementAvatar.layers.set(0);
   replacementAvatar.visible = false;
   scene.add(replacementAvatar);
 
@@ -169,19 +181,25 @@ function createShaders() {
   shoesDissolveShader = new CustomShaderMaterial({
     baseMaterial: ourShoesBaseMaterial,
     uniforms: {
+      growFade: { value: false },
+      brightness: { value: 1.0 },
       time: { value: 0.2 },
       threshold: { value: 2.0 },
       uColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
       noiseTexture: { value: noiseTexture2 },
     },
+
     vertexShader: vs,
     fragmentShader: fs,
-
+    transparent: true, // Enable transparency
+    blending: THREE.NormalBlending, // Set blending mode
   });
 
   hairDissolveShader = new CustomShaderMaterial({
     baseMaterial: ourHairBaseMaterial,
     uniforms: {
+      growFade: { value: false },
+      brightness: { value: 1.0 },
       time: { value: 0.2 },
       threshold: { value: 2.0 },
       uColor: { value: new THREE.Color(0.4, 0.4, 0.4) }, // Add a uniform for the color
@@ -189,8 +207,21 @@ function createShaders() {
     },
     vertexShader: vs,
     fragmentShader: fs,
-
+    transparent: true, // Enable transparency
+    blending: THREE.NormalBlending, // Set blending mode
   });
+
+  // clothesDissolveShader = new CustomShaderMaterial({
+  //   baseMaterial: ourClothesBaseMaterial,
+  //   uniforms: {
+  //     brightness: { value: 1.0 },
+  //   },
+  //   vertexShader: brightenvs,
+  //   fragmentShader: brightenfs,
+  //   transparent: true, // Enable transparency
+  //   blending: THREE.NormalBlending, // Set blending mode
+  // });
+
 
   clothesDissolveShader = new CustomShaderMaterial({
     baseMaterial: ourClothesBaseMaterial,
@@ -199,15 +230,20 @@ function createShaders() {
       threshold: { value: 2.0 },
       uColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
       noiseTexture: { value: doubleNoise },
+      brightness: { value: 1.0 },
+      growFade: { value: false },
     },
     vertexShader: vs,
     fragmentShader: fs,
-
+    transparent: true, // Enable transparency
+    blending: THREE.NormalBlending, // Set blending mode
   });
 
   bodyDissolveShader = new CustomShaderMaterial({
     baseMaterial: ourBodyBaseMaterial,
     uniforms: {
+      growFade: { value: false },
+      brightness: { value: 1.0 },
       time: { value: 0.2 },
       threshold: { value: 2.0 },
       uColor: { value: new THREE.Color(0.4, 0.4, 0.4) }, // Add a uniform for the color
@@ -215,7 +251,8 @@ function createShaders() {
     },
     vertexShader: vs,
     fragmentShader: fs,
-
+    transparent: true, // Enable transparency
+    blending: THREE.NormalBlending, // Set blending mode
   });
 
 
@@ -228,48 +265,12 @@ function createShaders() {
 }
 
 
-let vs = `
-      varying vec2 vUv;
-      void main() {
-          vUv = uv;
-      }
-    `;
-
-let fs = `
-      uniform float time;
-      uniform vec3 uColor; // Declare the uniform
-      varying vec2 vUv;
-      uniform float threshold;
-      uniform sampler2D noiseTexture; //alpha noise texture for diffuse effect
-      void main() {
-
-        vec3 noise = texture2D(noiseTexture, vUv).rgb;
-        float dissolve = noise.g;
-        if (dissolve < threshold) {
-           discard;
-         }
-
-       float edge = threshold + 0.025;
-
-       if(threshold > 0.00001){
-         if (dissolve < edge) {
-           csm_FragColor = vec4(vec3(uColor), 1.0) * 2.0;
-
-        }
-       }
-
-
-        csm_Emissive = vec3(0.0, 1.0, 0.0);
-        csm_FragColor = csm_FragColor;
-     }
-    `;
-
 
 // Animation loop
 function animate() {
 
   if (!animatedInAvatar && avatar) {
-    animateTogether()
+    // animateTogether()
     animatedInAvatar = true;
   }
 
@@ -295,8 +296,40 @@ function animate() {
   if (tweenShoesAnimation) {
     tweenShoesAnimation.update()
   }
+  
+  // if (tweenBrightenDissapearBodyShader) {
+  //   tweenBrightenDissapearBodyShader.update()
+  // }
+  // if (tweenBrightenDissapearHairShader) {
+  //   tweenBrightenDissapearHairShader.update()
+  // }
+  // if (tweenBrightenDissapearClothesShader) {
+  //   tweenBrightenDissapearClothesShader.update()
+  // }
+  // if (tweenBrightenDissapearShoesShader) {
+  //   tweenBrightenDissapearShoesShader.update()
+  // }
+  
+  
+  if(brightenTween){
+    brightenTween.update()
+  }
+  
+  if(fadeOutTween){
+    fadeOutTween.update()
+  }
 
+
+  renderer.clear();
+  
+  camera.layers.set(1);
   composer.render();
+  
+  renderer.clearDepth();
+  camera.layers.set(0);
+  renderer.render(scene, camera);
+
+  
   requestAnimationFrame(animate);
 }
 
@@ -312,6 +345,17 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+function growFade() {
+  replacementAvatar.visible = true;
+  shoesDissolveShader.uniforms.growFade.value = true;
+  bodyDissolveShader.uniforms.growFade.value = true;
+  hairDissolveShader.uniforms.growFade.value = true;
+  clothesDissolveShader.uniforms.growFade.value = true;
+  fadeOutShaders()
+
+}
+
+window.growFade = growFade;
 
 
 //animations 
@@ -334,15 +378,77 @@ function animateBodyIn() {
 function animateClothesIn() {
 
   tweenClothesAnimation = new TWEEN.Tween({ x: 1 })
+  .to({ x: 0 }, 2000)
+  .easing(TWEEN.Easing.Sinusoidal.InOut)
+  .onUpdate((object) => {
+    // updateMaterial(object.x);
+    console.log("object", object.x)
+    clothesDissolveShader.uniforms.threshold.value = object.x;
+
+  });
+  tweenClothesAnimation.start();
+
+
+
+
+}
+
+function fadeOutShaders() {
+
+  brightenTween = new TWEEN.Tween({ x: 1 })
+    .to({ x: 10 }, 1000)
+    .easing(TWEEN.Easing.Sinusoidal.InOut)
+    .onComplete(() => {console.log("First tween completed")
+      fadeOutTween.start();
+    })
+    .onUpdate((object) => {
+      clothesDissolveShader.uniforms.brightness.value = object.x
+      bodyDissolveShader.uniforms.brightness.value = object.x
+      hairDissolveShader.uniforms.brightness.value = object.x
+      shoesDissolveShader.uniforms.brightness.value = object.x
+    
+    });
+
+
+  fadeOutTween = new TWEEN.Tween({ x: 10 })
     .to({ x: 0 }, 1000)
     .easing(TWEEN.Easing.Sinusoidal.InOut)
-
-    .onUpdate((object) => {
-      clothesDissolveShader.uniforms.threshold.value = object.x;
-
+    .onUpdate((object) => {console.log("Second tween running");
+      clothesDissolveShader.uniforms.brightness.value = object.x
+      bodyDissolveShader.uniforms.brightness.value = object.x
+      hairDissolveShader.uniforms.brightness.value = object.x
+      shoesDissolveShader.uniforms.brightness.value = object.x
     });
-  tweenClothesAnimation.start();
+
+    brightenTween.start();
 }
+
+
+
+
+
+
+
+
+// eyeBlinkingTween = new TWEEN.Tween(leftEyeBlink)
+// .to({ value: 1 }, 100) 
+// .easing(TWEEN.Easing.Sinusoidal.InOut) // Apply quadratic easing
+// .onUpdate(() => {
+//   targetInfluences[0] = leftEyeBlink.value;
+//   targetInfluences[7] = leftEyeBlink.value;
+// });
+// let tweenBack = new TWEEN.Tween(leftEyeBlink)
+// .to({ value: 0 }, randomNumber2Between200And350) // 250 milliseconds
+// .easing(TWEEN.Easing.Sinusoidal.InOut) // Apply quadratic easing
+// .delay(randomDelay)
+// .onUpdate(() => {
+//   targetInfluences[0] = leftEyeBlink.value;
+//   targetInfluences[7] = leftEyeBlink.value;
+// });
+// eyeBlinkingTween.chain(tweenBack);
+// eyeBlinkingTween.start();
+
+
 
 
 function animateShoesIn() {
@@ -352,8 +458,8 @@ function animateShoesIn() {
     .easing(TWEEN.Easing.Cubic.InOut)
     .delay(1400)
     .onComplete(() => {
-      console.log("animation complete")
-      animationComplete = true
+      // console.log("animation complete")
+      // animationComplete = true
     })
     .onUpdate((object) => {
       shoesDissolveShader.uniforms.threshold.value = object.x;
@@ -463,3 +569,88 @@ function createSceneLighting() {
   spotLight.decay = 2;
   spotLight.distance = 50;
 }
+
+
+
+let vs = `
+      uniform bool growFade;
+      varying vec2 vUv;
+          uniform float brightness;
+      void main() {
+          vUv = uv;
+          if(growFade){
+            csm_Position = vec3(csm_Position.x, csm_Position.y, csm_Position.z + (0.004 * brightness));
+          }
+      }
+    `;
+
+let fs = `
+    uniform float brightness;
+      uniform bool growFade;
+      uniform float time;
+      uniform vec3 uColor; // Declare the uniform
+      varying vec2 vUv;
+      uniform float threshold;
+      uniform sampler2D noiseTexture; //alpha noise texture for diffuse effect
+      void main() {
+
+        if(growFade){
+             vec4 returnColor = vec4(vec3(1.0, 1.0 , 1.0), 0.1);
+             csm_FragColor = returnColor * brightness;
+        }else{
+        
+              vec3 noise = texture2D(noiseTexture, vUv).rgb;
+              float dissolve = noise.g;
+              if (dissolve < threshold) {
+                 discard;
+               }
+
+             float edge = threshold + 0.025;
+
+             if(threshold > 0.00001){
+               if (dissolve < edge) {
+                 csm_FragColor = vec4(vec3(uColor), 1.0) * 2.0;
+
+              }
+             }
+
+
+              csm_Emissive = vec3(0.0, 1.0, 0.0);
+              csm_FragColor = csm_FragColor;
+
+
+        
+        }
+
+
+     }
+    `;
+
+
+    let brightenvs = `
+      varying vec2 vUv;
+      void main() {
+          vUv = uv;
+          //vec3 scaledPosition = csm_Position * scale; // Apply the scaling factor to the vertex positions
+          csm_Position = vec3(csm_Position.x, csm_Position.y, csm_Position.z + 0.2);
+       
+      }
+    `;
+
+
+    let brightenfs = `
+    uniform float brightness;
+    
+    void main() {
+
+       vec4 returnColor = vec4(vec3(1.0, 1.0 , 1.0), 0.1);
+            csm_FragColor = returnColor * brightness;
+       // if(brightness < 0.5){
+      //   returnColor = vec4(vec3(csm_FragColor.rgb), brightness);
+      // }
+
+
+
+
+   }
+  `;
