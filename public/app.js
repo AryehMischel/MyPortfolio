@@ -1071,42 +1071,6 @@ function createShaders() {
 }
 
 
-let vs = `
-      varying vec2 vUv;
-      void main() {
-          vUv = uv;
-      }
-    `;
-
-let fs = `
-      uniform float time;
-      uniform vec3 uColor; // Declare the uniform
-      varying vec2 vUv;
-      uniform float threshold;
-      uniform sampler2D noiseTexture; //alpha noise texture for diffuse effect
-      void main() {
-
-        vec3 noise = texture2D(noiseTexture, vUv).rgb;
-        float dissolve = noise.g;
-        if (dissolve < threshold) {
-           discard;
-         }
-
-       float edge = threshold + 0.025;
-
-       if(threshold > 0.00001){
-         if (dissolve < edge) {
-           csm_FragColor = vec4(vec3(uColor), 1.0) * 2.0;
-
-        }
-       }
-
-
-        csm_Emissive = vec3(0.0, 1.0, 0.0);
-        csm_FragColor = csm_FragColor;
-     }
-    `;
-
 
 function animateBodyIn() {
   tweenBodyDissolveShader = new TWEEN.Tween({ x: 1 })
@@ -1182,3 +1146,61 @@ window.animateShoesIn = animateShoesIn;
 
 window.animateAll = animateAll;
 window.animateTogether = animateTogether;
+
+
+
+
+
+let vs = `
+      uniform bool growFade;
+      varying vec2 vUv;
+          uniform float brightness;
+      void main() {
+          vUv = uv;
+          if(growFade){
+            csm_Position = vec3(csm_Position.x, csm_Position.y, csm_Position.z + (0.004 * brightness));
+          }
+      }
+    `;
+
+let fs = `
+    uniform float brightness;
+      uniform bool growFade;
+      uniform float time;
+      uniform vec3 uColor; // Declare the uniform
+      varying vec2 vUv;
+      uniform float threshold;
+      uniform sampler2D noiseTexture; //alpha noise texture for diffuse effect
+      void main() {
+
+        if(growFade){
+             vec4 returnColor = vec4(vec3(1.0, 1.0 , 1.0), 0.1);
+             csm_FragColor = returnColor * brightness;
+        }else{
+        
+              vec3 noise = texture2D(noiseTexture, vUv).rgb;
+              float dissolve = noise.g;
+              if (dissolve < threshold) {
+                 discard;
+               }
+
+             float edge = threshold + 0.025;
+
+             if(threshold > 0.00001){
+               if (dissolve < edge) {
+                 csm_FragColor = vec4(vec3(uColor), 1.0) * 2.0;
+
+              }
+             }
+
+
+              csm_Emissive = vec3(0.0, 1.0, 0.0);
+              csm_FragColor = csm_FragColor;
+
+
+        
+        }
+
+
+     }
+    `;
