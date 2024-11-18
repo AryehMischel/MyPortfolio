@@ -2,9 +2,34 @@ import * as THREE from 'three'; window.THREE = THREE;
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import * as TWEEN from '@tweenjs/tween.js'
+import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
+
+
+
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+
+
+
+
+
+
+
 const customCursorDataURL = 'data:image/x-icon;base64,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'
 const avatarPath = "https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/avatarWithAnimation.glb"  //"./avatarWithAnimation.glb" //"https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AvatarNoEyesNormalPose.glb"; //"https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AvatarSemiSmile.glb"  
 const eyeModelPath = "https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AryehAvatarFullBodyJustEyesAndFaceRig.glb"
+
+
+let NonInteractiveAvatarPath = "./assets/models/AryehAvatarNonInteractive2.glb"
+
+let NonInteractiveAvatar = null;
+let InteractiveAvatar = null;
+
+
+
+
+
 const animateHeadTriggerRectColl = document.getElementById('head-trigger-collider');
 const canvas = document.getElementById('myCanvas');
 let containersOverlappingWithTriggerColl = document.getElementsByClassName("intersects-with-coll")
@@ -34,7 +59,51 @@ let tween = null;
 let eyeBlinkingTween = null;
 
 
-function play(){
+
+//shaders,Materials & Meshes for avatar
+let dissolveEffectStarted = false;
+let dissolveEffectFinished = false;
+
+let bodyDissolveShader = null;
+let clothesDissolveShader = null;
+let shoesDissolveShader = null;
+let hairDissolveShader = null;
+
+
+let ourBodyBaseMaterial = null;
+let ourClothesBaseMaterial = null;
+let ourShoesBaseMaterial = null;
+let ourHairBaseMaterial = null;
+
+let ourBodyNode = null;
+let ourClothesNode = null;
+let ourShoesNode = null;
+let ourHairNode = null;
+
+//tween for shaders
+let tweenBodyDissolveShader = null;
+let tweenHairDissolveShader = null;
+let tweenClothesDissolveShader = null;
+let tweenShoesDissolveShader = null;
+
+//noise textures for dissolve shaders
+const noiseTexture = new THREE.TextureLoader().load('./assets/noise6.png');
+noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
+
+const noiseTexture2 = new THREE.TextureLoader().load('./assets/noiseCircle.png');
+noiseTexture2.wrapS = noiseTexture2.wrapT = THREE.RepeatWrapping;
+
+const noiseTexture3 = new THREE.TextureLoader().load('./assets/noise4.png');
+noiseTexture3.wrapS = noiseTexture3.wrapT = THREE.RepeatWrapping;
+
+
+const directionNoise = new THREE.TextureLoader().load('./assets/noise7.jpeg');
+const doubleNoise = new THREE.TextureLoader().load('./assets/doubleNoise2.png');
+
+
+
+
+function play() {
   console.log("plaing animation")
   action.play();
 }
@@ -76,13 +145,13 @@ let freezeEyes = false;
 var clock = new THREE.Clock();
 // Render the scene
 function animate(time) {
-    if (mixer) {
-              var deltaSeconds = clock.getDelta();
-              mixer.update(deltaSeconds);
-          }
+  if (mixer) {
+    var deltaSeconds = clock.getDelta();
+    mixer.update(deltaSeconds);
+  }
 
   if (model && eyeBoneLeft && cube) {
-    
+
     headBoneHelper.lookAt(targetPosition);
     let [yaw, pitch] = calculateYawAndPitchDifference(headBoneHelper.rotation, headBoneOriginHelper.rotation);
     const time = Date.now() * 0.001;
@@ -98,7 +167,7 @@ function animate(time) {
       const finalTargetQuaternion = correctedTargetQuaternion.multiply(offsetQuaternion);
       const halfwayQuaternion = new THREE.Quaternion().copy(neckBoneOriginHelper.quaternion).slerp(finalTargetQuaternion, 0.35);
       neckBone.quaternion.slerp(halfwayQuaternion, 0.03);
-    } 
+    }
     /*else {
       const offsetQuaternion = new THREE.Quaternion();
       offsetQuaternion.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), Math.PI * -0.19); // Adjust the axis and angle as needed
@@ -118,13 +187,47 @@ function animate(time) {
     rotateEyes();
     // }
   }
+
+  //tween stuff
+
+  //rotate head to center tween
   if (tween) {
     tween.update()
   }
 
-  if(eyeBlinkingTween){
+  if (eyeBlinkingTween) {
     eyeBlinkingTween.update()
   }
+
+
+  //dissolve shaders
+  if (tweenBodyDissolveShader) {
+    tweenBodyDissolveShader.update()
+  }
+  if (tweenHairDissolveShader) {
+    tweenHairDissolveShader.update()
+  }
+  if (tweenClothesDissolveShader) {
+    tweenClothesDissolveShader.update()
+  }
+  if (tweenShoesDissolveShader) {
+    tweenShoesDissolveShader.update()
+  }
+
+
+  if (NonInteractiveAvatar && !dissolveEffectStarted) {
+    dissolveEffectStarted = true;
+    animateTogether()
+  }
+
+  if(InteractiveAvatar && dissolveEffectFinished){
+    dissolveEffectFinished = false;
+    NonInteractiveAvatar.visible = false;
+    InteractiveAvatar.visible = true;
+    //handle swap
+  }
+
+
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
 }
@@ -235,7 +338,7 @@ function createSceneLighting() {
   directionalLight.shadow.camera.far = 500;
   // scene.add(directionalLight);
   // Ambient light for soft global illumination
-  const hemiLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 0.4 ); 
+  const hemiLight = new THREE.HemisphereLight(0x0000ff, 0x00ff00, 0.4);
   const ambientLight = new THREE.AmbientLight("#666666", 10); // Soft white light
   scene.add(ambientLight, hemiLight);
   // Hemisphere light for sky and ground lighting
@@ -244,7 +347,7 @@ function createSceneLighting() {
   // scene.add(hemisphereLight);
   // Spotlight to focus on the subject
   const spotLight = new THREE.SpotLight("#CDCDCD", 5);
-  
+
   spotLight.position.set(0, 1.2, 0);
   spotLight.target.position.set(0, 1.2, -1.5); // Point the spotlight at the subject
   spotLight.castShadow = true;
@@ -255,13 +358,13 @@ function createSceneLighting() {
   // scene.add(spotLight);
   // scene.add(spotLight.target);
   // Point light for additional localized lighting
- 
+
   // const pointLight = new THREE.PointLight(0xffffff, 1, 100);
   // pointLight.position.set(0, 3, -2); // Position the point light above the subject
   // pointLight.castShadow = true;
   // scene.add(pointLight);
- 
- 
+
+
   // Fill light to reduce shadows under the eyes
   const fillLight = new THREE.PointLight(0xffffff, 0.5, 50);
   fillLight.position.set(0, 1.5, -1); // Position the fill light in front of the subject
@@ -272,10 +375,10 @@ setCanvasSize()
 window.addEventListener('resize', resizeCanvas);
 window.addEventListener('load', resizeCanvas);
 //helper functions
-window.mobileCheck = function() {
-let check = false;
-(function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
-return check;
+window.mobileCheck = function () {
+  let check = false;
+  (function (a) { if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true; })(navigator.userAgent || navigator.vendor || window.opera);
+  return check;
 };
 let isMobile = mobileCheck()
 
@@ -286,7 +389,7 @@ function setCanvasSize() {
   canvas.height = window.innerHeight;
 }
 function resizeCanvas() {
-    if (isMobile && window.matchMedia("(orientation: portrait)").matches) {
+  if (isMobile && window.matchMedia("(orientation: portrait)").matches) {
     camera.zoom = 1;
   }
   if (isMobile && window.matchMedia("(orientation: landscape)").matches) {
@@ -338,10 +441,10 @@ for (var i = 0; i < containersOverlappingWithTriggerColl.length; i++) {
       }
     }
   });
-  
-  
+
+
   containersOverlappingWithTriggerColl[i].addEventListener('mouseleave', (event) => {
-  const mouseX = event.clientX;
+    const mouseX = event.clientX;
     const mouseY = event.clientY;
     if (isMouseOverElement(mouseX, mouseY, animateHeadTriggerRectColl)) {
       const rect = canvas.getBoundingClientRect();
@@ -359,10 +462,10 @@ for (var i = 0; i < containersOverlappingWithTriggerColl.length; i++) {
         setCursor()
       }
     }
-});
+  });
 
-  
-  
+
+
 
   containersOverlappingWithTriggerColl[i].addEventListener('touchmove', (event) => {
     const touch = event.touches[0]; // Get the first touch
@@ -388,14 +491,14 @@ for (var i = 0; i < containersOverlappingWithTriggerColl.length; i++) {
       }
     }
 
-    
+
   })
 
 
   //this is confusing, but basically if it's over a collider and then it isn't start aniamtion back to center
   containersOverlappingWithTriggerColl[i].addEventListener('touchend', (event) => {
     const touch = event.touches[0]; // Get the first touch
-    const x =   touch.pageX;
+    const x = touch.pageX;
     const y = touch.pageY;
 
     if (isMouseOverElement(mouseX, mouseY, animateHeadTriggerRectColl)) {
@@ -414,8 +517,8 @@ for (var i = 0; i < containersOverlappingWithTriggerColl.length; i++) {
 let leaveTimeout;
 
 let workSection = document.getElementById("work-section")
-workSection.addEventListener("mouseenter", (event) =>{
-if (customCursorShowing) {
+workSection.addEventListener("mouseenter", (event) => {
+  if (customCursorShowing) {
     customCursorShowing = false;
     setCursor();
     animateHeadBackToCenter()
@@ -437,31 +540,31 @@ animateHeadTriggerRectColl.addEventListener('mousemove', (event) => {
   detectMouseOverSphereColl(mouse);
 });
 
- animateHeadTriggerRectColl.addEventListener('mouseleave', (event) => {
+animateHeadTriggerRectColl.addEventListener('mouseleave', (event) => {
   const mouseX = event.clientX;
-    const mouseY = event.clientY;
-    if (isMouseOverElement(mouseX, mouseY, animateHeadTriggerRectColl)) {
-      const rect = canvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-      const u = (x / rect.width) * 2 - 1;
-      const v = (y / rect.height) * 2 - 1;
-      let mouse = new THREE.Vector2(u, -v);
-      detectMouseOverSphereColl(mouse)
-    } else {
-      if (customCursorShowing) {
-        animateHeadBackToCenter()
-        customCursorShowing = false;
-        mouseOverElementOverlappingCollider = false;
-        setCursor()
-      }
+  const mouseY = event.clientY;
+  if (isMouseOverElement(mouseX, mouseY, animateHeadTriggerRectColl)) {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const u = (x / rect.width) * 2 - 1;
+    const v = (y / rect.height) * 2 - 1;
+    let mouse = new THREE.Vector2(u, -v);
+    detectMouseOverSphereColl(mouse)
+  } else {
+    if (customCursorShowing) {
+      animateHeadBackToCenter()
+      customCursorShowing = false;
+      mouseOverElementOverlappingCollider = false;
+      setCursor()
     }
+  }
 });
 
- animateHeadTriggerRectColl.addEventListener('touchmove', (event) => {
+animateHeadTriggerRectColl.addEventListener('touchmove', (event) => {
   const rect = canvas.getBoundingClientRect();
   const touch = event.touches[0]; // Get the first touch
-  const x =   touch.pageX - rect.left;
+  const x = touch.pageX - rect.left;
   const y = touch.pageY - rect.top;
   const u = (x / rect.width) * 2 - 1;
   const v = (y / rect.height) * 2 - 1;
@@ -562,8 +665,8 @@ function fireEvent() {
         targetInfluences[0] = leftEyeBlink.value;
         targetInfluences[7] = leftEyeBlink.value;
       });
-      eyeBlinkingTween.chain(tweenBack);
-      eyeBlinkingTween.start();
+    eyeBlinkingTween.chain(tweenBack);
+    eyeBlinkingTween.start();
     // Update the last event time
     lastEventTime = currentTime;
     // Schedule the next event
@@ -580,7 +683,14 @@ function scheduleNextEvent() {
 }
 
 
-scheduleNextEvent();
+//start the blinking
+function startBlinking() {
+  scheduleNextEvent();
+
+}
+
+
+
 //sphere shader
 // Vertex Shader
 const vertexShader = `
@@ -641,94 +751,337 @@ sphere.material = edgeHighlightMaterial;
 // load in and set our gltf models
 // Load the GLTF model
 function loadModels() {
-  loader.load(avatarPath, function (gltf) {
-    console.log("starting")
-    model = gltf.scenes[0];
-    let face = model.children[0]
 
 
-    gltf.animations.forEach((clip) => {
-            
-            console.log(clip.name); // Log the name of each animation
-            if(clip.name === "ArmatureAction"){
-                console.log("neckmove loaded");
-                randomAnimationClip = clip;
-                action = mixer.clipAction(randomAnimationClip, model);
-              
-            }
-       
-        });
+  //first load dummy avatar
+  loader.load(
+    NonInteractiveAvatarPath, //
+    function (gltf) {
+      NonInteractiveAvatar = gltf.scene;
+      // avatar.scale.set(0.01, 0.01, 0.01);
+
+      NonInteractiveAvatar.traverse((node) => {
+        if (node.isMesh) {
+          console.log(node.name)
+        }
+        if (node.name == "avaturn_body_1") {
+          ourBodyBaseMaterial = node.material.clone()
+          ourBodyBaseMaterial.emissiveIntensity = 10;
+          // node.material.visible = false;
+          console.log(node)
+          // node.material.transparent = true
+          ourBodyNode = node;
+        }
+        if (node.name == "avaturn_body_4") {
+          ourClothesBaseMaterial = node.material.clone()
+
+          // ourBaseMaterial.emissiveIntensity = 10;
+          node.material.visible = false;
+          ourClothesNode = node;
+          //  // node.material.transparent = true
+        }
+        if (node.name == "avaturn_body_3") {
+          ourShoesBaseMaterial = node.material.clone()
+          ourShoesNode = node;
+          // ourBaseMaterial.emissiveIntensity = 10;
+          node.material.visible = false;
+          //  // node.material.transparent = true
+        }
+        if (node.name == "avaturn_body_2") {
+          ourHairBaseMaterial = node.material.clone()
+          ourHairNode = node;
+          // ourBaseMaterial.emissiveIntensity = 10;
+          node.material.visible = false;
+          //   console.log(node)
+          //  // node.material.transparent = true
+          //   ourNode = node;
+        }
 
 
-    model.traverse((object) => {
-      if (object.morphTargetInfluences) {
-        if (faceMesh === null) {
-          faceMesh = object;
-          targetInfluences = faceMesh.morphTargetInfluences;
-          morphTargetDictionary = faceMesh.morphTargetDictionary;
-          window.targetInfluences = targetInfluences;
-          window.morphTargetDictionary = morphTargetDictionary;
-          leftEyeBlink = { "value": targetInfluences[0] };
-        }
-      }
-      if (object.isSkinnedMesh) {
-        if (neckBone === null) {
-          neckBone = object.skeleton.bones.find(bone => bone.name === 'Neck');
-          window.neckBone = neckBone;
-          console.log(neckBone);
-        }
-        if (headBone === null) {
-          headBone = object.skeleton.bones.find(bone => bone.name === 'Head');
-          window.headBone = headBone;
-          console.log(headBone);
-        }
-      }
-    });
-    model.scale.set(1, 1, 1);
-    model.position.set(0, 0, -2);
-    headBone.parent.add(headBoneHelper);
-    headBoneHelper.position.copy(headBone.position);
-    headBone.parent.add(headBoneOriginHelper);
-    headBoneOriginHelper.position.copy(headBone.position);
-    headBoneOriginHelper.rotation.copy(headBone.rotation);
-    neckBone.parent.add(neckBoneOriginHelper);
-    neckBoneOriginHelper.position.copy(neckBone.position);
-    neckBoneOriginHelper.rotation.copy(neckBone.rotation);
-    scene.add(model);
-    loader.load(eyeModelPath, function (gltf) {
-      const eyeModel = gltf.scenes[0];
-      eyeModel.traverse((object) => {
-        if (object.isSkinnedMesh) {
-          if (eyeBoneRight === null) {
-            eyeBoneRight = object.skeleton.bones.find(bone => bone.name === 'DEF_eyeR'); //DEF_eyeR
-            window.eyeBoneRight = eyeBoneRight;
-          }
-          if (eyeBoneLeft === null) {
-            eyeBoneLeft = object.skeleton.bones.find(bone => bone.name === 'MCH-eyeL'); //DEF_eyeL
-            window.eyeBoneLeft = eyeBoneLeft;
-            console.log(eyeBoneLeft);
-          }
-        }
       });
-      eyeModel.scale.set(1, 1, 1);
-      eyeModel.position.set(0, 0, -2);
-      // Store the eyeModel's world position
-      const eyeModelWorldPosition = new THREE.Vector3();
-      eyeModel.getWorldPosition(eyeModelWorldPosition);
-      // Add the eyeModel to the headBone
-      headBone.add(eyeModel);
-      // Convert the stored world position to the local position relative to the headBone
-      const eyeModelLocalPosition = new THREE.Vector3();
-      headBone.worldToLocal(eyeModelLocalPosition.copy(eyeModelWorldPosition));
-      // Set the eyeModel's position to the calculated local position
-      eyeModel.position.copy(eyeModelLocalPosition);
-      headBone.add(eyeModel);
-      eyeBoneRight.parent.add(eyeBoneRightHelper);
-      eyeBoneRightHelper.position.copy(eyeBoneRight.position);
-      eyeBoneRightHelper.rotation.copy(eyeBoneRight.rotation);
-       animateHeadBackToCenter()
-      //
-      action.play();
-    });
-  });
+      createShaders()
+      NonInteractiveAvatar.position.set(0, 0, -2);
+      scene.add(NonInteractiveAvatar);
+    },
+    undefined,
+    function (error) {
+      console.error(error);
+    }
+
+  );
 }
+
+// loader.load(avatarPath, function (gltf) {
+//   console.log("starting")
+//   model = gltf.scenes[0];
+//   let face = model.children[0]
+
+
+//   gltf.animations.forEach((clip) => {
+
+//           console.log(clip.name); // Log the name of each animation
+//           if(clip.name === "ArmatureAction"){
+//               console.log("neckmove loaded");
+//               randomAnimationClip = clip;
+//               action = mixer.clipAction(randomAnimationClip, model);
+
+//           }
+
+//       });
+
+
+//   model.traverse((object) => {
+//     if (object.morphTargetInfluences) {
+//       if (faceMesh === null) {
+//         faceMesh = object;
+//         targetInfluences = faceMesh.morphTargetInfluences;
+//         morphTargetDictionary = faceMesh.morphTargetDictionary;
+//         window.targetInfluences = targetInfluences;
+//         window.morphTargetDictionary = morphTargetDictionary;
+//         leftEyeBlink = { "value": targetInfluences[0] };
+//       }
+//     }
+//     if (object.isSkinnedMesh) {
+//       if (neckBone === null) {
+//         neckBone = object.skeleton.bones.find(bone => bone.name === 'Neck');
+//         window.neckBone = neckBone;
+//         console.log(neckBone);
+//       }
+//       if (headBone === null) {
+//         headBone = object.skeleton.bones.find(bone => bone.name === 'Head');
+//         window.headBone = headBone;
+//         console.log(headBone);
+//       }
+//     }
+//   });
+
+
+//   model.scale.set(1, 1, 1);
+//   model.position.set(0, 0, -2);
+//   headBone.parent.add(headBoneHelper);
+//   headBoneHelper.position.copy(headBone.position);
+//   headBone.parent.add(headBoneOriginHelper);
+//   headBoneOriginHelper.position.copy(headBone.position);
+//   headBoneOriginHelper.rotation.copy(headBone.rotation);
+//   neckBone.parent.add(neckBoneOriginHelper);
+//   neckBoneOriginHelper.position.copy(neckBone.position);
+//   neckBoneOriginHelper.rotation.copy(neckBone.rotation);
+//   scene.add(model);
+
+// loader.load(eyeModelPath, function (gltf) {
+//   const eyeModel = gltf.scenes[0];
+//   eyeModel.traverse((object) => {
+//     if (object.isSkinnedMesh) {
+//       if (eyeBoneRight === null) {
+//         eyeBoneRight = object.skeleton.bones.find(bone => bone.name === 'DEF_eyeR'); //DEF_eyeR
+//         window.eyeBoneRight = eyeBoneRight;
+//       }
+//       if (eyeBoneLeft === null) {
+//         eyeBoneLeft = object.skeleton.bones.find(bone => bone.name === 'MCH-eyeL'); //DEF_eyeL
+//         window.eyeBoneLeft = eyeBoneLeft;
+//         console.log(eyeBoneLeft);
+//       }
+//     }
+//   });
+//   eyeModel.scale.set(1, 1, 1);
+//   eyeModel.position.set(0, 0, -2);
+//   // Store the eyeModel's world position
+//   const eyeModelWorldPosition = new THREE.Vector3();
+//   eyeModel.getWorldPosition(eyeModelWorldPosition);
+//   // Add the eyeModel to the headBone
+//   headBone.add(eyeModel);
+//   // Convert the stored world position to the local position relative to the headBone
+//   const eyeModelLocalPosition = new THREE.Vector3();
+//   headBone.worldToLocal(eyeModelLocalPosition.copy(eyeModelWorldPosition));
+//   // Set the eyeModel's position to the calculated local position
+//   eyeModel.position.copy(eyeModelLocalPosition);
+//   headBone.add(eyeModel);
+//   eyeBoneRight.parent.add(eyeBoneRightHelper);
+//   eyeBoneRightHelper.position.copy(eyeBoneRight.position);
+//   eyeBoneRightHelper.rotation.copy(eyeBoneRight.rotation);
+//    animateHeadBackToCenter()
+//   //
+//   action.play();
+// });
+
+
+// });
+// }
+
+
+//create shaders
+function createShaders() {
+
+  shoesDissolveShader = new CustomShaderMaterial({
+    baseMaterial: ourShoesBaseMaterial,
+    uniforms: {
+      time: { value: 0.2 },
+      threshold: { value: 2.0 },
+      uColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
+      noiseTexture: { value: noiseTexture2 },
+    },
+    vertexShader: vs,
+    fragmentShader: fs,
+
+  });
+
+  hairDissolveShader = new CustomShaderMaterial({
+    baseMaterial: ourHairBaseMaterial,
+    uniforms: {
+      time: { value: 0.2 },
+      threshold: { value: 2.0 },
+      uColor: { value: new THREE.Color(0.4, 0.4, 0.4) }, // Add a uniform for the color
+      noiseTexture: { value: directionNoise },
+    },
+    vertexShader: vs,
+    fragmentShader: fs,
+
+  });
+
+  clothesDissolveShader = new CustomShaderMaterial({
+    baseMaterial: ourClothesBaseMaterial,
+    uniforms: {
+      time: { value: 0.2 },
+      threshold: { value: 2.0 },
+      uColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
+      noiseTexture: { value: doubleNoise },
+    },
+    vertexShader: vs,
+    fragmentShader: fs,
+
+  });
+
+  bodyDissolveShader = new CustomShaderMaterial({
+    baseMaterial: ourBodyBaseMaterial,
+    uniforms: {
+      time: { value: 0.2 },
+      threshold: { value: 2.0 },
+      uColor: { value: new THREE.Color(0.4, 0.4, 0.4) }, // Add a uniform for the color
+      noiseTexture: { value: doubleNoise },
+    },
+    vertexShader: vs,
+    fragmentShader: fs,
+
+  });
+
+
+
+  ourBodyNode.material = bodyDissolveShader;
+  ourClothesNode.material = clothesDissolveShader;
+  ourShoesNode.material = shoesDissolveShader;
+  ourHairNode.material = hairDissolveShader;
+
+}
+
+
+let vs = `
+      varying vec2 vUv;
+      void main() {
+          vUv = uv;
+      }
+    `;
+
+let fs = `
+      uniform float time;
+      uniform vec3 uColor; // Declare the uniform
+      varying vec2 vUv;
+      uniform float threshold;
+      uniform sampler2D noiseTexture; //alpha noise texture for diffuse effect
+      void main() {
+
+        vec3 noise = texture2D(noiseTexture, vUv).rgb;
+        float dissolve = noise.g;
+        if (dissolve < threshold) {
+           discard;
+         }
+
+       float edge = threshold + 0.025;
+
+       if(threshold > 0.00001){
+         if (dissolve < edge) {
+           csm_FragColor = vec4(vec3(uColor), 1.0) * 2.0;
+
+        }
+       }
+
+
+        csm_Emissive = vec3(0.0, 1.0, 0.0);
+        csm_FragColor = csm_FragColor;
+     }
+    `;
+
+
+function animateBodyIn() {
+  tweenBodyDissolveShader = new TWEEN.Tween({ x: 1 })
+    .to({ x: 0 }, 2000)
+    .easing(TWEEN.Easing.Cubic.InOut)
+    .onUpdate((object) => {
+      // updateMaterial(object.x);
+      console.log("object", object.x)
+      bodyDissolveShader.uniforms.threshold.value = object.x;
+
+    });
+  tweenBodyDissolveShader.start();
+
+}
+
+
+function animateClothesIn() {
+
+  tweenClothesDissolveShader = new TWEEN.Tween({ x: 1 })
+    .to({ x: 0 }, 1000)
+    .easing(TWEEN.Easing.Sinusoidal.InOut)
+
+    .onUpdate((object) => {
+      clothesDissolveShader.uniforms.threshold.value = object.x;
+
+    });
+  tweenClothesDissolveShader.start();
+}
+
+
+function animateShoesIn() {
+
+  tweenShoesDissolveShader = new TWEEN.Tween({ x: 1 })
+    .to({ x: 0 }, 400)
+    .easing(TWEEN.Easing.Cubic.InOut)
+    .delay(1400)
+    .onComplete(() => {
+      dissolveEffectFinished = true
+    })
+    .onUpdate((object) => {
+      shoesDissolveShader.uniforms.threshold.value = object.x;
+    });
+  tweenShoesDissolveShader.start();
+
+}
+
+async function animateAll() {
+  await waitForSeconds(1.5)
+  animateClothesIn();
+  await waitForSeconds(1.5)
+  animateBodyIn();
+  await waitForSeconds(1.5)
+  animateShoesIn();
+}
+
+function animateTogether() {
+  animateBodyIn();
+  animateClothesIn();
+  animateShoesIn();
+}
+
+const waitForSeconds = (seconds) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, seconds * 1000);
+  });
+};
+
+window.animateBodyIn = animateBodyIn;
+window.animateClothesIn = animateClothesIn;
+window.animateShoesIn = animateShoesIn;
+
+window.animateAll = animateAll;
+window.animateTogether = animateTogether;
