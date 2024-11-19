@@ -165,7 +165,7 @@ renderPass.clearDepth = true;
 composer.addPass(renderPass);
 
 const ssaaPass = new SSAARenderPass(scene, camera);
-ssaaPass.sampleLevel = 8; // 
+ssaaPass.sampleLevel = 2; // 
 composer.addPass(ssaaPass);
 
 const bloomPass = new UnrealBloomPass(new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 0.5, 0.4, 0.85);
