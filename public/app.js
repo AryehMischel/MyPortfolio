@@ -1113,7 +1113,7 @@ function createShaders() {
     baseMaterial: ourEyesBaseMaterial,
     uniforms: {
       growFade: { value: false },
-      brightness: { value: 20.0 },
+      brightness: { value: 10.0 },
       time: { value: 0.2 },
       threshold: { value: 2.0 },
       edgeColor: { value: new THREE.Color(0, 0.57, 1) }, // Add a uniform for the color
@@ -1152,9 +1152,9 @@ function createShaders() {
       threshold: { value: 2.0 },
       edgeColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
       noiseTexture: { value: doubleNoise },
-      brightness: { value: 10.0 },
+      brightness: { value: 3.0 },
       growFade: { value: false },
-      thickness: { value: 4.0 },
+      thickness: { value: 1.0 },
     },
     vertexShader: vs,
     fragmentShader: fs,
@@ -1169,7 +1169,7 @@ function createShaders() {
       brightness: { value: 10.0 },
       time: { value: 0.2 },
       threshold: { value: 2.0 },
-      thickness: { value: 6.0 },
+      thickness: { value: 3.0 },
       edgeColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
 
       noiseTexture: { value: doubleNoise },
