@@ -132,19 +132,19 @@ const previousMouseIntersectionPoint = new THREE.Vector2();
 const scene = new THREE.Scene();
 // scene.background = new THREE.Color("#fbdad9");
 // Create a camera
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(0.005, 1.6, 0.5); // Adjust the camera position 0.005, 1.6, 0.5
 camera.layers.enable(1);
 window.camera = camera;
 let dirLight = null;
 let hemiLight = null;
-let spotLight = null; 
+let spotLight = null;
 createSceneLighting();
 console.log("anything new cheif")
 
 
 const backgroundGeometry = new THREE.PlaneGeometry(20, 20);
-const backgroundMaterial = new THREE.MeshBasicMaterial({ color:"#fbdad9" }); // Set your desired background color
+const backgroundMaterial = new THREE.MeshBasicMaterial({ color: "#fbdad9" }); // Set your desired background color
 const backgroundMesh = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
 backgroundMesh.layers.set(1);
 backgroundMesh.position.set(0, 0, -5);
@@ -152,14 +152,27 @@ backgroundMesh.position.set(0, 0, -5);
 scene.add(backgroundMesh);
 
 
-const renderer = createRenderer()//new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+// const renderer = createRenderer()//new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 renderer.autoClear = false;
+renderer.setClearColor(0x000000, 0); // The second parameter is the alpha value
+renderer.physicallyCorrectLights = true;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Soft shadows
+renderer.toneMapping = THREE.ACESFilmicToneMapping;  //THREE.CineonToneMapping  //
+renderer.toneMappingExposure = 1;
+// renderer.outputEncoding = THREE.SRGBColorSpace;
+// Set the pixel ratio to the device's pixel ratio
+renderer.setPixelRatio(window.devicePixelRatio);
+// Set the size of the renderer
+renderer.setSize(canvas.width, canvas.height);
+
 // renderer.setClearColor(0x000000, 0); // The second parameter is the alpha value
 // renderer.physicallyCorrectLights = true;
 // renderer.shadowMap.enabled = true;
 
 
-// renderer.colorManagement = true;
+renderer.colorManagement = true;
 // renderer.outputColorSpace = THREE.Linear; // opt
 // renderer.toneMapping = THREE.ReinhardToneMapping;
 // renderer.toneMappingExposure = 1.0;
@@ -176,7 +189,7 @@ renderPass.clear = true; // Ensure the render pass clears the buffer
 renderPass.clearDepth = true;
 
 
-
+window.renderer = renderer;
 composer.addPass(renderPass);
 
 const ssaaPass = new SSAARenderPass(scene, camera);
@@ -313,14 +326,14 @@ function animate(time) {
   }
 
 
-  if(torusMaterial){
+  if (torusMaterial) {
     torusMaterial.uniforms.time.value += 0.01;
   }
-  if (!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene && dissolveEffectFinished) {  
-     interactiveAvatarLoaded = true;
-      swapAvatars()
-      removeTorus()
-      
+  if (!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene && dissolveEffectFinished) {
+    interactiveAvatarLoaded = true;
+    swapAvatars()
+    removeTorus()
+
 
   }
   // if (!interactiveAvatarLoaded && eyeBoneLeft &&  interactiveAvatarInScene && dissolveEffectFinished) {
@@ -359,12 +372,12 @@ function animate(time) {
 
 
   requestAnimationFrame(animate);
-  
+
   renderer.clear();
-  
+
   camera.layers.set(1);
   composer.render();
-  
+
   renderer.clearDepth();
   camera.layers.set(0);
   renderer.render(scene, camera);
@@ -442,18 +455,7 @@ function addArrowHelpers(object) {
 
 //create return renderer
 function createRenderer() {
-  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
-  renderer.setClearColor(0x000000, 0); // The second parameter is the alpha value
-  renderer.physicallyCorrectLights = true;
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Soft shadows
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1;
-  renderer.outputEncoding = THREE.SRGBColorSpace;
-  // Set the pixel ratio to the device's pixel ratio
-  renderer.setPixelRatio(window.devicePixelRatio);
-  // Set the size of the renderer
-  renderer.setSize(canvas.width, canvas.height);
+
   return renderer;
 }
 //create return controller
@@ -485,40 +487,41 @@ function createControls() {
 
 
 function createSceneLighting() {
- const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    directionalLight.position.set(5, 10, 7.5);
-    directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
-    directionalLight.shadow.camera.near = 0.5;
-    directionalLight.shadow.camera.far = 500;
+
+    // const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    // directionalLight.position.set(5, 10, 7.5);
+    // directionalLight.castShadow = true;
+    // directionalLight.shadow.mapSize.width = 2048;
+    // directionalLight.shadow.mapSize.height = 2048;
+    // directionalLight.shadow.camera.near = 0.5;
+    // directionalLight.shadow.camera.far = 500;
     // scene.add(directionalLight);
     // Ambient light for soft global illumination
     const hemiLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 0.4 ); 
     const ambientLight = new THREE.AmbientLight("#666666", 10); // Soft white light
     scene.add(ambientLight, hemiLight);
     // Hemisphere light for sky and ground lighting
-    // const hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 1);
-    // hemisphereLight.position.set(0, 20, 0);
-    // scene.add(hemisphereLight);
-    // Spotlight to focus on the subject
-    const spotLight = new THREE.SpotLight("#CDCDCD", 5);
+    // // const hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 1);
+    // // hemisphereLight.position.set(0, 20, 0);
+    // // scene.add(hemisphereLight);
+    // // Spotlight to focus on the subject
+    // const spotLight = new THREE.SpotLight("#CDCDCD", 5);
     
-    spotLight.position.set(0, 1.2, 0);
-    spotLight.target.position.set(0, 1.2, -1.5); // Point the spotlight at the subject
-    spotLight.castShadow = true;
-    spotLight.angle = Math.PI / 6;
-    spotLight.penumbra = 0.1;
-    spotLight.decay = 2;
-    spotLight.distance = 50;
-    // scene.add(spotLight);
-    // scene.add(spotLight.target);
-    // Point light for additional localized lighting
+    // spotLight.position.set(0, 1.2, 0);
+    // spotLight.target.position.set(0, 1.2, -1.5); // Point the spotlight at the subject
+    // spotLight.castShadow = true;
+    // spotLight.angle = Math.PI / 6;
+    // spotLight.penumbra = 0.1;
+    // spotLight.decay = 2;
+    // spotLight.distance = 50;
+    // // scene.add(spotLight);
+    // // scene.add(spotLight.target);
+    // // Point light for additional localized lighting
    
-    // const pointLight = new THREE.PointLight(0xffffff, 1, 100);
-    // pointLight.position.set(0, 3, -2); // Position the point light above the subject
-    // pointLight.castShadow = true;
-    // scene.add(pointLight);
+    const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+    pointLight.position.set(0, 3, -2); // Position the point light above the subject
+    pointLight.castShadow = true;
+    scene.add(pointLight);
    
    
     // Fill light to reduce shadows under the eyes
@@ -527,75 +530,17 @@ function createSceneLighting() {
     scene.add(fillLight);
 
 
-  //  dirLight = new THREE.DirectionalLight( 0xffffff, 1.5 );
-  // dirLight.color.setHSL( 0.1, 1, 0.95 );
-  // dirLight.position.set( - 1, 1.75, 1 );
-  // dirLight.position.multiplyScalar( 30 );
-  // scene.add( dirLight );
-
-  // dirLight.castShadow = true;
-
-  // dirLight.shadow.mapSize.width = 2048;
-  // dirLight.shadow.mapSize.height = 2048;
-
-  // const d = 50;
-
-  // dirLight.shadow.camera.left = - d;
-  // dirLight.shadow.camera.right = d;
-  // dirLight.shadow.camera.top = d;
-  // dirLight.shadow.camera.bottom = - d;
-
-  // dirLight.shadow.camera.far = 3500;
-  // dirLight.shadow.bias = - 0.0001;
-  // // // Ambient light for soft global illumination
-
-  //  hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 2 );
-  // hemiLight.color.setHSL( 0.6, 1, 0.6 );
-  // hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
-  // hemiLight.position.set( 0, 50, 0 );
-  // scene.add( hemiLight );
-
-  // // const ambientLight = new THREE.AmbientLight("#666666", 10); // Soft white light
-  // // scene.add(ambientLight);
-  // //Hemisphere light for sky and ground lighting
-
-  // // Spotlight to focus on the subject
-  // spotLight = new THREE.SpotLight("#CDCDCD", 21);
-
-  // spotLight.position.set(0, 0.5, 0);
-  // spotLight.target.position.set(0, 3, -2); // Point the spotlight at the subject
-  // spotLight.castShadow = true;
-  // spotLight.angle = 0.5;
-  // // spotLight.penumbra = 0.1;
-  // spotLight.decay = 2;
-  // spotLight.distance = 3;
-  // scene.add(spotLight);
-  // scene.add(spotLight.target);
-  // window.spotLight = spotLight;
-
-  // const pointLight = new THREE.PointLight(0xffffff, 1, 100);
-  // pointLight.position.set(0, 3, -2); // Position the point light above the subject
-  // pointLight.castShadow = true;
-  // scene.add(pointLight);
-
-
-  // Fill light to reduce shadows under the eyes
-  // const fillLight = new THREE.PointLight(0xffffff, 0.5, 50);
-  // fillLight.position.set(0, 1.5, -1); // Position the fill light in front of the subject
-  // scene.add(fillLight);
-
-
 }
 
-function resetLights(){
+function resetLights() {
   if (dirLight) {
     dirLight.intensity = 1.5;
-  
+
   }
 
   if (hemiLight) {
     hemiLight.intensity = 2;
-  
+
   }
 
   if (spotLight) {
@@ -603,21 +548,21 @@ function resetLights(){
   }
 }
 
-function dimLights(){
+function dimLights() {
 
-      const dimmingFactor = 0.2; // Adjust this value to control the dimming level
+  const dimmingFactor = 0.2; // Adjust this value to control the dimming level
 
-      if (dirLight) {
-        dirLight.intensity *= dimmingFactor;
-      }
+  if (dirLight) {
+    dirLight.intensity *= dimmingFactor;
+  }
 
-      if (hemiLight) {
-        hemiLight.intensity *= dimmingFactor;
-      }
+  if (hemiLight) {
+    hemiLight.intensity *= dimmingFactor;
+  }
 
-      if (spotLight) {
-        spotLight.intensity *= dimmingFactor;
-      }
+  if (spotLight) {
+    spotLight.intensity *= dimmingFactor;
+  }
 
 }
 
@@ -1038,24 +983,24 @@ function loadModels() {
       NonInteractiveAvatar.traverse((node) => {
         if (node.isMesh) {
           console.log(node.name)
-            node.layers.set(1);
+          node.layers.set(1);
         }
         if (node.name == "avaturn_body_1") {
           ourBodyBaseMaterial = node.material.clone()
           ourBodyBaseMaterial.transparent = true;
-          
+
           // node.material.visible = false;
           ourBodyNode = node;
         }
         if (node.name == "avaturn_body_4") {
           ourEyesBaseMaterial = node.material.clone()
-          ourEyesBaseMaterial .transparent = true
+          ourEyesBaseMaterial.transparent = true
           // node.material.visible = false;
           ourEyesNode = node;
           //  // node.material.transparent = true
         }
         if (node.name == "avaturn_body_3") {
-    
+
 
           ourClothesBaseMaterial = node.material.clone()
           ourClothesBaseMaterial.transparent = true;
@@ -1114,9 +1059,9 @@ function loadModels() {
 
     InteractiveAvatar.traverse((object) => {
 
-    if(object.isMesh){
-      object.layers.set(0);
-    }
+      if (object.isMesh) {
+        object.layers.set(0);
+      }
       if (object.morphTargetInfluences) {
         if (faceMesh === null) {
           faceMesh = object;
@@ -1214,7 +1159,7 @@ function loadModels() {
 createTorus()
 
 
-function createTorus(){
+function createTorus() {
   const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
   const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
   const torus = new THREE.Mesh(geometry, material);
@@ -1272,7 +1217,7 @@ function createShaders() {
       threshold: { value: 2.0 },
       thickness: { value: 3.0 },
       edgeColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
-      noiseTexture: { value: noiseTexture2  },
+      noiseTexture: { value: noiseTexture2 },
     },
     vertexShader: vs,
     fragmentShader: fs,
@@ -1357,15 +1302,15 @@ function loadingShader() {
 }
 
 
-function animateHairIn(){
+function animateHairIn() {
   tweenHairDissolveShader = new TWEEN.Tween({ x: 1 })
     .to({ x: 0 }, 400)
     .easing(TWEEN.Easing.Cubic.InOut)
     .delay(1400)
-    .onComplete(() => { 
+    .onComplete(() => {
       console.log("complete hat animation", performance.now())
-   
-      if (!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene) {  
+
+      if (!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene) {
         swapAvatars()
       } else {
         console.log("start the animation vertex shader loop...")
@@ -1442,7 +1387,7 @@ function animateEyesIn() {
     // .easing(TWEEN.Easing.Cubic.InOut)
     .delay(200)
     .onComplete(() => {
-      
+
 
       // if(!interactiveAvatarLoaded){
       //   //animateBodyIn()
@@ -1485,8 +1430,8 @@ async function growFade() {
   InteractiveAvatar.position.set(0, 0, -2);
   NonInteractiveAvatar.position.set(0, 10, -2);
 
- 
- 
+
+
   action.play();
   await waitForSeconds(0.25)
   animateHead = true;
@@ -1496,7 +1441,7 @@ async function growFade() {
   console.log("removing dummy avatar")
   // Play idle animation
 
-  
+
   // shoesDissolveShader.uniforms.growFade.value = true;
   // bodyDissolveShader.uniforms.growFade.value = true;
   // hairDissolveShader.uniforms.growFade.value = true;
@@ -1629,7 +1574,7 @@ let fs = `
             float multiply = csm_Metalness;
 
             if(multiply == 0.0){
-                multiply = 0.9;
+                multiply = 0.5;
             }
             if(dim){
               multiply = 0.1;
@@ -1642,7 +1587,7 @@ let fs = `
 
 
 
-    let torusVS = `
+let torusVS = `
 uniform float time;
 uniform float progress;
 varying vec2 vUv;
@@ -1757,9 +1702,9 @@ void main()	{
 
 
 
-  let matcapTexture = new THREE.TextureLoader().load('https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/matcap3.jpg');
+let matcapTexture = new THREE.TextureLoader().load('https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/matcap3.jpg');
 
-  let torus = null;
+let torus = null;
 function addTorus() {
   // dimLights()
 
@@ -1788,7 +1733,7 @@ function addTorus() {
     fragmentShader: torusFS,
     side: THREE.DoubleSide,
     transparent: true,
-    
+
   });
 
 
