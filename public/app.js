@@ -9,19 +9,19 @@ import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-
+import { SSAARenderPass } from 'three/examples/jsm/postprocessing/SSAARenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js';
-
+import { ACESFilmicToneMappingShader } from 'three/examples/jsm/shaders/ACESFilmicToneMappingShader.js';
 
 const customCursorDataURL = 'data:image/x-icon;base64,AAACAAEAICAAAAMAAQCoEAAAFgAAACgAAAAgAAAAQAAAAAEAIAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIEpP8CAJf/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAREDIvAwGx/wEBsv8FApD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgDevoDAbT/BACz/wMBsP8VEILpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQOQ/wMAs/8BALT/BAC2/wQDq/9VVZwyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA6H/AwCz/wABuf8DA9r/AgHM/wABnf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU01+EgMAs/8DALT/AQHb/wAA3v8AAN7/AADe/wAAoP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANBYL6BACz/wECsv8AAN7/AADe/wAA3v8AAN7/AADe/wEAl/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlv8GALP/BQPV/wAA3v8AAN7/AADe/wAA3v8AAN7/AwDi/wAAlv8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwOp/wUAs/8BAN//AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AQPa/wADov81MWIUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGZnnhsEArD/AAC8/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wYFzP8HBn36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQKE/wIAs/8DAdz/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AAHc/wAA3f8AApr/MjCJVwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJn/AwKv/wAA3/8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AwDf/wAB3v8BAtn/AAGV/xcTdqwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQErP8AAcb/AAHc/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AQLa/wcFt/8IBJL/JSB2YwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaFneJBAC4/wAB3P8AAdv/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3/8AANz/AAHe/1pU/v9dU/7/AQGM/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIDjP8AALP/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AwDh/wAA3v8cHOD/W1T9/1tS//9MR+X/ZmZ7DQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABACh/wICyv8AAN3/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wIB3v8CBOD/VE3+/1tS//9cVfn/BQKQ/youOggAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8fKgIEArD/AQDh/wEA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/HRjf/1pS/P9bU/7/AQGQ/0JBg1EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAOD9wIAtf8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAOD/BQLU/1tR//9cU///LyzL/xEJf+IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJP/BQTN/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wEA3f8AAdr/AwDa/1VM//9cUP//X1r8/wcFiP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUDp/8CAOD/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AQHe/0hD+v9cU/7/XVb+/wIAjP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2NngsAgK3/wAC3f8AAN7/AADe/wAA3v8AAN7/AADe/wAA3v8AAN7/AQDf/w4K1v9cUv//WVX7/wUElf9FQGciAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcGhP4BAcv/AADc/wAA3v8AAN7/AADe/wAA3v8AAN7/AADe/wED2/9YV/r/XFb9/wcEnf8wL3huAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACY/wAC2v8AAdv/AADe/wAA3v8AAN7/AADe/wIB3f83Nfb/W1P8/yMguf8OC3rkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADA6v/AADe/wAA3v8AAN7/AADe/wAA3v8GBtj/WVH9/01H7P8DAnz3AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU1KYUgAAvP8AAN7/AADe/wEB3f8BAeD/Uk3//1hN+f8AAIf/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAYv/BgLc/wEA3/8AAN7/CQXU/11V+v8FAI3/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAk/8AANr/BgPc/1tV//8AAJD/EQ0pHgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQCq/y8t8f8IBZn/TUSTaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABeWZ9KPT+DewAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////////////z////8f///+D////g////4H///+A////AH///wA///8AH///AAf//gAD//4AAH/+AAAf/AAAB/wAAAf8AAAP/AAAP/gAAH/4AAH/+AAH//gAH//wAH//8AD///AD///wD///4D///+D////j//////////////8='
 const avatarPath = "https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/avatarWithAnimation.glb"  //"./avatarWithAnimation.glb" //"https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AvatarNoEyesNormalPose.glb"; //"https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AvatarSemiSmile.glb"  
 const eyeModelPath = "https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AryehAvatarFullBodyJustEyesAndFaceRig.glb"
 
 
-let NonInteractiveAvatarPath = "https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AryehAvatarNonInteractive2.glb"
+let NonInteractiveAvatarPath = "https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AryehAvatarNonInteractiveWithEyes.glb" //https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AryehAvatarNonInteractive2.glb"
 
 let NonInteractiveAvatar = null;
 let InteractiveAvatar = null;
@@ -32,6 +32,7 @@ let interactiveAvatarInScene = false;
 
 const animateHeadTriggerRectColl = document.getElementById('head-trigger-collider');
 const canvas = document.getElementById('myCanvas');
+
 let containersOverlappingWithTriggerColl = document.getElementsByClassName("intersects-with-coll")
 let mouseOverElementOverlappingCollider = false;
 let customCursorShowing = false;
@@ -66,18 +67,21 @@ let dissolveEffectFinished = false;
 
 let bodyDissolveShader = null;
 let clothesDissolveShader = null;
-let shoesDissolveShader = null;
+// let shoesDissolveShader = null;
+let eyesDissolveShader = null;
 let hairDissolveShader = null;
 
 
 let ourBodyBaseMaterial = null;
 let ourClothesBaseMaterial = null;
-let ourShoesBaseMaterial = null;
+// let ourShoesBaseMaterial = null;
+let ourEyesBaseMaterial = null;
 let ourHairBaseMaterial = null;
 
 let ourBodyNode = null;
 let ourClothesNode = null;
-let ourShoesNode = null;
+// let ourShoesNode = null;
+let ourEyesNode = null;
 let ourHairNode = null;
 
 //tween for shaders
@@ -87,7 +91,7 @@ let fadeOutTween = null;
 let tweenBodyDissolveShader = null;
 let tweenHairDissolveShader = null;
 let tweenClothesDissolveShader = null;
-let tweenShoesDissolveShader = null;
+let tweenEyesDissolveShader = null;
 
 //noise textures for dissolve shaders
 // const noiseTexture = new THREE.TextureLoader().load('./assets/noise6.png');
@@ -127,37 +131,56 @@ const previousMouseIntersectionPoint = new THREE.Vector2();
 const scene = new THREE.Scene();
 scene.background = new THREE.Color("#fbdad9");
 // Create a camera
-const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 camera.position.set(0.005, 1.6, 0.5); // Adjust the camera position 0.005, 1.6, 0.5
 window.camera = camera;
 createSceneLighting();
 console.log("anything new cheif")
-const renderer = createRenderer()
-// renderer.setClearColor("#fbdad9", 1); // Set clear color to the desired background color
-// renderer.outputEncoding = THREE.SRGBColorSpace; // Ensure correct color encoding
-renderer.toneMapping = THREE.ACESFilmicToneMapping; // Set tone mapping
-renderer.toneMappingExposure = 1.0; // Adjust exposure as needed
-// renderer.setClearColor("#fbdad9", 1);
+
+const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+renderer.setClearColor(0x000000, 0); // The second parameter is the alpha value
+renderer.physicallyCorrectLights = true;
+renderer.shadowMap.enabled = true;
+renderer.colorManagement = true;
+// renderer.outputColorSpace = THREE.Linear; // opt
+// renderer.toneMapping = THREE.ReinhardToneMapping;
+// renderer.toneMappingExposure = 1.0;
+renderer.setPixelRatio(window.devicePixelRatio);
+
+// renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+renderer.setSize(window.innerWidth, window.innerHeight);
+
 const composer = new EffectComposer(renderer);
 const renderPass = new RenderPass(scene, camera);
-// renderPass.alpha = 0; // Set the alpha value to 0
+
+renderPass.alpha = 0; // Set the alpha value to 0
 renderPass.clear = true; // Ensure the render pass clears the buffer
 renderPass.clearDepth = true;
-// renderPass.clearColor = new THREE.Color("#fbdad9"); // Set the clear color to a light pink
-// renderPass.clearDepth = true; // Ensure the render pass clears the depth buffer
-// renderPass.clearColor = new THREE.Color("#fbdad9"); // Set the clear color to a light pink
+
+
 
 composer.addPass(renderPass);
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 1.5, 0.4, 0.85);
 
-// const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+const ssaaPass = new SSAARenderPass(scene, camera);
+ssaaPass.sampleLevel = 8; // 
+composer.addPass(ssaaPass);
+
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 0.5, 0.4, 0.85);
+
+
 composer.addPass(bloomPass);
 
 
+// ssaaPass.setSize(canvas.clientWidth, canvas.clientHeight);
+ssaaPass.setSize(canvas.clientWidth, canvas.clientHeight);
+
+// const toneMappingPass = new ShaderPass(ACESFilmicToneMappingShader);
+// toneMappingPass.uniforms['exposure'].value = 0.5; // Adjust exposure as needed
+// composer.addPass(toneMappingPass);
 // FXAA Pass
-const fxaaPass = new ShaderPass(FXAAShader);
-fxaaPass.uniforms['resolution'].value.set(1 / canvas.clientWidth, 1 / canvas.clientHeight);
-composer.addPass(fxaaPass);
+// const fxaaPass = new ShaderPass(FXAAShader);
+// fxaaPass.uniforms['resolution'].value.set(1 / canvas.clientWidth, 1 / canvas.clientHeight);
+// composer.addPass(fxaaPass);
 
 
 const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
@@ -235,7 +258,7 @@ function animate(time) {
     eyeBlinkingTween.update()
   }
 
-  if(tweenBack){
+  if (tweenBack) {
     tweenBack.update()
   }
 
@@ -250,16 +273,16 @@ function animate(time) {
   if (tweenClothesDissolveShader) {
     tweenClothesDissolveShader.update()
   }
-  if (tweenShoesDissolveShader) {
-    tweenShoesDissolveShader.update()
+  if (tweenEyesDissolveShader) {
+    tweenEyesDissolveShader.update()
   }
 
 
-  if(brightenTween){
+  if (brightenTween) {
     brightenTween.update()
   }
-  
-  if(fadeOutTween){
+
+  if (fadeOutTween) {
     fadeOutTween.update()
   }
 
@@ -267,8 +290,8 @@ function animate(time) {
 
 
   if (NonInteractiveAvatar && !dissolveEffectStarted) {
-      dissolveEffectStarted = true;
-      animateTogether()
+    dissolveEffectStarted = true;
+    animateTogether()
   }
 
   // if (!interactiveAvatarLoaded && eyeBoneLeft &&  interactiveAvatarInScene && dissolveEffectFinished) {
@@ -294,26 +317,20 @@ function animate(time) {
   //   // animateHeadBackToCenter()
   //   // action.play();
   //   // startBlinking()
-  
+
   //   // // NonInteractiveAvatar.visible = false;
   //   // interactiveAvatarLoaded = true;
   //  // growFade()
   //  // dissolveEffectFinished = false //lol this is stupid
 
-   
+
   //   //handle swap
   // }
 
-  renderer.clear();
-  
-  camera.layers.set(0);
-  composer.render();
-  
-  renderer.clearDepth();
-  camera.layers.set(0);
-  renderer.render(scene, camera);
 
-  
+
+
+  composer.render();
   requestAnimationFrame(animate);
 
 
@@ -389,21 +406,7 @@ function addArrowHelpers(object) {
 
 //create return renderer
 function createRenderer() {
-  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-  renderer.setClearColor(0x000000, 0); // The second parameter is the alpha value
-  renderer.physicallyCorrectLights = true;
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Soft shadows
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1;
-  // renderer.outputEncoding = THREE.sRGBEncoding;
-  // Set the pixel ratio to the device's pixel ratio
-  renderer.setPixelRatio(window.devicePixelRatio);
-  // Set the size of the renderer
-  // renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-  renderer.setSize(window.innerWidth, window.innerHeight);
 
-  return renderer;
 }
 //create return controller
 function createControls() {
@@ -427,46 +430,67 @@ function createControls() {
   return controls;
 }
 function createSceneLighting() {
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-  directionalLight.position.set(5, 10, 7.5);
-  directionalLight.castShadow = true;
-  directionalLight.shadow.mapSize.width = 2048;
-  directionalLight.shadow.mapSize.height = 2048;
-  directionalLight.shadow.camera.near = 0.5;
-  directionalLight.shadow.camera.far = 500;
-  // scene.add(directionalLight);
-  // Ambient light for soft global illumination
-  const hemiLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 0.4 ); 
-  const ambientLight = new THREE.AmbientLight("#666666", 10); // Soft white light
-  scene.add(ambientLight, hemiLight);
-  // Hemisphere light for sky and ground lighting
-  // const hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 1);
-  // hemisphereLight.position.set(0, 20, 0);
-  // scene.add(hemisphereLight);
+
+
+
+  const dirLight = new THREE.DirectionalLight( 0xffffff, 1.5 );
+  dirLight.color.setHSL( 0.1, 1, 0.95 );
+  dirLight.position.set( - 1, 1.75, 1 );
+  dirLight.position.multiplyScalar( 30 );
+  scene.add( dirLight );
+
+  dirLight.castShadow = true;
+
+  dirLight.shadow.mapSize.width = 2048;
+  dirLight.shadow.mapSize.height = 2048;
+
+  const d = 50;
+
+  dirLight.shadow.camera.left = - d;
+  dirLight.shadow.camera.right = d;
+  dirLight.shadow.camera.top = d;
+  dirLight.shadow.camera.bottom = - d;
+
+  dirLight.shadow.camera.far = 3500;
+  dirLight.shadow.bias = - 0.0001;
+  // // Ambient light for soft global illumination
+
+  const hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 2 );
+  hemiLight.color.setHSL( 0.6, 1, 0.6 );
+  hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+  hemiLight.position.set( 0, 50, 0 );
+  scene.add( hemiLight );
+
+  // const ambientLight = new THREE.AmbientLight("#666666", 10); // Soft white light
+  // scene.add(ambientLight);
+  //Hemisphere light for sky and ground lighting
+
   // Spotlight to focus on the subject
-  const spotLight = new THREE.SpotLight("#CDCDCD", 5);
-  
-  spotLight.position.set(0, 1.2, 0);
-  spotLight.target.position.set(0, 1.2, -1.5); // Point the spotlight at the subject
+  const spotLight = new THREE.SpotLight("#CDCDCD", 21);
+
+  spotLight.position.set(0, 0.5, 0);
+  spotLight.target.position.set(0, 3, -2); // Point the spotlight at the subject
   spotLight.castShadow = true;
-  spotLight.angle = Math.PI / 6;
-  spotLight.penumbra = 0.1;
+  spotLight.angle = 0.5;
+  // spotLight.penumbra = 0.1;
   spotLight.decay = 2;
-  spotLight.distance = 50;
-  // scene.add(spotLight);
-  // scene.add(spotLight.target);
-  // Point light for additional localized lighting
- 
+  spotLight.distance = 3;
+  scene.add(spotLight);
+  scene.add(spotLight.target);
+  window.spotLight = spotLight;
+
   // const pointLight = new THREE.PointLight(0xffffff, 1, 100);
   // pointLight.position.set(0, 3, -2); // Position the point light above the subject
   // pointLight.castShadow = true;
   // scene.add(pointLight);
- 
- 
+
+
   // Fill light to reduce shadows under the eyes
-  const fillLight = new THREE.PointLight(0xffffff, 0.5, 50);
-  fillLight.position.set(0, 1.5, -1); // Position the fill light in front of the subject
-  scene.add(fillLight);
+  // const fillLight = new THREE.PointLight(0xffffff, 0.5, 50);
+  // fillLight.position.set(0, 1.5, -1); // Position the fill light in front of the subject
+  // scene.add(fillLight);
+
+
 }
 
 
@@ -499,12 +523,14 @@ function resizeCanvas() {
     camera.zoom = 1.5;
   }
   // renderer.setSize(canvas.width, canvas.height);
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
-  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.aspect = canvas.clientWidth / canvas.clientHeight;
 
   // renderPass.setSize(canvas.clientWidth, canvas.clientHeight);
-  renderPass.setSize(window.innerWidth, window.innerHeight);
+  renderPass.setSize(canvas.clientWidth, canvas.clientHeight);
+  // fxaaPass.uniforms['resolution'].value.set(1 / canvas.clientWidth, 1 / canvas.clientHeight);
+  ssaaPass.setSize(canvas.clientWidth, canvas.clientHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
 
   camera.updateProjectionMatrix();
@@ -764,10 +790,10 @@ function fireEvent() {
   if (currentTime - lastEventTime >= minInterval) {
 
     // let randomNumberBetween50And100 = Math.floor(Math.random() * 100) + 50; 
-    let randomNumber2Between200And350 = Math.floor(Math.random() * 350) + 200; 
-    let randomDelay =  Math.floor(Math.random() * 150) + 50; 
+    let randomNumber2Between200And350 = Math.floor(Math.random() * 350) + 200;
+    let randomDelay = Math.floor(Math.random() * 150) + 50;
     eyeBlinkingTween = new TWEEN.Tween(leftEyeBlink)
-      .to({ value: 1 }, 100) 
+      .to({ value: 1 }, 100)
       .easing(TWEEN.Easing.Sinusoidal.InOut) // Apply quadratic easing
       .onUpdate(() => {
         targetInfluences[0] = leftEyeBlink.value;
@@ -888,28 +914,30 @@ function loadModels() {
         if (node.name == "avaturn_body_1") {
           ourBodyBaseMaterial = node.material.clone()
           ourBodyBaseMaterial.transparent = true;
-          node.material.visible = false;
-          console.log(node)
+          
+          // node.material.visible = false;
           ourBodyNode = node;
         }
         if (node.name == "avaturn_body_4") {
-          ourClothesBaseMaterial = node.material.clone()
-          ourClothesBaseMaterial.transparent = true;
-          node.material.visible = false;
-          ourClothesNode = node;
+          ourEyesBaseMaterial = node.material.clone()
+          ourEyesBaseMaterial .transparent = true
+          // node.material.visible = false;
+          ourEyesNode = node;
           //  // node.material.transparent = true
         }
         if (node.name == "avaturn_body_3") {
-          ourShoesBaseMaterial = node.material.clone()
-          ourShoesBaseMaterial.transparent = true
-          node.material.visible = false;
-          ourShoesNode = node;
+    
+
+          ourClothesBaseMaterial = node.material.clone()
+          ourClothesBaseMaterial.transparent = true;
+          // node.material.visible = false;
+          ourClothesNode = node;
           //  // node.material.transparent = true
         }
         if (node.name == "avaturn_body_2") {
           ourHairBaseMaterial = node.material.clone()
           ourHairBaseMaterial.transparent = true
-          node.material.visible = false;
+          // node.material.visible = false;
           ourHairNode = node;
           //   ourNode = node;
         }
@@ -917,7 +945,7 @@ function loadModels() {
 
       });
       createShaders()
-      NonInteractiveAvatar.layers.set(1);
+      // NonInteractiveAvatar.layers.set(1);
       NonInteractiveAvatar.position.set(0, 0, -2);
       scene.add(NonInteractiveAvatar);
     },
@@ -981,7 +1009,7 @@ function loadModels() {
     });
 
     InteractiveAvatar.scale.set(1, 1, 1);
-    InteractiveAvatar.position.set(0, 0, -2);
+    InteractiveAvatar.position.set(0, 10, -2);
 
     headBone.parent.add(headBoneHelper);
     headBoneHelper.position.copy(headBone.position);
@@ -993,12 +1021,12 @@ function loadModels() {
     neckBoneOriginHelper.position.copy(neckBone.position);
     neckBoneOriginHelper.rotation.copy(neckBone.rotation);
 
-    InteractiveAvatar.visible = false;
-    InteractiveAvatar.layers.set(0);
+    InteractiveAvatar.visible = true;
+    // InteractiveAvatar.layers.set(0);
     scene.add(InteractiveAvatar);
     interactiveAvatarInScene = true;
 
-    
+
     //load in eyeball model
     loader.load(eyeModelPath, function (gltf) {
       const eyeModel = gltf.scenes[0];
@@ -1016,10 +1044,10 @@ function loadModels() {
         }
       });
       eyeModel.scale.set(1, 1, 1);
-      eyeModel.position.set(0, 0, -2);
+      eyeModel.position.set(0, 10, -2);
 
 
-      eyeModel.layers.set(0);
+      // eyeModel.layers.set(0);
 
       // Store the eyeModel's world position
       const eyeModelWorldPosition = new THREE.Vector3();
@@ -1073,15 +1101,16 @@ function loadModels() {
 //create shaders
 function createShaders() {
 
-  shoesDissolveShader = new CustomShaderMaterial({
-    baseMaterial: ourShoesBaseMaterial,
+  eyesDissolveShader = new CustomShaderMaterial({
+    baseMaterial: ourEyesBaseMaterial,
     uniforms: {
       growFade: { value: false },
-      brightness: { value: 1.0 },
+      brightness: { value: 20.0 },
       time: { value: 0.2 },
       threshold: { value: 2.0 },
-      uColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
-      noiseTexture: { value: noiseTexture2 },
+      edgeColor: { value: new THREE.Color(0, 0.57, 1) }, // Add a uniform for the color
+      thickness: { value: 3.0 },
+      noiseTexture: { value: directionNoise },
     },
 
     vertexShader: vs,
@@ -1094,11 +1123,12 @@ function createShaders() {
     baseMaterial: ourHairBaseMaterial,
     uniforms: {
       growFade: { value: false },
-      brightness: { value: 1.0 },
+      brightness: { value: 10.0 },
       time: { value: 0.2 },
       threshold: { value: 2.0 },
-      uColor: { value: new THREE.Color(0.4, 0.4, 0.4) }, // Add a uniform for the color
-      noiseTexture: { value: directionNoise },
+      thickness: { value: 3.0 },
+      edgeColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
+      noiseTexture: { value: noiseTexture2  },
     },
     vertexShader: vs,
     fragmentShader: fs,
@@ -1112,10 +1142,11 @@ function createShaders() {
     uniforms: {
       time: { value: 0.2 },
       threshold: { value: 2.0 },
-      uColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
+      edgeColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
       noiseTexture: { value: doubleNoise },
-      brightness: { value: 1.0 },
+      brightness: { value: 10.0 },
       growFade: { value: false },
+      thickness: { value: 4.0 },
     },
     vertexShader: vs,
     fragmentShader: fs,
@@ -1127,10 +1158,12 @@ function createShaders() {
     baseMaterial: ourBodyBaseMaterial,
     uniforms: {
       growFade: { value: false },
-      brightness: { value: 1.0 },
+      brightness: { value: 10.0 },
       time: { value: 0.2 },
       threshold: { value: 2.0 },
-      uColor: { value: new THREE.Color(0.4, 0.4, 0.4) }, // Add a uniform for the color
+      thickness: { value: 6.0 },
+      edgeColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
+
       noiseTexture: { value: doubleNoise },
     },
     vertexShader: vs,
@@ -1143,13 +1176,13 @@ function createShaders() {
 
   ourBodyNode.material = bodyDissolveShader;
   ourClothesNode.material = clothesDissolveShader;
-  ourShoesNode.material = shoesDissolveShader;
+  ourEyesNode.material = eyesDissolveShader;
   ourHairNode.material = hairDissolveShader;
 
 }
 
 
-function swapAvatars(){
+function swapAvatars() {
   // NonInteractiveAvatar.visible = false;
   // InteractiveAvatar.visible = true;
   growFade()
@@ -1173,14 +1206,37 @@ function swapAvatars(){
 
 }
 
-function loadingShader(){
-  
+function loadingShader() {
+
 }
 
 
+function animateHairIn(){
+  tweenHairDissolveShader = new TWEEN.Tween({ x: 1 })
+    .to({ x: 0 }, 400)
+    .easing(TWEEN.Easing.Cubic.InOut)
+    .delay(1400)
+    .onComplete(() => { 
+      console.log("complete hat animation", performance.now())
+      dissolveEffectFinished = true
+      if (!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene) {
+        swapAvatars()
+      } else {
+        console.log("start the animation vertex shader loop...")
+        loadingShader()
+      }
+
+    })
+    .onUpdate((object) => {
+      hairDissolveShader.uniforms.threshold.value = object.x;
+    });
+  tweenHairDissolveShader.start();
+}
+
 function animateBodyIn() {
   tweenBodyDissolveShader = new TWEEN.Tween({ x: 1 })
-    .to({ x: 0 }, 1800)
+    .to({ x: 0 }, 1400)
+    .delay(300)
     // .easing(TWEEN.Easing.Cubic.InOut)
     .onComplete(() => {
       // console.log("complete hat animation", performance.now())
@@ -1191,12 +1247,12 @@ function animateBodyIn() {
       //     console.log("start the animation shader")
       //     loadingShader()
       //   }
-      
-        // if(!interactiveAvatarLoaded){
-        //   //animateBodyIn()
-        // }else{
-        //   swapAvatars()
-        // }
+
+      // if(!interactiveAvatarLoaded){
+      //   //animateBodyIn()
+      // }else{
+      //   swapAvatars()
+      // }
       // if(!interactiveAvatarLoaded){
       //   animateBodyIn()
       // }else{
@@ -1209,7 +1265,7 @@ function animateBodyIn() {
       bodyDissolveShader.uniforms.threshold.value = object.x;
     })
     .start();
-  
+
 
   // tweenBodyDissolveShader.yoyo(true) 
 
@@ -1223,7 +1279,7 @@ function animateClothesIn() {
   tweenClothesDissolveShader = new TWEEN.Tween({ x: 1 })
     .to({ x: 0 }, 1000)
     .easing(TWEEN.Easing.Sinusoidal.InOut)
-    .onComplete(() =>{ })
+    .onComplete(() => { })
     .onUpdate((object) => {
       clothesDissolveShader.uniforms.threshold.value = object.x;
 
@@ -1232,27 +1288,20 @@ function animateClothesIn() {
 }
 
 
-function animateShoesIn() {
+function animateEyesIn() {
 
-  tweenShoesDissolveShader = new TWEEN.Tween({ x: 1 })
-    .to({ x: 0 }, 500)
-    .easing(TWEEN.Easing.Cubic.InOut)
-    .delay(1400)
+  tweenEyesDissolveShader = new TWEEN.Tween({ x: 1 })
+    .to({ x: 0 }, 1000)
+    // .easing(TWEEN.Easing.Cubic.InOut)
+    .delay(200)
     .onComplete(() => {
-      console.log("complete hat animation", performance.now())
-        dissolveEffectFinished = true
-        if(!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene){
-          swapAvatars()
-        }else{
-          console.log("start the animation vertex shader loop...")
-          loadingShader()
-        }
       
-        // if(!interactiveAvatarLoaded){
-        //   //animateBodyIn()
-        // }else{
-        //   swapAvatars()
-        // }
+
+      // if(!interactiveAvatarLoaded){
+      //   //animateBodyIn()
+      // }else{
+      //   swapAvatars()
+      // }
       // if(!interactiveAvatarLoaded){
       //   animateBodyIn()
       // }else{
@@ -1262,35 +1311,50 @@ function animateShoesIn() {
       // tweenBodyDissolveShader.start();
     })
     .onUpdate((object) => {
-      shoesDissolveShader.uniforms.threshold.value = object.x;
+      eyesDissolveShader.uniforms.threshold.value = object.x;
     });
-  tweenShoesDissolveShader.start();
+
+  tweenEyesDissolveShader.start();
 
 }
 
 //function for fading out dummy avatar
-function growFade() {
-  
-  if(tweenBodyDissolveShader.isPlaying()){
+async function growFade() {
+
+  if (tweenBodyDissolveShader.isPlaying()) {
     tweenBodyDissolveShader.stop()
   }
-  if(tweenClothesDissolveShader.isPlaying()){
+  if (tweenClothesDissolveShader.isPlaying()) {
     tweenClothesDissolveShader.stop()
   }
-  if(tweenShoesDissolveShader.isPlaying()){
-    tweenShoesDissolveShader.stop()
+  if (tweenEyesDissolveShader.isPlaying()) {
+    tweenEyesDissolveShader.stop()
   }
 
 
   // if(tweenHairDissolveShader.isPlaying()){
   //   tweenHairDissolveShader.stop()
   // }
-  //InteractiveAvatar.visible = true;
-  shoesDissolveShader.uniforms.growFade.value = true;
-  bodyDissolveShader.uniforms.growFade.value = true;
-  hairDissolveShader.uniforms.growFade.value = true;
-  clothesDissolveShader.uniforms.growFade.value = true;
-  fadeOutShaders()
+  InteractiveAvatar.position.set(0, 0, -2);
+  NonInteractiveAvatar.position.set(0, 10, -2);
+
+ 
+ 
+  action.play();
+  await waitForSeconds(0.25)
+  animateHead = true;
+  startBlinking();
+  await waitForSeconds(2)
+  NonInteractiveAvatar.parent.remove(NonInteractiveAvatar);
+  console.log("removing dummy avatar")
+  // Play idle animation
+
+  
+  // shoesDissolveShader.uniforms.growFade.value = true;
+  // bodyDissolveShader.uniforms.growFade.value = true;
+  // hairDissolveShader.uniforms.growFade.value = true;
+  // clothesDissolveShader.uniforms.growFade.value = true;
+  // fadeOutShaders()
 
 }
 
@@ -1301,7 +1365,7 @@ function fadeOutShaders() {
   //   .to({ x: 55}, 100)
   //   // .easing(TWEEN.Easing.Cubic.Out)
   //   .onComplete(() => {console.log("First tween completed")
-    
+
   //       // NonInteractiveAvatar.visible = false;
   //   })
 
@@ -1314,29 +1378,29 @@ function fadeOutShaders() {
   //   });
 
   fadeOutTween = new TWEEN.Tween({ x: 75 })
-    .to({ x: -2}, 1000)
-   .easing(TWEEN.Easing.Elastic.InOut)
+    .to({ x: -2 }, 1000)
+    .easing(TWEEN.Easing.Elastic.InOut)
     .onComplete(() => {
-     
+
       NonInteractiveAvatar.visible = false;
       animateHead = true;
       animateHeadBackToCenter();
     })
     .onUpdate((object) => {
       console.log("Second tween running")
-      if(object.x < 50 && !InteractiveAvatar.visible){
+      if (object.x < 50 && !InteractiveAvatar.visible) {
         InteractiveAvatar.visible = true;
       }
       clothesDissolveShader.uniforms.brightness.value = object.x
       bodyDissolveShader.uniforms.brightness.value = object.x
       hairDissolveShader.uniforms.brightness.value = object.x
-      shoesDissolveShader.uniforms.brightness.value = object.x
+      eyesDissolveShader.uniforms.brightness.value = object.x
     });
 
-    // brightenTween.chain(fadeOutTween)
-    fadeOutTween.start();
-    console.log("starting fade out ", performance.now())
-   
+  // brightenTween.chain(fadeOutTween)
+  fadeOutTween.start();
+  console.log("starting fade out ", performance.now())
+
 }
 window.growFade = growFade;
 
@@ -1346,13 +1410,14 @@ async function animateAll() {
   await waitForSeconds(1.5)
   animateBodyIn();
   await waitForSeconds(1.5)
-  animateShoesIn();
+  animateEyesIn();
 }
 
 function animateTogether() {
   animateBodyIn();
   animateClothesIn();
-  animateShoesIn();
+  animateEyesIn();
+  animateHairIn();
 }
 
 const waitForSeconds = (seconds) => {
@@ -1365,7 +1430,8 @@ const waitForSeconds = (seconds) => {
 
 window.animateBodyIn = animateBodyIn;
 window.animateClothesIn = animateClothesIn;
-window.animateShoesIn = animateShoesIn;
+window.animateEyesIn = animateEyesIn;
+window.animateHairIn = animateHairIn;
 
 window.animateAll = animateAll;
 window.animateTogether = animateTogether;
@@ -1387,43 +1453,37 @@ let vs = `
     `;
 
 let fs = `
-    uniform float brightness;
+      uniform float brightness;
+      uniform float thickness;
       uniform bool growFade;
       uniform float time;
-      uniform vec3 uColor; // Declare the uniform
+      uniform vec3 edgeColor; // Declare the uniform
       varying vec2 vUv;
       uniform float threshold;
       uniform sampler2D noiseTexture; //alpha noise texture for diffuse effect
-      void main() {
-
-        if(growFade){
-             vec4 returnColor = vec4(1.0, 0.0, 0.0, 0.2);
-             csm_FragColor = returnColor * brightness;
-        }else{
-        
-              vec3 noise = texture2D(noiseTexture, vUv).rgb;
-              float dissolve = noise.g;
-              if (dissolve < threshold) {
-                 discard;
-               }
-
-             float edge = threshold + 0.025;
-
-             if(threshold > 0.00001){
-               if (dissolve < edge) {
-                 csm_FragColor = vec4(vec3(uColor), 1.0) * 2.0;
-
-              }
+          void main() {
+            vec3 noise = texture2D(noiseTexture, vUv).rgb;
+            float dissolve = noise.g;
+            if (dissolve < threshold) {
+               discard;
              }
 
+           float edge = threshold + (thickness / 100.0);
 
-              csm_Emissive = vec3(0.0, 1.0, 0.0);
-              csm_FragColor = csm_FragColor;
+           if(threshold > 0.1){
 
+             if (dissolve < edge ) {
+               csm_FragColor = vec4(vec3(edgeColor), 1.0) * brightness;
+               csm_Emissive = vec3(edgeColor); //vec3(1.0, 0.0, 0.0);
+              }
+            }
 
-        
-        }
+            float multiply = csm_Metalness;
 
+            if(multiply == 0.0){
+                multiply = 0.9;
+            }
+            csm_FragColor = vec4(vec3(csm_FragColor.rgb) * multiply , 1.0)  ;              //vec4(1.0, 1.0, 1.0, 0.2);
 
-     }
+      }
     `;
