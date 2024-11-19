@@ -133,7 +133,7 @@ const scene = new THREE.Scene();
 // scene.background = new THREE.Color("#fbdad9");
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0.005, 1.6, 0.5); // Adjust the camera position 0.005, 1.6, 0.5
+camera.position.set(0.0, 1.6, 0.5); // Adjust the camera position 0.005, 1.6, 0.5
 camera.layers.enable(1);
 window.camera = camera;
 let dirLight = null;
@@ -1743,8 +1743,8 @@ function addTorus() {
   const geometry = new THREE.TorusGeometry(0.5, 0.2, 16, 100);
   torus = new THREE.Mesh(geometry, torusMaterial);
   torus.axis = new THREE.Vector3(1.0, 0, 0.),
-    torus.position.y = 1.6;
-  torus.position.z = -0.75;
+  torus.position.y = 1.6;
+  torus.position.z = -1.2;
 
   torus.scale.set(0.2, 0.2, 0.2);
   torus.layers.set(1);
