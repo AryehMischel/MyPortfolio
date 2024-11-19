@@ -77,9 +77,6 @@ let group = null;
 // Scene setup
 const scene = new THREE.Scene();
 
-// Set background color
-scene.background = new THREE.Color(0x0000ff);
-
 
 
 
@@ -87,13 +84,16 @@ scene.background = new THREE.Color(0x0000ff);
 
 // Camera setup
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.layers.enable(1);
 camera.position.z = 2;
 camera.position.y = 1.6;
 
 
 // Renderer setup
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.autoClear = false;
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor( 0x101000 );
 document.body.appendChild(renderer.domElement);
 const composer = new EffectComposer(renderer);
 const renderPass = new RenderPass(scene, camera);
@@ -343,13 +343,16 @@ function animate() {
 
   // renderer.clear();
 
-  // camera.layers.set(1);
-  composer.render();
-
-  // renderer.clearDepth();
-
-
   requestAnimationFrame(animate);
+  
+  renderer.clear();
+  
+  camera.layers.set(1);
+  composer.render();
+  
+  renderer.clearDepth();
+  camera.layers.set(0);
+  renderer.render(scene, camera);
 }
 
 animate();
@@ -778,6 +781,8 @@ void main() {
   `;
 
 let torusFS = `
+uniform float brightness; // Uniform for brightness
+uniform vec3 emissiveColor; // Uniform for emissive color
 uniform float time;
 uniform float progress;
 uniform sampler2D matcaptexture;
@@ -801,20 +806,30 @@ vec3 normals(vec3 pos) {
 }
 void main()	{
 
-	// 
-	vec2 muv;
-	if(flatNormals>0.5){
-		muv = matcap(vEye,normals(vPosition));
-	} else{
-		muv = matcap(vEye,vNormal);
-	}
-	
-	vec4 c = texture2D(matcaptexture,muv);
-	// vec2 newUV = (vUv - vec2(0.5))*resolution.zw + vec2(0.5);
-	// gl_FragColor = vec4(vUv,0.0,1.);
-	gl_FragColor = c;
-	// gl_FragColor = vec4(vec3(1.),1.);
-;
+  vec2 muv;
+    if(flatNormals>0.5){
+        muv = matcap(vEye,normals(vPosition));
+    } else{
+        muv = matcap(vEye,vNormal);
+    }
+    
+    vec4 c = texture2D(matcaptexture,muv);
+
+
+    // Calculate edge factor based on normal
+    float edgeFactor = pow(1.0 - abs(dot(normalize(vNormal), vec3(0.0, 1.0, 0.0))), 2.0);
+
+    edgeFactor = 1.0 - edgeFactor;
+    vec3 finalColor = vec3(c.rgb);
+    
+    if(edgeFactor > 0.90 || edgeFactor < 0.1){
+        finalColor = c.rgb * brightness + emissiveColor * edgeFactor;
+    
+    }
+      
+    gl_FragColor = vec4(finalColor, c.a);
+    // Apply brightness and emissive color
+
 }
   `;
 
@@ -834,6 +849,8 @@ torusMaterial = new THREE.ShaderMaterial({
     matcaptexture: { value: matcapTexture },
     flatNormals: { value: 0.0 },
     resolution: { value: new THREE.Vector4(window.innerWidth, window.innerHeight, 1.0 / window.innerWidth, 1.0 / window.innerHeight) },
+    brightness: { value: 10.7 }, // Set initial brightness
+    emissiveColor: { value: new THREE.Color(1, 0.97, 0.05) }, // Set initial emissive color gold: 
   },
   vertexShader: torusVS,
   fragmentShader: torusFS,
@@ -846,9 +863,20 @@ torusMaterial = new THREE.ShaderMaterial({
 
 const geometry = new THREE.TorusGeometry(0.5, 0.2, 16, 100);
 const torus = new THREE.Mesh(geometry, torusMaterial);
+
 torus.axis = new THREE.Vector3(1.0, 0, 0.),
 torus.position.y = 1.4;
+torus.position.z = 0.5;
 
 torus.scale.set(0.2, 0.2, 0.2);
+let torus2 = torus.clone();
+torus2.layers.set(0);
+torus2.position.y = 2.5;
+torus.layers.set(1);
 scene.add(torus);
+scene.add(torus2);
+
 window.torus = torus;
+
+
+
