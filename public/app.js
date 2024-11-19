@@ -8,11 +8,12 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { objectDirection } from 'three/webgpu';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+import { sampler } from 'three/webgpu';
 
 let animatedInAvatar = false;
 let avatar = null;
 
-
+let torusMaterial = null;
 
 let replacementAvatar = null;
 let replacementAvatarURL = "https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/avatarWithAnimation.glb"
@@ -286,6 +287,9 @@ function createShaders() {
 // Animation loop
 function animate() {
 
+  if (torusMaterial) {
+    torusMaterial.uniforms.time.value += 0.01;
+  }
   if (!animatedInAvatar && avatar) {
     // animateTogether()
     animatedInAvatar = true;
@@ -709,3 +713,142 @@ let brightenfs = `
 
    }
   `;
+
+
+// Add a torus to the scene
+
+
+let torusVS = `
+uniform float time;
+uniform float progress;
+varying vec2 vUv;
+varying vec3 vPosition;
+varying vec3 vNormal;
+varying vec3 vEye;
+uniform vec2 pixels;
+uniform float distortion;
+uniform vec3 axis;
+uniform vec3 axis2;
+uniform float speed;
+float PI = 3.141592653589793238;
+mat4 rotationMatrix(vec3 axis, float angle) {
+    axis = normalize(axis);
+    float s = sin(angle);
+    float c = cos(angle);
+    float oc = 1.0 - c;
+    
+    return mat4(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,
+                oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,
+                oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,
+                0.0,                                0.0,                                0.0,                                1.0);
+}
+
+vec3 rotate(vec3 v, vec3 axis, float angle) {
+	mat4 m = rotationMatrix(axis, angle);
+	return (m * vec4(v, 1.0)).xyz;
+}
+float qinticInOut(float t) {
+  return t < 0.5
+    ? +16.0 * pow(t, 5.0)
+    : -0.5 * abs(pow(2.0 * t - 2.0, 5.0)) + 1.0;
+}
+void main() {
+  vUv = uv;
+  float norm = 4.;
+  norm = 0.5;
+  vec3 newpos = position;
+  float offset = ( dot(axis2,position) +norm/2.)/norm;
+  // float offset = ( dot(vec3(1.,0.,0.),position) +norm/2.)/norm;
+
+  // float localprogress = clamp( (progress - 0.01*distortion*offset)/(1. - 0.01*distortion),0.,1.); 
+  float localprogress = clamp( (fract(time*speed) - 0.01*distortion*offset)/(1. - 0.01*distortion),0.,1.); 
+
+  localprogress = qinticInOut(localprogress)*PI;
+
+
+  newpos = rotate(newpos,axis,localprogress);
+  vec3 newnormal = rotate(normal,axis,localprogress);
+
+  vNormal = normalMatrix*newnormal;
+  vec4 worldPosition = modelMatrix * vec4( newpos, 1.0);
+  vEye = normalize(worldPosition.xyz - cameraPosition);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( newpos, 1.0 );
+  vPosition = newpos;
+  }
+  `;
+
+let torusFS = `
+uniform float time;
+uniform float progress;
+uniform sampler2D matcaptexture;
+uniform vec4 resolution;
+uniform float flatNormals;
+uniform vec3 axis;
+varying vec2 vUv;
+varying vec3 vNormal;
+varying vec3 vEye;
+varying vec3 vPosition;
+float PI = 3.141592653589793238;
+vec2 matcap(vec3 eye, vec3 normal) {
+  vec3 reflected = reflect(eye, normal);
+  float m = 2.8284271247461903 * sqrt( reflected.z+1.0 );
+  return reflected.xy / m + 0.5;
+}
+vec3 normals(vec3 pos) {
+  vec3 fdx = dFdx(pos);
+  vec3 fdy = dFdy(pos);
+  return normalize(cross(fdx, fdy));
+}
+void main()	{
+
+	// 
+	vec2 muv;
+	if(flatNormals>0.5){
+		muv = matcap(vEye,normals(vPosition));
+	} else{
+		muv = matcap(vEye,vNormal);
+	}
+	
+	vec4 c = texture2D(matcaptexture,muv);
+	// vec2 newUV = (vUv - vec2(0.5))*resolution.zw + vec2(0.5);
+	// gl_FragColor = vec4(vUv,0.0,1.);
+	gl_FragColor = c;
+	// gl_FragColor = vec4(vec3(1.),1.);
+;
+}
+  `;
+
+
+
+let matcapTexture = new THREE.TextureLoader().load('./matcap.jpg');
+
+torusMaterial = new THREE.ShaderMaterial({
+  uniforms: {
+    time: { value: 0.0 },
+    progress: { value: 0.0 },
+    pixels: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+    distortion: { value: 6.0 },
+    axis: { value: new THREE.Vector3(-1, 0, 0) },
+    axis2: { value: new THREE.Vector3(-1, 0, 0) },
+    speed: { value: 1.0 },
+    matcaptexture: { value: matcapTexture },
+    flatNormals: { value: 0.0 },
+    resolution: { value: new THREE.Vector4(window.innerWidth, window.innerHeight, 1.0 / window.innerWidth, 1.0 / window.innerHeight) },
+  },
+  vertexShader: torusVS,
+  fragmentShader: torusFS,
+  side: THREE.DoubleSide,
+});
+
+
+
+
+
+const geometry = new THREE.TorusGeometry(0.5, 0.2, 16, 100);
+const torus = new THREE.Mesh(geometry, torusMaterial);
+torus.axis = new THREE.Vector3(1.0, 0, 0.),
+torus.position.y = 1.4;
+
+torus.scale.set(0.2, 0.2, 0.2);
+scene.add(torus);
+window.torus = torus;
