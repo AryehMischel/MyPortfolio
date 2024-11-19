@@ -28,7 +28,7 @@ let InteractiveAvatar = null;
 let interactiveAvatarInScene = false;
 
 
-
+let torusMaterial = null;
 
 const animateHeadTriggerRectColl = document.getElementById('head-trigger-collider');
 const canvas = document.getElementById('myCanvas');
@@ -134,6 +134,9 @@ scene.background = new THREE.Color("#fbdad9");
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 camera.position.set(0.005, 1.6, 0.5); // Adjust the camera position 0.005, 1.6, 0.5
 window.camera = camera;
+let dirLight = null;
+let hemiLight = null;
+let spotLight = null; 
 createSceneLighting();
 console.log("anything new cheif")
 
@@ -294,6 +297,17 @@ function animate(time) {
     animateTogether()
   }
 
+
+  if(torusMaterial){
+    torusMaterial.uniforms.time.value += 0.01;
+  }
+  if (!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene && dissolveEffectFinished) {  
+     interactiveAvatarLoaded = true;
+      swapAvatars()
+      removeTorus()
+      
+
+  }
   // if (!interactiveAvatarLoaded && eyeBoneLeft &&  interactiveAvatarInScene && dissolveEffectFinished) {
   //   console.log("loading interactive avatar")
 
@@ -429,11 +443,18 @@ function createControls() {
   };
   return controls;
 }
+
+
+
+
+
+
+
 function createSceneLighting() {
 
 
 
-  const dirLight = new THREE.DirectionalLight( 0xffffff, 1.5 );
+   dirLight = new THREE.DirectionalLight( 0xffffff, 1.5 );
   dirLight.color.setHSL( 0.1, 1, 0.95 );
   dirLight.position.set( - 1, 1.75, 1 );
   dirLight.position.multiplyScalar( 30 );
@@ -455,7 +476,7 @@ function createSceneLighting() {
   dirLight.shadow.bias = - 0.0001;
   // // Ambient light for soft global illumination
 
-  const hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 2 );
+   hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 2 );
   hemiLight.color.setHSL( 0.6, 1, 0.6 );
   hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
   hemiLight.position.set( 0, 50, 0 );
@@ -466,7 +487,7 @@ function createSceneLighting() {
   //Hemisphere light for sky and ground lighting
 
   // Spotlight to focus on the subject
-  const spotLight = new THREE.SpotLight("#CDCDCD", 21);
+  spotLight = new THREE.SpotLight("#CDCDCD", 21);
 
   spotLight.position.set(0, 0.5, 0);
   spotLight.target.position.set(0, 3, -2); // Point the spotlight at the subject
@@ -490,6 +511,40 @@ function createSceneLighting() {
   // fillLight.position.set(0, 1.5, -1); // Position the fill light in front of the subject
   // scene.add(fillLight);
 
+
+}
+
+function resetLights(){
+  if (dirLight) {
+    dirLight.intensity = 1.5;
+  
+  }
+
+  if (hemiLight) {
+    hemiLight.intensity = 2;
+  
+  }
+
+  if (spotLight) {
+    spotLight.intensity = 21;
+  }
+}
+
+function dimLights(){
+
+      const dimmingFactor = 0.2; // Adjust this value to control the dimming level
+
+      if (dirLight) {
+        dirLight.intensity *= dimmingFactor;
+      }
+
+      if (hemiLight) {
+        hemiLight.intensity *= dimmingFactor;
+      }
+
+      if (spotLight) {
+        spotLight.intensity *= dimmingFactor;
+      }
 
 }
 
@@ -1118,6 +1173,7 @@ function createShaders() {
       threshold: { value: 2.0 },
       edgeColor: { value: new THREE.Color(0, 0.57, 1) }, // Add a uniform for the color
       thickness: { value: 3.0 },
+      dim: { value: false },
       noiseTexture: { value: directionNoise },
     },
 
@@ -1130,6 +1186,7 @@ function createShaders() {
   hairDissolveShader = new CustomShaderMaterial({
     baseMaterial: ourHairBaseMaterial,
     uniforms: {
+      dim: { value: false },
       growFade: { value: false },
       brightness: { value: 10.0 },
       time: { value: 0.2 },
@@ -1148,6 +1205,7 @@ function createShaders() {
   clothesDissolveShader = new CustomShaderMaterial({
     baseMaterial: ourClothesBaseMaterial,
     uniforms: {
+      dim: { value: false },
       time: { value: 0.2 },
       threshold: { value: 2.0 },
       edgeColor: { value: new THREE.Color(1, 0.27, 0.63) }, // Add a uniform for the color
@@ -1165,6 +1223,7 @@ function createShaders() {
   bodyDissolveShader = new CustomShaderMaterial({
     baseMaterial: ourBodyBaseMaterial,
     uniforms: {
+      dim: { value: false },
       growFade: { value: false },
       brightness: { value: 10.0 },
       time: { value: 0.2 },
@@ -1226,12 +1285,13 @@ function animateHairIn(){
     .delay(1400)
     .onComplete(() => { 
       console.log("complete hat animation", performance.now())
-      dissolveEffectFinished = true
-      if (!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene) {
+   
+      if (!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene) {  
         swapAvatars()
       } else {
         console.log("start the animation vertex shader loop...")
-        loadingShader()
+        dissolveEffectFinished = true
+        addTorus()
       }
 
     })
@@ -1461,6 +1521,7 @@ let vs = `
     `;
 
 let fs = `
+      uniform bool dim;
       uniform float brightness;
       uniform float thickness;
       uniform bool growFade;
@@ -1491,7 +1552,188 @@ let fs = `
             if(multiply == 0.0){
                 multiply = 0.9;
             }
+            if(dim){
+              multiply = 0.1;
+              }
             csm_FragColor = vec4(vec3(csm_FragColor.rgb) * multiply , 1.0)  ;              //vec4(1.0, 1.0, 1.0, 0.2);
 
       }
     `;
+
+
+
+
+    let torusVS = `
+uniform float time;
+uniform float progress;
+varying vec2 vUv;
+varying vec3 vPosition;
+varying vec3 vNormal;
+varying vec3 vEye;
+uniform vec2 pixels;
+uniform float distortion;
+uniform vec3 axis;
+uniform vec3 axis2;
+uniform float speed;
+float PI = 3.141592653589793238;
+mat4 rotationMatrix(vec3 axis, float angle) {
+    axis = normalize(axis);
+    float s = sin(angle);
+    float c = cos(angle);
+    float oc = 1.0 - c;
+    
+    return mat4(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,
+                oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,
+                oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,
+                0.0,                                0.0,                                0.0,                                1.0);
+}
+
+vec3 rotate(vec3 v, vec3 axis, float angle) {
+	mat4 m = rotationMatrix(axis, angle);
+	return (m * vec4(v, 1.0)).xyz;
+}
+float qinticInOut(float t) {
+  return t < 0.5
+    ? +16.0 * pow(t, 5.0)
+    : -0.5 * abs(pow(2.0 * t - 2.0, 5.0)) + 1.0;
+}
+void main() {
+  vUv = uv;
+  float norm = 4.;
+  norm = 0.5;
+  vec3 newpos = position;
+  float offset = ( dot(axis2,position) +norm/2.)/norm;
+  // float offset = ( dot(vec3(1.,0.,0.),position) +norm/2.)/norm;
+
+  // float localprogress = clamp( (progress - 0.01*distortion*offset)/(1. - 0.01*distortion),0.,1.); 
+  float localprogress = clamp( (fract(time*speed) - 0.01*distortion*offset)/(1. - 0.01*distortion),0.,1.); 
+
+  localprogress = qinticInOut(localprogress)*PI;
+
+
+  newpos = rotate(newpos,axis,localprogress);
+  vec3 newnormal = rotate(normal,axis,localprogress);
+
+  vNormal = normalMatrix*newnormal;
+  vec4 worldPosition = modelMatrix * vec4( newpos, 1.0);
+  vEye = normalize(worldPosition.xyz - cameraPosition);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( newpos, 1.0 );
+  vPosition = newpos;
+  }
+  `;
+
+let torusFS = `
+uniform float brightness; // Uniform for brightness
+uniform vec3 emissiveColor; // Uniform for emissive color
+uniform float time;
+uniform float progress;
+uniform sampler2D matcaptexture;
+uniform vec4 resolution;
+uniform float flatNormals;
+uniform vec3 axis;
+varying vec2 vUv;
+varying vec3 vNormal;
+varying vec3 vEye;
+varying vec3 vPosition;
+float PI = 3.141592653589793238;
+vec2 matcap(vec3 eye, vec3 normal) {
+  vec3 reflected = reflect(eye, normal);
+  float m = 2.8284271247461903 * sqrt( reflected.z+1.0 );
+  return reflected.xy / m + 0.5;
+}
+vec3 normals(vec3 pos) {
+  vec3 fdx = dFdx(pos);
+  vec3 fdy = dFdy(pos);
+  return normalize(cross(fdx, fdy));
+}
+void main()	{
+
+  vec2 muv;
+    if(flatNormals>0.5){
+        muv = matcap(vEye,normals(vPosition));
+    } else{
+        muv = matcap(vEye,vNormal);
+    }
+    
+    vec4 c = texture2D(matcaptexture,muv);
+
+
+    // Calculate edge factor based on normal
+    float edgeFactor = pow(1.0 - abs(dot(normalize(vNormal), vec3(0.0, 1.0, 0.0))), 2.0);
+
+    edgeFactor = 1.0 - edgeFactor;
+    vec3 finalColor = vec3(c.rgb);
+    
+    if(edgeFactor > 0.90 || edgeFactor < 0.1){
+        finalColor = c.rgb * brightness + emissiveColor * edgeFactor;
+    
+    }
+      
+    gl_FragColor = vec4(finalColor, c.a);
+    // Apply brightness and emissive color
+
+   
+}
+  `;
+
+
+
+  let matcapTexture = new THREE.TextureLoader().load('https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/matcap3.jpg');
+
+  let torus = null;
+function addTorus() {
+  // dimLights()
+
+  bodyDissolveShader.uniforms.dim.value = true;
+  clothesDissolveShader.uniforms.dim.value = true;
+  eyesDissolveShader.uniforms.dim.value = true;
+  hairDissolveShader.uniforms.dim.value = true;
+
+
+  torusMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+      time: { value: 0.0 },
+      progress: { value: 0.0 },
+      pixels: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+      distortion: { value: 4.0 },
+      axis: { value: new THREE.Vector3(-1, 0, 0) },
+      axis2: { value: new THREE.Vector3(-1, 0, 0) },
+      speed: { value: 1.0 },
+      matcaptexture: { value: matcapTexture },
+      flatNormals: { value: 0.0 },
+      resolution: { value: new THREE.Vector4(window.innerWidth, window.innerHeight, 1.0 / window.innerWidth, 1.0 / window.innerHeight) },
+      brightness: { value: 0.7 }, // Set initial brightness
+      emissiveColor: { value: new THREE.Color(1, 0.97, 0.05) }, // Set initial emissive color gold: 
+    },
+    vertexShader: torusVS,
+    fragmentShader: torusFS,
+    side: THREE.DoubleSide,
+    transparent: true,
+    
+  });
+
+
+
+
+
+  const geometry = new THREE.TorusGeometry(0.5, 0.2, 16, 100);
+  torus = new THREE.Mesh(geometry, torusMaterial);
+  torus.axis = new THREE.Vector3(1.0, 0, 0.),
+    torus.position.y = 1.6;
+  torus.position.z = -1.35;
+
+  torus.scale.set(0.2, 0.2, 0.2);
+  scene.add(torus);
+  window.torus = torus;
+
+}
+
+function removeTorus() {
+  // resetLights()
+  scene.remove(torus);
+  torusMaterial.dispose();
+  torusMaterial = null;
+}
+
+window.scene = scene;
+window.addTorus = addTorus;
