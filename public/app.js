@@ -175,7 +175,7 @@ composer.addPass(bloomPass);
 
 
 // ssaaPass.setSize(canvas.clientWidth, canvas.clientHeight);
-ssaaPass.setSize(canvas.clientWidth, canvas.clientHeight);
+ssaaPass.setSize(window.innerWidth, window.innerHeight);
 
 // const toneMappingPass = new ShaderPass(ACESFilmicToneMappingShader);
 // toneMappingPass.uniforms['exposure'].value = 0.5; // Adjust exposure as needed
