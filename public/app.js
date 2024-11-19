@@ -110,6 +110,7 @@ const doubleNoise = new THREE.TextureLoader().load('https://aryehmischel-portfol
 
 
 
+
 function play() {
   console.log("plaing animation")
   action.play();
@@ -129,10 +130,11 @@ const mouse = new THREE.Vector2();
 const previousMouseIntersectionPoint = new THREE.Vector2();
 // Create a scene
 const scene = new THREE.Scene();
-scene.background = new THREE.Color("#fbdad9");
+// scene.background = new THREE.Color("#fbdad9");
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 camera.position.set(0.005, 1.6, 0.5); // Adjust the camera position 0.005, 1.6, 0.5
+camera.layers.enable(1);
 window.camera = camera;
 let dirLight = null;
 let hemiLight = null;
@@ -140,11 +142,24 @@ let spotLight = null;
 createSceneLighting();
 console.log("anything new cheif")
 
-const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
-renderer.setClearColor(0x000000, 0); // The second parameter is the alpha value
-renderer.physicallyCorrectLights = true;
-renderer.shadowMap.enabled = true;
-renderer.colorManagement = true;
+
+const backgroundGeometry = new THREE.PlaneGeometry(20, 20);
+const backgroundMaterial = new THREE.MeshBasicMaterial({ color:"#fbdad9" }); // Set your desired background color
+const backgroundMesh = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
+backgroundMesh.layers.set(1);
+backgroundMesh.position.set(0, 0, -5);
+
+scene.add(backgroundMesh);
+
+
+const renderer = createRenderer()//new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+renderer.autoClear = false;
+// renderer.setClearColor(0x000000, 0); // The second parameter is the alpha value
+// renderer.physicallyCorrectLights = true;
+// renderer.shadowMap.enabled = true;
+
+
+// renderer.colorManagement = true;
 // renderer.outputColorSpace = THREE.Linear; // opt
 // renderer.toneMapping = THREE.ReinhardToneMapping;
 // renderer.toneMappingExposure = 1.0;
@@ -175,7 +190,7 @@ composer.addPass(bloomPass);
 
 
 // ssaaPass.setSize(canvas.clientWidth, canvas.clientHeight);
-ssaaPass.setSize(window.innerWidth, window.innerHeight);
+// ssaaPass.setSize(window.innerWidth, window.innerHeight);
 
 // const toneMappingPass = new ShaderPass(ACESFilmicToneMappingShader);
 // toneMappingPass.uniforms['exposure'].value = 0.5; // Adjust exposure as needed
@@ -343,9 +358,16 @@ function animate(time) {
 
 
 
-
-  composer.render();
   requestAnimationFrame(animate);
+  
+  renderer.clear();
+  
+  camera.layers.set(1);
+  composer.render();
+  
+  renderer.clearDepth();
+  camera.layers.set(0);
+  renderer.render(scene, camera);
 
 
   // if(dissolveEffectFinished){
@@ -420,7 +442,19 @@ function addArrowHelpers(object) {
 
 //create return renderer
 function createRenderer() {
-
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  renderer.setClearColor(0x000000, 0); // The second parameter is the alpha value
+  renderer.physicallyCorrectLights = true;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Soft shadows
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1;
+  renderer.outputEncoding = THREE.SRGBColorSpace;
+  // Set the pixel ratio to the device's pixel ratio
+  renderer.setPixelRatio(window.devicePixelRatio);
+  // Set the size of the renderer
+  renderer.setSize(canvas.width, canvas.height);
+  return renderer;
 }
 //create return controller
 function createControls() {
@@ -451,54 +485,93 @@ function createControls() {
 
 
 function createSceneLighting() {
+ const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    directionalLight.position.set(5, 10, 7.5);
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 2048;
+    directionalLight.shadow.mapSize.height = 2048;
+    directionalLight.shadow.camera.near = 0.5;
+    directionalLight.shadow.camera.far = 500;
+    // scene.add(directionalLight);
+    // Ambient light for soft global illumination
+    const hemiLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 0.4 ); 
+    const ambientLight = new THREE.AmbientLight("#666666", 10); // Soft white light
+    scene.add(ambientLight, hemiLight);
+    // Hemisphere light for sky and ground lighting
+    // const hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 1);
+    // hemisphereLight.position.set(0, 20, 0);
+    // scene.add(hemisphereLight);
+    // Spotlight to focus on the subject
+    const spotLight = new THREE.SpotLight("#CDCDCD", 5);
+    
+    spotLight.position.set(0, 1.2, 0);
+    spotLight.target.position.set(0, 1.2, -1.5); // Point the spotlight at the subject
+    spotLight.castShadow = true;
+    spotLight.angle = Math.PI / 6;
+    spotLight.penumbra = 0.1;
+    spotLight.decay = 2;
+    spotLight.distance = 50;
+    // scene.add(spotLight);
+    // scene.add(spotLight.target);
+    // Point light for additional localized lighting
+   
+    // const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+    // pointLight.position.set(0, 3, -2); // Position the point light above the subject
+    // pointLight.castShadow = true;
+    // scene.add(pointLight);
+   
+   
+    // Fill light to reduce shadows under the eyes
+    const fillLight = new THREE.PointLight(0xffffff, 0.5, 50);
+    fillLight.position.set(0, 1.5, -1); // Position the fill light in front of the subject
+    scene.add(fillLight);
 
 
+  //  dirLight = new THREE.DirectionalLight( 0xffffff, 1.5 );
+  // dirLight.color.setHSL( 0.1, 1, 0.95 );
+  // dirLight.position.set( - 1, 1.75, 1 );
+  // dirLight.position.multiplyScalar( 30 );
+  // scene.add( dirLight );
 
-   dirLight = new THREE.DirectionalLight( 0xffffff, 1.5 );
-  dirLight.color.setHSL( 0.1, 1, 0.95 );
-  dirLight.position.set( - 1, 1.75, 1 );
-  dirLight.position.multiplyScalar( 30 );
-  scene.add( dirLight );
+  // dirLight.castShadow = true;
 
-  dirLight.castShadow = true;
+  // dirLight.shadow.mapSize.width = 2048;
+  // dirLight.shadow.mapSize.height = 2048;
 
-  dirLight.shadow.mapSize.width = 2048;
-  dirLight.shadow.mapSize.height = 2048;
+  // const d = 50;
 
-  const d = 50;
+  // dirLight.shadow.camera.left = - d;
+  // dirLight.shadow.camera.right = d;
+  // dirLight.shadow.camera.top = d;
+  // dirLight.shadow.camera.bottom = - d;
 
-  dirLight.shadow.camera.left = - d;
-  dirLight.shadow.camera.right = d;
-  dirLight.shadow.camera.top = d;
-  dirLight.shadow.camera.bottom = - d;
+  // dirLight.shadow.camera.far = 3500;
+  // dirLight.shadow.bias = - 0.0001;
+  // // // Ambient light for soft global illumination
 
-  dirLight.shadow.camera.far = 3500;
-  dirLight.shadow.bias = - 0.0001;
-  // // Ambient light for soft global illumination
+  //  hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 2 );
+  // hemiLight.color.setHSL( 0.6, 1, 0.6 );
+  // hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+  // hemiLight.position.set( 0, 50, 0 );
+  // scene.add( hemiLight );
 
-   hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 2 );
-  hemiLight.color.setHSL( 0.6, 1, 0.6 );
-  hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
-  hemiLight.position.set( 0, 50, 0 );
-  scene.add( hemiLight );
+  // // const ambientLight = new THREE.AmbientLight("#666666", 10); // Soft white light
+  // // scene.add(ambientLight);
+  // //Hemisphere light for sky and ground lighting
 
-  // const ambientLight = new THREE.AmbientLight("#666666", 10); // Soft white light
-  // scene.add(ambientLight);
-  //Hemisphere light for sky and ground lighting
+  // // Spotlight to focus on the subject
+  // spotLight = new THREE.SpotLight("#CDCDCD", 21);
 
-  // Spotlight to focus on the subject
-  spotLight = new THREE.SpotLight("#CDCDCD", 21);
-
-  spotLight.position.set(0, 0.5, 0);
-  spotLight.target.position.set(0, 3, -2); // Point the spotlight at the subject
-  spotLight.castShadow = true;
-  spotLight.angle = 0.5;
-  // spotLight.penumbra = 0.1;
-  spotLight.decay = 2;
-  spotLight.distance = 3;
-  scene.add(spotLight);
-  scene.add(spotLight.target);
-  window.spotLight = spotLight;
+  // spotLight.position.set(0, 0.5, 0);
+  // spotLight.target.position.set(0, 3, -2); // Point the spotlight at the subject
+  // spotLight.castShadow = true;
+  // spotLight.angle = 0.5;
+  // // spotLight.penumbra = 0.1;
+  // spotLight.decay = 2;
+  // spotLight.distance = 3;
+  // scene.add(spotLight);
+  // scene.add(spotLight.target);
+  // window.spotLight = spotLight;
 
   // const pointLight = new THREE.PointLight(0xffffff, 1, 100);
   // pointLight.position.set(0, 3, -2); // Position the point light above the subject
@@ -965,6 +1038,7 @@ function loadModels() {
       NonInteractiveAvatar.traverse((node) => {
         if (node.isMesh) {
           console.log(node.name)
+            node.layers.set(1);
         }
         if (node.name == "avaturn_body_1") {
           ourBodyBaseMaterial = node.material.clone()
@@ -1000,9 +1074,10 @@ function loadModels() {
 
       });
       createShaders()
-      // NonInteractiveAvatar.layers.set(1);
+      NonInteractiveAvatar.layers.set(1);
       NonInteractiveAvatar.position.set(0, 0, -2);
       scene.add(NonInteractiveAvatar);
+      window
     },
     undefined,
     function (error) {
@@ -1038,6 +1113,10 @@ function loadModels() {
 
 
     InteractiveAvatar.traverse((object) => {
+
+    if(object.isMesh){
+      object.layers.set(0);
+    }
       if (object.morphTargetInfluences) {
         if (faceMesh === null) {
           faceMesh = object;
@@ -1077,7 +1156,7 @@ function loadModels() {
     neckBoneOriginHelper.rotation.copy(neckBone.rotation);
 
     InteractiveAvatar.visible = true;
-    // InteractiveAvatar.layers.set(0);
+    InteractiveAvatar.layers.set(1);
     scene.add(InteractiveAvatar);
     interactiveAvatarInScene = true;
 
@@ -1720,9 +1799,10 @@ function addTorus() {
   torus = new THREE.Mesh(geometry, torusMaterial);
   torus.axis = new THREE.Vector3(1.0, 0, 0.),
     torus.position.y = 1.6;
-  torus.position.z = -1.35;
+  torus.position.z = -0.75;
 
   torus.scale.set(0.2, 0.2, 0.2);
+  torus.layers.set(1);
   scene.add(torus);
   window.torus = torus;
 
