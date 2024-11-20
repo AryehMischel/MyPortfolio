@@ -1436,6 +1436,7 @@ async function growFade() {
   await waitForSeconds(0.25)
   animateHead = true;
   startBlinking();
+  //animate towards current mouse position
   await waitForSeconds(2)
   NonInteractiveAvatar.parent.remove(NonInteractiveAvatar);
   console.log("removing dummy avatar")

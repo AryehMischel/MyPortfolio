@@ -5196,7 +5196,7 @@ a {
 .core-features {
   grid-column-gap: 9px;
   grid-row-gap: 9px;
-  white-space: break-spaces;
+  white-space: normal;
   word-break: break-all;
   flex-flow: column;
   display: flex;
@@ -5789,7 +5789,7 @@ a {
 .core-features-copy {
   grid-column-gap: 9px;
   grid-row-gap: 9px;
-  white-space: break-spaces;
+  white-space: normal;
   word-break: break-all;
   flex-flow: column;
   display: flex;
@@ -6561,7 +6561,7 @@ a {
 }
 
 .beat-saber-about-extended {
-  height: NaN% ;
+  /* height: NaN% ; */
   color: #181b2e;
   white-space: normal;
   width: auto;
