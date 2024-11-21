@@ -13,17 +13,16 @@ import { SSAARenderPass } from 'three/examples/jsm/postprocessing/SSAARenderPass
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
-import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js';
-import { ACESFilmicToneMappingShader } from 'three/examples/jsm/shaders/ACESFilmicToneMappingShader.js';
+import { GammaCorrectionShader } from 'three/examples/jsm/Addons.js';
 
 
 const assetPath = "https://d368ik34cg55zg.cloudfront.net/"
 const customCursorDataURL = 'data:image/x-icon;base64,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'
-const avatarPath = assetPath + "avatarWithAnimation.glb"    
-const eyeModelPath = assetPath +  "AryehAvatarFullBodyJustEyesAndFaceRig.glb"
+const avatarPath = assetPath + "avatarWithAnimation.glb"
+const eyeModelPath = assetPath + "AryehAvatarFullBodyJustEyesAndFaceRig.glb"
 
 
-let NonInteractiveAvatarPath =  assetPath +"AryehAvatarNonInteractiveWithEyes.glb" 
+let NonInteractiveAvatarPath = assetPath + "AryehAvatarNonInteractiveWithEyes.glb"
 
 let NonInteractiveAvatar = null;
 let InteractiveAvatar = null;
@@ -99,14 +98,14 @@ let tweenEyesDissolveShader = null;
 // const noiseTexture = new THREE.TextureLoader().load('./assets/noise6.png');
 // noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
 
-const noiseTexture2 = new THREE.TextureLoader().load( assetPath + 'noiseCircle.png');
+const noiseTexture2 = new THREE.TextureLoader().load(assetPath + 'noiseCircle.png');
 noiseTexture2.wrapS = noiseTexture2.wrapT = THREE.RepeatWrapping;
 
-const noiseTexture3 = new THREE.TextureLoader().load(  assetPath + 'noise4.png');
+const noiseTexture3 = new THREE.TextureLoader().load(assetPath + 'noise4.png');
 noiseTexture3.wrapS = noiseTexture3.wrapT = THREE.RepeatWrapping;
 
 
-const directionNoise = new THREE.TextureLoader().load( assetPath +'noise7.jpeg');
+const directionNoise = new THREE.TextureLoader().load(assetPath + 'noise7.jpeg');
 const doubleNoise = new THREE.TextureLoader().load(assetPath + 'doubleNoise2.png');
 
 
@@ -146,16 +145,29 @@ console.log("anything new cheif")
 
 
 const backgroundGeometry = new THREE.PlaneGeometry(20, 20);
-const backgroundMaterial = new THREE.MeshBasicMaterial({ color: "#fbdad9" }); // Set your desired background color
+const backgroundMaterial = new THREE.MeshBasicMaterial({ color: "#fbdad9", transparent: true, opacity: 0.05}); // Set your desired background color
+window.backgroundMaterial = backgroundMaterial;
+// backgroundMaterial.toneMapping = THREE.NoToneMapping;
+backgroundMaterial.toneMapped = false;
+backgroundMaterial.colorSpace = THREE.LinearSRGBColorSpace;
+
+backgroundMaterial.needsUpdate = true;
+
 const backgroundMesh = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
-backgroundMesh.layers.set(1);
+backgroundMesh.layers.set(0);
 backgroundMesh.position.set(0, 0, -5);
 
 scene.add(backgroundMesh);
 
 
 // const renderer = createRenderer()//new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+const renderer = new THREE.WebGLRenderer({ canvas: canvas, 
+  powerPreference: "high-performance",
+	antialias: false,
+	stencil: false,
+	depth: false
+ });
+
 renderer.autoClear = false;
 renderer.setClearColor(0x000000, 0); // The second parameter is the alpha value
 renderer.physicallyCorrectLights = true;
@@ -173,9 +185,8 @@ renderer.setSize(canvas.width, canvas.height);
 // renderer.physicallyCorrectLights = true;
 // renderer.shadowMap.enabled = true;
 
-
-renderer.colorManagement = true;
-// renderer.outputColorSpace = THREE.Linear; // opt
+// renderer.colorManagement = true;
+renderer.outputColorSpace = THREE.SRGBColorSpace; // opt
 // renderer.toneMapping = THREE.ReinhardToneMapping;
 // renderer.toneMappingExposure = 1.0;
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -204,8 +215,12 @@ const bloomPass = new UnrealBloomPass(new THREE.Vector2(canvas.clientWidth, canv
 composer.addPass(bloomPass);
 
 
-// ssaaPass.setSize(canvas.clientWidth, canvas.clientHeight);
-// ssaaPass.setSize(window.innerWidth, window.innerHeight);
+ssaaPass.setSize(canvas.clientWidth, canvas.clientHeight);
+ssaaPass.setSize(window.innerWidth, window.innerHeight);
+
+
+
+// composer.addPass(object);
 
 // const toneMappingPass = new ShaderPass(ACESFilmicToneMappingShader);
 // toneMappingPass.uniforms['exposure'].value = 0.5; // Adjust exposure as needed
@@ -216,8 +231,8 @@ composer.addPass(bloomPass);
 // composer.addPass(fxaaPass);
 
 
-const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
-composer.addPass(gammaCorrectionPass);
+// const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
+// composer.addPass(gammaCorrectionPass);
 
 
 // Mirrors the eyes rotation and position, used for checking valid rotations
@@ -376,13 +391,13 @@ function animate(time) {
   requestAnimationFrame(animate);
 
   renderer.clear();
-
-  camera.layers.set(1);
+    // camera.layers.set(0);
+  // camera.layers.set(1);
   composer.render();
 
-  renderer.clearDepth();
-  camera.layers.set(0);
-  renderer.render(scene, camera);
+  // renderer.clearDepth();
+
+  // renderer.render(scene, camera);
 
 
   // if(dissolveEffectFinished){
@@ -490,46 +505,46 @@ function createControls() {
 
 function createSceneLighting() {
 
-    // const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    // directionalLight.position.set(5, 10, 7.5);
-    // directionalLight.castShadow = true;
-    // directionalLight.shadow.mapSize.width = 2048;
-    // directionalLight.shadow.mapSize.height = 2048;
-    // directionalLight.shadow.camera.near = 0.5;
-    // directionalLight.shadow.camera.far = 500;
-    // scene.add(directionalLight);
-    // Ambient light for soft global illumination
-    const hemiLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 0.4 ); 
-    const ambientLight = new THREE.AmbientLight("#666666", 10); // Soft white light
-    scene.add(ambientLight, hemiLight);
-    // Hemisphere light for sky and ground lighting
-    // // const hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 1);
-    // // hemisphereLight.position.set(0, 20, 0);
-    // // scene.add(hemisphereLight);
-    // // Spotlight to focus on the subject
-    // const spotLight = new THREE.SpotLight("#CDCDCD", 5);
-    
-    // spotLight.position.set(0, 1.2, 0);
-    // spotLight.target.position.set(0, 1.2, -1.5); // Point the spotlight at the subject
-    // spotLight.castShadow = true;
-    // spotLight.angle = Math.PI / 6;
-    // spotLight.penumbra = 0.1;
-    // spotLight.decay = 2;
-    // spotLight.distance = 50;
-    // // scene.add(spotLight);
-    // // scene.add(spotLight.target);
-    // // Point light for additional localized lighting
-   
-    const pointLight = new THREE.PointLight(0xffffff, 1, 100);
-    pointLight.position.set(0, 3, -2); // Position the point light above the subject
-    pointLight.castShadow = true;
-    scene.add(pointLight);
-   
-   
-    // Fill light to reduce shadows under the eyes
-    const fillLight = new THREE.PointLight(0xffffff, 0.5, 50);
-    fillLight.position.set(0, 1.5, -1); // Position the fill light in front of the subject
-    scene.add(fillLight);
+  // const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+  // directionalLight.position.set(5, 10, 7.5);
+  // directionalLight.castShadow = true;
+  // directionalLight.shadow.mapSize.width = 2048;
+  // directionalLight.shadow.mapSize.height = 2048;
+  // directionalLight.shadow.camera.near = 0.5;
+  // directionalLight.shadow.camera.far = 500;
+  // scene.add(directionalLight);
+  // Ambient light for soft global illumination
+  const hemiLight = new THREE.HemisphereLight(0x0000ff, 0x00ff00, 0.4);
+  const ambientLight = new THREE.AmbientLight("#666666", 10); // Soft white light
+  scene.add(ambientLight, hemiLight);
+  // Hemisphere light for sky and ground lighting
+  // // const hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 1);
+  // // hemisphereLight.position.set(0, 20, 0);
+  // // scene.add(hemisphereLight);
+  // // Spotlight to focus on the subject
+  // const spotLight = new THREE.SpotLight("#CDCDCD", 5);
+
+  // spotLight.position.set(0, 1.2, 0);
+  // spotLight.target.position.set(0, 1.2, -1.5); // Point the spotlight at the subject
+  // spotLight.castShadow = true;
+  // spotLight.angle = Math.PI / 6;
+  // spotLight.penumbra = 0.1;
+  // spotLight.decay = 2;
+  // spotLight.distance = 50;
+  // // scene.add(spotLight);
+  // // scene.add(spotLight.target);
+  // // Point light for additional localized lighting
+
+  const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+  pointLight.position.set(0, 3, -2); // Position the point light above the subject
+  pointLight.castShadow = true;
+  scene.add(pointLight);
+
+
+  // Fill light to reduce shadows under the eyes
+  const fillLight = new THREE.PointLight(0xffffff, 0.5, 50);
+  fillLight.position.set(0, 1.5, -1); // Position the fill light in front of the subject
+  scene.add(fillLight);
 
 
 }
@@ -989,14 +1004,13 @@ function loadModels() {
         }
         if (node.name == "avaturn_body_1") {
           ourBodyBaseMaterial = node.material.clone()
-          ourBodyBaseMaterial.transparent = true;
-
+          // ourBodyBaseMaterial.transparent = true;
           // node.material.visible = false;
           ourBodyNode = node;
         }
         if (node.name == "avaturn_body_4") {
           ourEyesBaseMaterial = node.material.clone()
-          ourEyesBaseMaterial.transparent = true
+          // ourEyesBaseMaterial.transparent = true
           // node.material.visible = false;
           ourEyesNode = node;
           //  // node.material.transparent = true
@@ -1005,14 +1019,14 @@ function loadModels() {
 
 
           ourClothesBaseMaterial = node.material.clone()
-          ourClothesBaseMaterial.transparent = true;
+          // ourClothesBaseMaterial.transparent = true;
           // node.material.visible = false;
           ourClothesNode = node;
           //  // node.material.transparent = true
         }
         if (node.name == "avaturn_body_2") {
           ourHairBaseMaterial = node.material.clone()
-          ourHairBaseMaterial.transparent = true
+          // ourHairBaseMaterial.transparent = true
           // node.material.visible = false;
           ourHairNode = node;
           //   ourNode = node;
@@ -1206,7 +1220,7 @@ function createShaders() {
     vertexShader: vs,
     fragmentShader: fs,
     transparent: true, // Enable transparency
-    blending: THREE.NormalBlending, // Set blending mode
+    // blending: THREE.NormalBlending, // Set blending mode
   });
 
   hairDissolveShader = new CustomShaderMaterial({
@@ -1224,7 +1238,7 @@ function createShaders() {
     vertexShader: vs,
     fragmentShader: fs,
     transparent: true, // Enable transparency
-    blending: THREE.NormalBlending, // Set blending mode
+    // blending: THREE.NormalBlending, // Set blending mode
   });
 
 
@@ -1242,8 +1256,8 @@ function createShaders() {
     },
     vertexShader: vs,
     fragmentShader: fs,
-    transparent: true, // Enable transparency
-    blending: THREE.NormalBlending, // Set blending mode
+    // transparent: true, // Enable transparency
+    // blending: THREE.AdditiveBlending , // Set blending mode
   });
 
   bodyDissolveShader = new CustomShaderMaterial({
@@ -1261,8 +1275,8 @@ function createShaders() {
     },
     vertexShader: vs,
     fragmentShader: fs,
-    transparent: true, // Enable transparency
-    blending: THREE.NormalBlending, // Set blending mode
+    // transparent: true, // Enable transparency
+    // blending: THREE.NormalBlending, // Set blending mode
   });
 
 
@@ -1558,37 +1572,54 @@ let fs = `
       uniform float threshold;
       uniform sampler2D noiseTexture; //alpha noise texture for diffuse effect
           void main() {
+
+
             vec3 noise = texture2D(noiseTexture, vUv).rgb;
             float dissolve = noise.g;
+     
+     
             if (dissolve < threshold) {
-               discard;
-             }
-
+              discard;
+            }
            float edge = threshold + (thickness / 100.0);
 
-           if(threshold > 0.1){
+            if(threshold > 0.1){
 
-             if (dissolve < edge ) {
-               csm_FragColor = vec4(vec3(edgeColor), 1.0) * brightness;
-               csm_Emissive = vec3(edgeColor); //vec3(1.0, 0.0, 0.0);
-              }
-            }
+            if (dissolve < edge ) {
 
-            float multiply = csm_Metalness;
-
-            if(multiply == 0.0){
-                multiply = 0.5;
-            }
-            if(dim){
-              multiply = 0.1;
-              }
-            csm_FragColor = vec4(vec3(csm_FragColor.rgb) * multiply , 1.0)  ;              //vec4(1.0, 1.0, 1.0, 0.2);
+               csm_Emissive = edgeColor * 20.0;
+          
+            } else{
+           
+        
+          }
+         
+        }  
+          csm_UnlitFac =  csm_UnlitFac;
 
       }
     `;
 
 
 
+// csm_DiffuseColor = csm_DiffuseColor;
+
+
+
+
+
+
+//
+
+//  } else{
+
+
+
+//  }
+
+
+
+// 
 
 let torusVS = `
 uniform float time;
@@ -1746,7 +1777,7 @@ function addTorus() {
   const geometry = new THREE.TorusGeometry(0.5, 0.2, 16, 100);
   torus = new THREE.Mesh(geometry, torusMaterial);
   torus.axis = new THREE.Vector3(1.0, 0, 0.),
-  torus.position.y = 1.6;
+    torus.position.y = 1.6;
   torus.position.z = -1.2;
 
   torus.scale.set(0.2, 0.2, 0.2);
