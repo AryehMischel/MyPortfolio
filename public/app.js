@@ -331,7 +331,7 @@ function animate(time) {
   if (torusMaterial) {
     torusMaterial.uniforms.time.value += 0.01;
   }
-  
+
   if (!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene && dissolveEffectFinished) {
     interactiveAvatarLoaded = true;
     swapAvatars()
@@ -514,7 +514,7 @@ function dimLights() {
 
 // event listeners
 setCanvasSize()
-window.addEventListener('resize', resizeCanvas);
+// window.addEventListener('resize', resizeCanvas);
 window.addEventListener('load', resizeCanvas);
 //helper functions
 
