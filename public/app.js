@@ -145,7 +145,7 @@ console.log("anything new cheif")
 
 
 const backgroundGeometry = new THREE.PlaneGeometry(20, 20);
-const backgroundMaterial = new THREE.MeshBasicMaterial({ color: "#fbdad9", transparent: true, opacity: 0.05}); // Set your desired background color
+const backgroundMaterial = new THREE.MeshBasicMaterial({ color: "#fbdad9", transparent: true, opacity: 0.05 }); // Set your desired background color
 window.backgroundMaterial = backgroundMaterial;
 // backgroundMaterial.toneMapping = THREE.NoToneMapping;
 backgroundMaterial.toneMapped = false;
@@ -161,91 +161,59 @@ scene.add(backgroundMesh);
 
 
 // const renderer = createRenderer()//new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-const renderer = new THREE.WebGLRenderer({ canvas: canvas, 
+const renderer = new THREE.WebGLRenderer({
+  canvas: canvas,
   powerPreference: "high-performance",
-	antialias: true,
+  antialias: true,
 
- });
+});
 
 renderer.autoClear = false;
 renderer.setClearColor(0x000000, 0); // The second parameter is the alpha value
-// renderer.physicallyCorrectLights = true;
-// renderer.shadowMap.enabled = true;
+
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Soft shadows
 renderer.toneMapping = THREE.ACESFilmicToneMapping;  //THREE.CineonToneMapping  //
 renderer.toneMappingExposure = 1;
-// renderer.outputEncoding = THREE.SRGBColorSpace;
-// Set the pixel ratio to the device's pixel ratio
+
 renderer.setPixelRatio(window.devicePixelRatio);
-// Set the size of the renderer
 renderer.setSize(canvas.width, canvas.height);
-
-// renderer.setClearColor(0x000000, 0); // The second parameter is the alpha value
-// renderer.physicallyCorrectLights = true;
-// renderer.shadowMap.enabled = true;
-
-// renderer.colorManagement = true;
-// renderer.outputColorSpace = THREE.SRGBColorSpace; // opt
-// renderer.toneMapping = THREE.ReinhardToneMapping;
-// renderer.toneMappingExposure = 1.0;
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 const composer = new EffectComposer(renderer);
 const renderPass = new RenderPass(scene, camera);
 
-renderPass.alpha = 0; // Set the alpha value to 0
-renderPass.clear = true; // Ensure the render pass clears the buffer
+renderPass.alpha = 0;
+renderPass.clear = true;
 renderPass.clearDepth = true;
 
 
 window.renderer = renderer;
 composer.addPass(renderPass);
 
-const ssaaPass = new SSAARenderPass(scene, camera);
-ssaaPass.sampleLevel = 2; // 
-// composer.addPass(ssaaPass);
-
 const bloomPass = new UnrealBloomPass(new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 0.5, 0.4, 0.85);
-
-
 composer.addPass(bloomPass);
 
-
-// ssaaPass.setSize(canvas.clientWidth, canvas.clientHeight);
-// ssaaPass.setSize(window.innerWidth, window.innerHeight);
-
-
-
-// composer.addPass(object);
-
-// const toneMappingPass = new ShaderPass(ACESFilmicToneMappingShader);
-// toneMappingPass.uniforms['exposure'].value = 0.5; // Adjust exposure as needed
-// composer.addPass(toneMappingPass);
-// FXAA Pass
-// const fxaaPass = new ShaderPass(FXAAShader);
-// fxaaPass.uniforms['resolution'].value.set(1 / canvas.clientWidth, 1 / canvas.clientHeight);
-// composer.addPass(fxaaPass);
-
-
-// const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
-// composer.addPass(gammaCorrectionPass);
 
 
 // Mirrors the eyes rotation and position, used for checking valid rotations
 const checkRightEye = new THREE.Object3D();
 const checkLeftEye = new THREE.Object3D();
+
 // Create a GLTF loader
 const loader = new GLTFLoader();
+
 //for blend shape animation (aka morph targets, blend keys, shape keys, etc)
 let targetInfluences;
 let morphTargetDictionary;
 let faceMesh = null;
+
 //load and set 3d models (the avatar and it's eyes are seperate models)
 loadModels()
 let freezeEyes = false;
 let animateHead = false
 let interactiveAvatarLoaded = false;
 var clock = new THREE.Clock();
+
 // Render the scene
 function animate(time) {
   if (mixer) {
@@ -349,38 +317,6 @@ function animate(time) {
 
 
   }
-  // if (!interactiveAvatarLoaded && eyeBoneLeft &&  interactiveAvatarInScene && dissolveEffectFinished) {
-  //   console.log("loading interactive avatar")
-
-  //   interactiveAvatarLoaded = true;
-
-  //   //insure looped animation stops at next break and loads in InteractiveAvatar
-
-
-
-  //   // tweenBodyDissolveShader.stop()
-  //   // tweenShoesDissolveShader.stop()
-  //   // tweenClothesDissolveShader.stop()
-
-  //   // NonInteractiveAvatar.visible = false;
-  //   // InteractiveAvatar.visible = true;
-
-  //   // // NonInteractiveAvatar.parent.remove(NonInteractiveAvatar)
-
-
-  //   // animateHead = true;
-  //   // animateHeadBackToCenter()
-  //   // action.play();
-  //   // startBlinking()
-
-  //   // // NonInteractiveAvatar.visible = false;
-  //   // interactiveAvatarLoaded = true;
-  //  // growFade()
-  //  // dissolveEffectFinished = false //lol this is stupid
-
-
-  //   //handle swap
-  // }
 
 
 
@@ -394,16 +330,12 @@ function animate(time) {
   // camera.layers.set(0);
   renderer.render(scene, camera);
 
-
-  // if(dissolveEffectFinished){
-  //   renderer.render(scene, camera);
-  // }else{
-  // composer.render();
-
-  // }
-
 }
 animate();
+
+
+
+
 //functions for calculating head and neck movement
 function calculateTargetQuaternion(object, targetPosition) {
   const targetQuaternion = new THREE.Quaternion();
@@ -470,6 +402,7 @@ function createRenderer() {
 
   return renderer;
 }
+
 //create return controller
 function createControls() {
   let controls = new OrbitControls(camera, renderer.domElement);
@@ -495,41 +428,16 @@ function createControls() {
 
 
 
-
-
-
 function createSceneLighting() {
 
-  // const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-  // directionalLight.position.set(5, 10, 7.5);
-  // directionalLight.castShadow = true;
-  // directionalLight.shadow.mapSize.width = 2048;
-  // directionalLight.shadow.mapSize.height = 2048;
-  // directionalLight.shadow.camera.near = 0.5;
-  // directionalLight.shadow.camera.far = 500;
-  // scene.add(directionalLight);
+
   // Ambient light for soft global illumination
   const hemiLight = new THREE.HemisphereLight(0x0000ff, 0x00ff00, 0.4);
   const ambientLight = new THREE.AmbientLight("#666666", 10); // Soft white light
   scene.add(ambientLight, hemiLight);
-  // Hemisphere light for sky and ground lighting
-  // // const hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 1);
-  // // hemisphereLight.position.set(0, 20, 0);
-  // // scene.add(hemisphereLight);
-  // // Spotlight to focus on the subject
-  // const spotLight = new THREE.SpotLight("#CDCDCD", 5);
 
-  // spotLight.position.set(0, 1.2, 0);
-  // spotLight.target.position.set(0, 1.2, -1.5); // Point the spotlight at the subject
-  // spotLight.castShadow = true;
-  // spotLight.angle = Math.PI / 6;
-  // spotLight.penumbra = 0.1;
-  // spotLight.decay = 2;
-  // spotLight.distance = 50;
-  // // scene.add(spotLight);
-  // // scene.add(spotLight.target);
-  // // Point light for additional localized lighting
 
+  // point light for the face
   const pointLight = new THREE.PointLight(0xffffff, 1, 100);
   pointLight.position.set(0, 3, -2); // Position the point light above the subject
   pointLight.castShadow = true;
@@ -544,20 +452,21 @@ function createSceneLighting() {
 
 }
 
+
 function resetLights() {
+
   if (dirLight) {
     dirLight.intensity = 1.5;
-
   }
 
   if (hemiLight) {
     hemiLight.intensity = 2;
-
   }
 
   if (spotLight) {
     spotLight.intensity = 21;
   }
+
 }
 
 function dimLights() {
@@ -600,6 +509,8 @@ function setCanvasSize() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
+
+
 function resizeCanvas() {
   if (isMobile && window.matchMedia("(orientation: portrait)").matches) {
     camera.zoom = 1;
@@ -625,6 +536,7 @@ function setCustomCursor() {
   console.log("setting custom cursor")
   document.body.style.cursor = `url(${customCursorDataURL}), auto`;
 }
+
 function setCursor() {
   console.log("setting cursor, what the actual")
   document.body.style.cursor = 'default';
@@ -860,6 +772,7 @@ function animateHeadBackToCenter() {
     })
   tween.start();
 }
+
 //adds random blinking animation
 let leftEyeBlink = null;
 let lastEventTime = 0;
@@ -924,6 +837,7 @@ function startBlinking() {
 
 
 //sphere shader
+
 // Vertex Shader
 const vertexShader = `
 varying vec3 vNormal;
@@ -934,6 +848,8 @@ vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
 gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
 `;
+
+
 // Fragment Shader
 const fragmentShader = `
 varying vec3 vNormal;
@@ -948,12 +864,16 @@ float alpha = 1.0 - edgeFactor;
 gl_FragColor = vec4(color, alpha);
 }
 `;
+
+
 // Create Shader Material
 const edgeHighlightMaterial = new THREE.ShaderMaterial({
   vertexShader: vertexShader,
   fragmentShader: fragmentShader,
   transparent: true // Enable transparency
 });
+
+
 //create our sphere collider and cube target
 // cube is the target. meaning the character should always look at the cube
 const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
@@ -973,6 +893,8 @@ const sphereMaterial = new THREE.MeshBasicMaterial({
   transparent: true,
   opacity: 0
 });
+
+
 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 sphere.position.set(0, 1, -1.2); //0, 1.6, -1
 sphere.scale.set(7.75, 5, 1); //1.5, 1.5, 0.5
@@ -980,6 +902,10 @@ scene.add(sphere);
 sphere.layers.set(2); // Only check layer 0
 // Apply the shader material to the sphere
 sphere.material = edgeHighlightMaterial;
+
+
+
+
 // load in and set our gltf models
 // Load the GLTF model
 function loadModels() {
@@ -997,38 +923,30 @@ function loadModels() {
           console.log(node.name)
           node.layers.set(1);
         }
+
         if (node.name == "avaturn_body_1") {
           ourBodyBaseMaterial = node.material.clone()
-          // ourBodyBaseMaterial.transparent = true;
-          // node.material.visible = false;
           ourBodyNode = node;
         }
+
         if (node.name == "avaturn_body_4") {
           ourEyesBaseMaterial = node.material.clone()
-          // ourEyesBaseMaterial.transparent = true
-          // node.material.visible = false;
           ourEyesNode = node;
-          //  // node.material.transparent = true
         }
+
         if (node.name == "avaturn_body_3") {
-
-
           ourClothesBaseMaterial = node.material.clone()
-          // ourClothesBaseMaterial.transparent = true;
-          // node.material.visible = false;
           ourClothesNode = node;
-          //  // node.material.transparent = true
         }
+
         if (node.name == "avaturn_body_2") {
           ourHairBaseMaterial = node.material.clone()
-          // ourHairBaseMaterial.transparent = true
-          // node.material.visible = false;
           ourHairNode = node;
-          //   ourNode = node;
         }
 
 
       });
+
       createShaders()
       NonInteractiveAvatar.layers.set(1);
       NonInteractiveAvatar.position.set(0, 0, -2);
@@ -1161,8 +1079,6 @@ function loadModels() {
       eyeBoneRightHelper.position.copy(eyeBoneRight.position);
       eyeBoneRightHelper.rotation.copy(eyeBoneRight.rotation);
 
-      //
-
 
     })
   })
@@ -1177,23 +1093,6 @@ function createTorus() {
   scene.add(torus);
   window.torus = torus;
 }
-
-
-
-
-// loader.load(avatarPath, function (gltf) {
-//   console.log("starting")
-//   model = gltf.scenes[0];
-//   let face = model.children[0]
-
-
-// loader.load(eyeModelPath, function (gltf) {
-
-// });
-
-
-// });
-// }
 
 
 //create shaders
@@ -1214,8 +1113,7 @@ function createShaders() {
 
     vertexShader: vs,
     fragmentShader: fs,
-    transparent: true, // Enable transparency
-    // blending: THREE.NormalBlending, // Set blending mode
+
   });
 
   hairDissolveShader = new CustomShaderMaterial({
@@ -1232,8 +1130,7 @@ function createShaders() {
     },
     vertexShader: vs,
     fragmentShader: fs,
-    transparent: true, // Enable transparency
-    // blending: THREE.NormalBlending, // Set blending mode
+
   });
 
 
@@ -1251,8 +1148,7 @@ function createShaders() {
     },
     vertexShader: vs,
     fragmentShader: fs,
-    // transparent: true, // Enable transparency
-    // blending: THREE.AdditiveBlending , // Set blending mode
+
   });
 
   bodyDissolveShader = new CustomShaderMaterial({
@@ -1270,11 +1166,8 @@ function createShaders() {
     },
     vertexShader: vs,
     fragmentShader: fs,
-    // transparent: true, // Enable transparency
-    // blending: THREE.NormalBlending, // Set blending mode
+
   });
-
-
 
   ourBodyNode.material = bodyDissolveShader;
   ourClothesNode.material = clothesDissolveShader;
@@ -1284,34 +1177,34 @@ function createShaders() {
 }
 
 
-function swapAvatars() {
-  // NonInteractiveAvatar.visible = false;
-  // InteractiveAvatar.visible = true;
-  growFade()
-  // animateHead = true;
-  // animateHeadBackToCenter();
-  // startBlinking();
+async function swapAvatars() {
+  if (tweenBodyDissolveShader.isPlaying()) {
+    tweenBodyDissolveShader.stop()
+  }
+  if (tweenClothesDissolveShader.isPlaying()) {
+    tweenClothesDissolveShader.stop()
+  }
+  if (tweenEyesDissolveShader.isPlaying()) {
+    tweenEyesDissolveShader.stop()
+  }
+  if(tweenHairDissolveShader.isPlaying()){
+    tweenHairDissolveShader.stop()
+  }
 
-  // brightenTween = new TWEEN.Tween({ x: 55 })
-  //   .to({ x: 0 }, 600)
-  //   .easing(TWEEN.Easing.Cubic.Out)
-  //   .onComplete(() => {
 
-  //   })
-  //   .onUpdate((object) => {
-  //     clothesDissolveShader.uniforms.brightness.value = object.x
-  //     bodyDissolveShader.uniforms.brightness.value = object.x
-  //     hairDissolveShader.uniforms.brightness.value = object.x
-  //     shoesDissolveShader.uniforms.brightness.value = object.x
-  //   });
-  // brightenTween.start();
+  InteractiveAvatar.position.set(0, 0, -2);
+  NonInteractiveAvatar.position.set(0, 10, -2);
 
+
+
+  action.play();
+  await waitForSeconds(0.25)
+  animateHead = true;
+  startBlinking();
+  //animate towards current mouse position
+  await waitForSeconds(2)
+  NonInteractiveAvatar.parent.remove(NonInteractiveAvatar);
 }
-
-function loadingShader() {
-
-}
-
 
 function animateHairIn() {
   tweenHairDissolveShader = new TWEEN.Tween({ x: 1 })
@@ -1342,38 +1235,13 @@ function animateBodyIn() {
     .delay(300)
     // .easing(TWEEN.Easing.Cubic.InOut)
     .onComplete(() => {
-      // console.log("complete hat animation", performance.now())
-      //   dissolveEffectFinished = true
-      //   if(!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene){
-      //     swapAvatars()
-      //   }else{
-      //     console.log("start the animation shader")
-      //     loadingShader()
-      //   }
-
-      // if(!interactiveAvatarLoaded){
-      //   //animateBodyIn()
-      // }else{
-      //   swapAvatars()
-      // }
-      // if(!interactiveAvatarLoaded){
-      //   animateBodyIn()
-      // }else{
-      //   
-      // }
-      // tweenBodyDissolveShader.stop();
-      // tweenBodyDissolveShader.start();
+      
     })
     .onUpdate((object) => {
       bodyDissolveShader.uniforms.threshold.value = object.x;
     })
     .start();
 
-
-  // tweenBodyDissolveShader.yoyo(true) 
-
-  // tweenBodyDissolveShader.repeat(10)
-  // tweenBodyDissolveShader.start();
 }
 
 
@@ -1399,19 +1267,6 @@ function animateEyesIn() {
     .delay(200)
     .onComplete(() => {
 
-
-      // if(!interactiveAvatarLoaded){
-      //   //animateBodyIn()
-      // }else{
-      //   swapAvatars()
-      // }
-      // if(!interactiveAvatarLoaded){
-      //   animateBodyIn()
-      // }else{
-      //   
-      // }
-      // tweenBodyDissolveShader.stop();
-      // tweenBodyDissolveShader.start();
     })
     .onUpdate((object) => {
       eyesDissolveShader.uniforms.threshold.value = object.x;
@@ -1421,65 +1276,9 @@ function animateEyesIn() {
 
 }
 
-//function for fading out dummy avatar
-async function growFade() {
 
-  if (tweenBodyDissolveShader.isPlaying()) {
-    tweenBodyDissolveShader.stop()
-  }
-  if (tweenClothesDissolveShader.isPlaying()) {
-    tweenClothesDissolveShader.stop()
-  }
-  if (tweenEyesDissolveShader.isPlaying()) {
-    tweenEyesDissolveShader.stop()
-  }
-
-
-  // if(tweenHairDissolveShader.isPlaying()){
-  //   tweenHairDissolveShader.stop()
-  // }
-  InteractiveAvatar.position.set(0, 0, -2);
-  NonInteractiveAvatar.position.set(0, 10, -2);
-
-
-
-  action.play();
-  await waitForSeconds(0.25)
-  animateHead = true;
-  startBlinking();
-  //animate towards current mouse position
-  await waitForSeconds(2)
-  NonInteractiveAvatar.parent.remove(NonInteractiveAvatar);
-  console.log("removing dummy avatar")
-  // Play idle animation
-
-
-  // shoesDissolveShader.uniforms.growFade.value = true;
-  // bodyDissolveShader.uniforms.growFade.value = true;
-  // hairDissolveShader.uniforms.growFade.value = true;
-  // clothesDissolveShader.uniforms.growFade.value = true;
-  // fadeOutShaders()
-
-}
 
 function fadeOutShaders() {
-
-
-  // brightenTween = new TWEEN.Tween({ x: 1})
-  //   .to({ x: 55}, 100)
-  //   // .easing(TWEEN.Easing.Cubic.Out)
-  //   .onComplete(() => {console.log("First tween completed")
-
-  //       // NonInteractiveAvatar.visible = false;
-  //   })
-
-  //   .onUpdate((object) => {
-  //     console.log("First tween going")
-  //     clothesDissolveShader.uniforms.brightness.value = object.x
-  //     bodyDissolveShader.uniforms.brightness.value = object.x
-  //     hairDissolveShader.uniforms.brightness.value = object.x
-  //     shoesDissolveShader.uniforms.brightness.value = object.x
-  //   });
 
   fadeOutTween = new TWEEN.Tween({ x: 75 })
     .to({ x: -2 }, 1000)
@@ -1506,7 +1305,6 @@ function fadeOutShaders() {
   console.log("starting fade out ", performance.now())
 
 }
-window.growFade = growFade;
 
 async function animateAll() {
   await waitForSeconds(1.5)
@@ -1539,8 +1337,6 @@ window.animateHairIn = animateHairIn;
 
 window.animateAll = animateAll;
 window.animateTogether = animateTogether;
-
-
 
 
 
@@ -1596,25 +1392,6 @@ let fs = `
     `;
 
 
-
-// csm_DiffuseColor = csm_DiffuseColor;
-
-
-
-
-
-
-//
-
-//  } else{
-
-
-
-//  }
-
-
-
-// 
 
 let torusVS = `
 uniform float time;
@@ -1735,7 +1512,6 @@ let matcapTexture = new THREE.TextureLoader().load(assetPath + 'matcap3.jpg');
 
 let torus = null;
 function addTorus() {
-  // dimLights()
 
   bodyDissolveShader.uniforms.dim.value = true;
   clothesDissolveShader.uniforms.dim.value = true;
