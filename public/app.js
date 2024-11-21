@@ -346,11 +346,11 @@ function animate(time) {
 
   requestAnimationFrame(animate);
 
-  renderer.clear();
-  // camera.layers.set(1);
-  composer.render();
+  // renderer.clear();
+  // // camera.layers.set(1);
+  // composer.render();
 
-  renderer.clearDepth();
+  // renderer.clearDepth();
   // camera.layers.set(0);
   renderer.render(scene, camera);
 
@@ -1196,6 +1196,7 @@ function createShaders() {
 
 
 async function swapAvatars() {
+  console.log('swapping avatars')
   if (tweenBodyDissolveShader.isPlaying()) {
     tweenBodyDissolveShader.stop()
   }
