@@ -163,15 +163,14 @@ scene.add(backgroundMesh);
 // const renderer = createRenderer()//new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
 const renderer = new THREE.WebGLRenderer({ canvas: canvas, 
   powerPreference: "high-performance",
-	antialias: false,
-	stencil: false,
-	depth: false
+	antialias: true,
+
  });
 
 renderer.autoClear = false;
 renderer.setClearColor(0x000000, 0); // The second parameter is the alpha value
-renderer.physicallyCorrectLights = true;
-renderer.shadowMap.enabled = true;
+// renderer.physicallyCorrectLights = true;
+// renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Soft shadows
 renderer.toneMapping = THREE.ACESFilmicToneMapping;  //THREE.CineonToneMapping  //
 renderer.toneMappingExposure = 1;
@@ -186,12 +185,9 @@ renderer.setSize(canvas.width, canvas.height);
 // renderer.shadowMap.enabled = true;
 
 // renderer.colorManagement = true;
-renderer.outputColorSpace = THREE.SRGBColorSpace; // opt
+// renderer.outputColorSpace = THREE.SRGBColorSpace; // opt
 // renderer.toneMapping = THREE.ReinhardToneMapping;
 // renderer.toneMappingExposure = 1.0;
-renderer.setPixelRatio(window.devicePixelRatio);
-
-// renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 const composer = new EffectComposer(renderer);
@@ -207,7 +203,7 @@ composer.addPass(renderPass);
 
 const ssaaPass = new SSAARenderPass(scene, camera);
 ssaaPass.sampleLevel = 2; // 
-composer.addPass(ssaaPass);
+// composer.addPass(ssaaPass);
 
 const bloomPass = new UnrealBloomPass(new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 0.5, 0.4, 0.85);
 
@@ -215,8 +211,8 @@ const bloomPass = new UnrealBloomPass(new THREE.Vector2(canvas.clientWidth, canv
 composer.addPass(bloomPass);
 
 
-ssaaPass.setSize(canvas.clientWidth, canvas.clientHeight);
-ssaaPass.setSize(window.innerWidth, window.innerHeight);
+// ssaaPass.setSize(canvas.clientWidth, canvas.clientHeight);
+// ssaaPass.setSize(window.innerWidth, window.innerHeight);
 
 
 
@@ -391,13 +387,12 @@ function animate(time) {
   requestAnimationFrame(animate);
 
   renderer.clear();
-    // camera.layers.set(0);
   // camera.layers.set(1);
   composer.render();
 
-  // renderer.clearDepth();
-
-  // renderer.render(scene, camera);
+  renderer.clearDepth();
+  // camera.layers.set(0);
+  renderer.render(scene, camera);
 
 
   // if(dissolveEffectFinished){
@@ -1117,7 +1112,7 @@ function loadModels() {
     neckBoneOriginHelper.rotation.copy(neckBone.rotation);
 
     InteractiveAvatar.visible = true;
-    InteractiveAvatar.layers.set(1);
+    InteractiveAvatar.layers.set(0);
     scene.add(InteractiveAvatar);
     interactiveAvatarInScene = true;
 
