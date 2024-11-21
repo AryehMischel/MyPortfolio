@@ -302,12 +302,14 @@ function animate(time) {
   }
   if (tweenHairDissolveShader) {
     tweenHairDissolveShader.update()
+
   }
   if (tweenClothesDissolveShader) {
     tweenClothesDissolveShader.update()
   }
   if (tweenEyesDissolveShader) {
     tweenEyesDissolveShader.update()
+
   }
 
 
@@ -325,6 +327,7 @@ function animate(time) {
   if (NonInteractiveAvatar && !dissolveEffectStarted) {
     dissolveEffectStarted = true;
     animateTogether()
+
   }
 
 
@@ -337,6 +340,7 @@ function animate(time) {
     swapAvatars()
     removeTorus()
 
+    
 
   }
 
@@ -1204,7 +1208,14 @@ async function swapAvatars() {
   if (tweenHairDissolveShader.isPlaying()) {
     tweenHairDissolveShader.stop()
   }
+  tweenBodyDissolveShader = null;
+  tweenClothesDissolveShader = null;
+  tweenEyesDissolveShader = null;
+  tweenHairDissolveShader = null;
 
+
+
+0
 
   InteractiveAvatar.position.set(0, 0, -2);
   NonInteractiveAvatar.position.set(0, 10, -2);
