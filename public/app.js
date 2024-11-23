@@ -259,7 +259,7 @@ function animate(time) {
 
 
 
-  if (!isMobile) {
+  // if (!isMobile) {
 
     if (InteractiveAvatar && animateHead) {
 
@@ -300,7 +300,7 @@ function animate(time) {
     }
 
 
-  }
+  // }
 
 
 
@@ -745,8 +745,8 @@ animateHeadTriggerRectColl.addEventListener('touchmove', (event) => {
   const y = touch.pageY - rect.top;
   const u = (x / rect.width) * 2 - 1;
   const v = (y / rect.height) * 2 - 1;
-  const mouse = new THREE.Vector2(u, -v);
-  detectMouseOverSphereColl(mouse);
+  const finger = new THREE.Vector2(u, -v);
+  detectFingerOverSphereColl(finger);
 
 });
 
@@ -773,6 +773,7 @@ function detectMouseOverSphereColl(mouse) {
           tween.stop()
         }
       }
+      
       if (!customCursorShowing) {
         setCustomCursor();
         customCursorShowing = true;
@@ -788,6 +789,68 @@ function detectMouseOverSphereColl(mouse) {
     animateHeadBackToCenter()
   }
 }
+
+
+
+
+
+
+//detect if finger is over collider
+function detectFingerOverSphereColl(finger) {
+
+  raycaster.setFromCamera(finger, camera);
+  // Calculate objects intersecting the ray
+  const intersects = raycaster.intersectObjects(scene.children, true);
+  // Check if the sphere is intersected
+  for (let i = 0; i < intersects.length; i++) {
+    if (intersects[i].object === sphere) {
+      previousMouseIntersectionPoint.copy(finger);
+      if (leaveTimeout) {
+        clearTimeout(leaveTimeout)
+      }
+
+      if (tween) {
+        if (tween.isPlaying()) {
+          tween.stop()
+        }
+      }
+
+      if (!customCursorShowing) {
+        // setCustomCursor();
+        customCursorShowing = true;
+      }
+
+      const hitPoint = intersects[i].point;
+      cube.position.copy(hitPoint);
+      return;
+    }
+  }
+
+
+  if (customCursorShowing) {
+    customCursorShowing = false;
+    animateHeadBackToCenter()
+    // setCursor();
+  }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 window.detectMouseOverSphereColl = detectMouseOverSphereColl;
 //resets head back to center
 
