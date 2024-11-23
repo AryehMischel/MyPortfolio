@@ -143,6 +143,7 @@ const previousMouseIntersectionPoint = new THREE.Vector2();
 // Create a scene
 const scene = new THREE.Scene();
 // scene.background = new THREE.Color("#fbdad9");
+// scene.background.opacity = 0.1
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(0.0, 1.6, 0.5); // Adjust the camera position 0.005, 1.6, 0.5
@@ -156,21 +157,43 @@ console.log("anything new cheif")
 
 
 const backgroundGeometry = new THREE.PlaneGeometry(20, 20);
-const backgroundMaterial = new THREE.MeshBasicMaterial({ color: "#fbdad9", transparent: true, opacity: 0.05 }); // Set your desired background color
+const backgroundMaterial = new THREE.ShaderMaterial({
+  uniforms: {
+    color: { value: new THREE.Color("#fadad9").convertSRGBToLinear() }  //#fddfdf 
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform vec3 color;
+    varying vec2 vUv;
+    void main() {
+      gl_FragColor = vec4(2.50, color.g * 1.65, color.b * 1.65 , 1.0);
+    }
+  `,
+  side: THREE.DoubleSide
+});
+
+backgroundMaterial.toneMapped = false
+
+
 window.backgroundMaterial = backgroundMaterial;
+
 // backgroundMaterial.toneMapping = THREE.NoToneMapping;
-backgroundMaterial.toneMapped = false;
-backgroundMaterial.colorSpace = THREE.LinearSRGBColorSpace;
+
+
 
 backgroundMaterial.needsUpdate = true;
 
 const backgroundMesh = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
-backgroundMesh.layers.set(0);
+backgroundMesh.layers.set(1);
 backgroundMesh.position.set(0, 0, -5);
 
 scene.add(backgroundMesh);
-
-
 // const renderer = createRenderer()//new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
@@ -189,6 +212,7 @@ renderer.toneMappingExposure = 1;
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(canvas.width, canvas.height);
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.colorManagement = true;  
 
 const composer = new EffectComposer(renderer);
 const renderPass = new RenderPass(scene, camera);
@@ -201,10 +225,11 @@ renderPass.clearDepth = true;
 window.renderer = renderer;
 composer.addPass(renderPass);
 
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 0.5, 0.4, 0.85);
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 0.5, 0.4, 4.85);
 composer.addPass(bloomPass);
 
-
+// const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
+// composer.addPass(gammaCorrectionPass);
 
 // Mirrors the eyes rotation and position, used for checking valid rotations
 const checkRightEye = new THREE.Object3D();
@@ -342,14 +367,17 @@ function animate(time) {
 
   requestAnimationFrame(animate);
 
-  // camera.layers.set(0);
 
-  if (!isMobile) {
-  
-    renderer.clear();
-    composer.render();
-    renderer.clearDepth();
-  }
+  renderer.clear();
+
+  if (!interactiveAvatarLoaded) {
+  //   camera.layers.set(1);
+     composer.render();
+  //   renderer.clearDepth();
+  //   camera.layers.set(0);
+   } else{
+    console.log("dissolve finishedd")
+   }
 
   renderer.render(scene, camera);
 
@@ -1007,6 +1035,8 @@ function loadModels() {
 
       if (object.isMesh) {
         object.layers.set(0);
+        // object.material.ACESFilmicToneMapping = true;
+        // object.material.colorSpace = THREE.LinearSRGBColorSpace;  
       }
       if (object.morphTargetInfluences) {
         if (faceMesh === null) {
@@ -1195,6 +1225,9 @@ function createShaders() {
 
 
 async function swapAvatars() {
+  
+  interactiveAvatarLoaded = true;
+  dissolveEffectFinished
   if (tweenBodyDissolveShader.isPlaying()) {
     tweenBodyDissolveShader.stop()
   }
@@ -1216,7 +1249,7 @@ async function swapAvatars() {
 
   InteractiveAvatar.position.set(0, 0, -2);
   NonInteractiveAvatar.position.set(0, 10, -2);
-
+  backgroundMesh.visible = false;
 
 
 
