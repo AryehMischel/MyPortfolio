@@ -152,8 +152,6 @@ let dirLight = null;
 let hemiLight = null;
 let spotLight = null;
 createSceneLighting();
-console.log("anything new cheif")
-
 
 const backgroundGeometry = new THREE.PlaneGeometry(20, 20);
 const backgroundMaterial = new THREE.ShaderMaterial({
@@ -397,9 +395,7 @@ if (!interactiveAvatarLoaded) {
   composer.render();
   //   renderer.clearDepth();
   //   camera.layers.set(0);
-} else {
-  console.log("dissolve finishedd")
-}
+} 
 
 renderer.render(scene, camera);
 
