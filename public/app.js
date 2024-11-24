@@ -13,15 +13,33 @@ import { SSAARenderPass } from 'three/examples/jsm/postprocessing/SSAARenderPass
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
-import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js';
-import { ACESFilmicToneMappingShader } from 'three/examples/jsm/shaders/ACESFilmicToneMappingShader.js';
+import { GammaCorrectionShader } from 'three/examples/jsm/Addons.js';
 
+console.log("loaded all modules", performance.now())
+
+let isMobile = false;
+window.mobileCheck = function () {
+  (function (a) { if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) isMobile = true; })(navigator.userAgent || navigator.vendor || window.opera);
+};
+mobileCheck()
+let mobileAnimation = null;
+let fingerDown = false;
+let animationContainer = document.getElementById('animationContainer');
+let bubble = 0;
+let bubbleClasses = ["bubble x1", "bubble x2", "bubble x3", "bubble x4", "bubble x5", "bubble x6", "bubble x7", "bubble x8"];
+console.log(animationContainer)
+
+
+
+
+
+const assetPath = "https://d368ik34cg55zg.cloudfront.net/"
 const customCursorDataURL = 'data:image/x-icon;base64,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'
-const avatarPath = "https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/avatarWithAnimation.glb"  //"./avatarWithAnimation.glb" //"https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AvatarNoEyesNormalPose.glb"; //"https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AvatarSemiSmile.glb"  
-const eyeModelPath = "https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AryehAvatarFullBodyJustEyesAndFaceRig.glb"
+const avatarPath = assetPath + "avatarWithAnimation.glb"
+const eyeModelPath = assetPath + "AryehAvatarFullBodyJustEyesAndFaceRig.glb"
 
 
-let NonInteractiveAvatarPath = "https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AryehAvatarNonInteractiveWithEyes.glb" //https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/AryehAvatarNonInteractive2.glb"
+let NonInteractiveAvatarPath = assetPath + "AryehAvatarNonInteractiveWithEyes.glb"
 
 let NonInteractiveAvatar = null;
 let InteractiveAvatar = null;
@@ -97,16 +115,15 @@ let tweenEyesDissolveShader = null;
 // const noiseTexture = new THREE.TextureLoader().load('./assets/noise6.png');
 // noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
 
-const noiseTexture2 = new THREE.TextureLoader().load('https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/noiseCircle.png');
+const noiseTexture2 = new THREE.TextureLoader().load(assetPath + 'noiseCircle.png');
 noiseTexture2.wrapS = noiseTexture2.wrapT = THREE.RepeatWrapping;
 
-const noiseTexture3 = new THREE.TextureLoader().load('https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/noise4.png');
+const noiseTexture3 = new THREE.TextureLoader().load(assetPath + 'noise4.png');
 noiseTexture3.wrapS = noiseTexture3.wrapT = THREE.RepeatWrapping;
 
 
-const directionNoise = new THREE.TextureLoader().load('https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/noise7.jpeg');
-const doubleNoise = new THREE.TextureLoader().load('https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/doubleNoise2.png');
-
+const directionNoise = new THREE.TextureLoader().load(assetPath + 'noise7.jpeg');
+const doubleNoise = new THREE.TextureLoader().load(assetPath + 'doubleNoise2.png');
 
 
 
@@ -131,6 +148,7 @@ const previousMouseIntersectionPoint = new THREE.Vector2();
 // Create a scene
 const scene = new THREE.Scene();
 // scene.background = new THREE.Color("#fbdad9");
+// scene.background.opacity = 0.1
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(0.0, 1.6, 0.5); // Adjust the camera position 0.005, 1.6, 0.5
@@ -140,99 +158,101 @@ let dirLight = null;
 let hemiLight = null;
 let spotLight = null;
 createSceneLighting();
-console.log("anything new cheif")
-
 
 const backgroundGeometry = new THREE.PlaneGeometry(20, 20);
-const backgroundMaterial = new THREE.MeshBasicMaterial({ color: "#fbdad9" }); // Set your desired background color
+const backgroundMaterial = new THREE.ShaderMaterial({
+  uniforms: {
+    color: { value: new THREE.Color("#fadad9").convertSRGBToLinear() }  //#fddfdf 
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform vec3 color;
+    varying vec2 vUv;
+    void main() {
+      gl_FragColor = vec4(2.50, color.g * 1.65, color.b * 1.65 , 1.0);
+    }
+  `,
+  side: THREE.DoubleSide
+});
+
+backgroundMaterial.toneMapped = false
+
+
+window.backgroundMaterial = backgroundMaterial;
+
+// backgroundMaterial.toneMapping = THREE.NoToneMapping;
+
+
+
+backgroundMaterial.needsUpdate = true;
+
 const backgroundMesh = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
 backgroundMesh.layers.set(1);
 backgroundMesh.position.set(0, 0, -5);
 
 scene.add(backgroundMesh);
-
-
 // const renderer = createRenderer()//new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+const renderer = new THREE.WebGLRenderer({
+  canvas: canvas,
+  powerPreference: "high-performance",
+  antialias: true,
+
+});
+
 renderer.autoClear = false;
 renderer.setClearColor(0x000000, 0); // The second parameter is the alpha value
-renderer.physicallyCorrectLights = true;
-renderer.shadowMap.enabled = true;
+
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Soft shadows
 renderer.toneMapping = THREE.ACESFilmicToneMapping;  //THREE.CineonToneMapping  //
 renderer.toneMappingExposure = 1;
-// renderer.outputEncoding = THREE.SRGBColorSpace;
-// Set the pixel ratio to the device's pixel ratio
+
 renderer.setPixelRatio(window.devicePixelRatio);
-// Set the size of the renderer
 renderer.setSize(canvas.width, canvas.height);
-
-// renderer.setClearColor(0x000000, 0); // The second parameter is the alpha value
-// renderer.physicallyCorrectLights = true;
-// renderer.shadowMap.enabled = true;
-
-
-renderer.colorManagement = true;
-// renderer.outputColorSpace = THREE.Linear; // opt
-// renderer.toneMapping = THREE.ReinhardToneMapping;
-// renderer.toneMappingExposure = 1.0;
-renderer.setPixelRatio(window.devicePixelRatio);
-
-// renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.colorManagement = true;
 
 const composer = new EffectComposer(renderer);
 const renderPass = new RenderPass(scene, camera);
 
-renderPass.alpha = 0; // Set the alpha value to 0
-renderPass.clear = true; // Ensure the render pass clears the buffer
+renderPass.alpha = 0;
+renderPass.clear = true;
 renderPass.clearDepth = true;
 
 
 window.renderer = renderer;
 composer.addPass(renderPass);
 
-const ssaaPass = new SSAARenderPass(scene, camera);
-ssaaPass.sampleLevel = 2; // 
-composer.addPass(ssaaPass);
-
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 0.5, 0.4, 0.85);
-
-
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 0.5, 0.4, 4.85);
 composer.addPass(bloomPass);
 
-
-// ssaaPass.setSize(canvas.clientWidth, canvas.clientHeight);
-// ssaaPass.setSize(window.innerWidth, window.innerHeight);
-
-// const toneMappingPass = new ShaderPass(ACESFilmicToneMappingShader);
-// toneMappingPass.uniforms['exposure'].value = 0.5; // Adjust exposure as needed
-// composer.addPass(toneMappingPass);
-// FXAA Pass
-// const fxaaPass = new ShaderPass(FXAAShader);
-// fxaaPass.uniforms['resolution'].value.set(1 / canvas.clientWidth, 1 / canvas.clientHeight);
-// composer.addPass(fxaaPass);
-
-
-const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
-composer.addPass(gammaCorrectionPass);
-
+// const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
+// composer.addPass(gammaCorrectionPass);
 
 // Mirrors the eyes rotation and position, used for checking valid rotations
 const checkRightEye = new THREE.Object3D();
 const checkLeftEye = new THREE.Object3D();
+
 // Create a GLTF loader
 const loader = new GLTFLoader();
+
 //for blend shape animation (aka morph targets, blend keys, shape keys, etc)
 let targetInfluences;
 let morphTargetDictionary;
 let faceMesh = null;
+
 //load and set 3d models (the avatar and it's eyes are seperate models)
 loadModels()
 let freezeEyes = false;
 let animateHead = false
 let interactiveAvatarLoaded = false;
 var clock = new THREE.Clock();
+
 // Render the scene
 function animate(time) {
   if (mixer) {
@@ -240,7 +260,34 @@ function animate(time) {
     mixer.update(deltaSeconds);
   }
 
+
+
+  // if (!isMobile) {
+
   if (InteractiveAvatar && animateHead) {
+    if (isMobile && !fingerDown && mobileAnimation) {
+      // Get the bounding rectangles of the canvas and the animateHeadTriggerRectColl element
+      const canvasRect = canvas.getBoundingClientRect();
+      const triggerRect = mobileAnimation.getBoundingClientRect();
+      // Calculate the relative position of the triggerRect within the canvas
+      const triggerCenterX = triggerRect.left + triggerRect.width / 2;
+      const triggerCenterY = triggerRect.top + triggerRect.height / 2;
+
+      const canvasCenterX = canvasRect.left + canvasRect.width / 2;
+      const canvasCenterY = canvasRect.top + canvasRect.height / 2;
+
+      const relativeX = (triggerCenterX - canvasRect.left) / canvasRect.width * 2 - 1;
+      // const relativeY = (triggerCenterY - canvasRect.top) / canvasRect.height * 2 - 1;
+      const relativeY = 1 - (triggerCenterY - canvasRect.top) / canvasRect.height * 2;
+
+      // console.log("animated box Relative Position: ", relativeX, relativeY);
+      detectMouseOverSphereColl(new THREE.Vector2(relativeX.toFixed(2), relativeY.toFixed(2)));
+
+    }
+
+
+
+
 
     headBoneHelper.lookAt(targetPosition);
     let [yaw, pitch] = calculateYawAndPitchDifference(headBoneHelper.rotation, headBoneOriginHelper.rotation);
@@ -277,6 +324,12 @@ function animate(time) {
     rotateEyes();
     // }
   }
+
+
+  // }
+
+
+
 
   //tween stuff
 
@@ -329,6 +382,7 @@ function animate(time) {
   if (torusMaterial) {
     torusMaterial.uniforms.time.value += 0.01;
   }
+
   if (!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene && dissolveEffectFinished) {
     interactiveAvatarLoaded = true;
     swapAvatars()
@@ -336,62 +390,29 @@ function animate(time) {
 
 
   }
-  // if (!interactiveAvatarLoaded && eyeBoneLeft &&  interactiveAvatarInScene && dissolveEffectFinished) {
-  //   console.log("loading interactive avatar")
-
-  //   interactiveAvatarLoaded = true;
-
-  //   //insure looped animation stops at next break and loads in InteractiveAvatar
-
-
-
-  //   // tweenBodyDissolveShader.stop()
-  //   // tweenShoesDissolveShader.stop()
-  //   // tweenClothesDissolveShader.stop()
-
-  //   // NonInteractiveAvatar.visible = false;
-  //   // InteractiveAvatar.visible = true;
-
-  //   // // NonInteractiveAvatar.parent.remove(NonInteractiveAvatar)
-
-
-  //   // animateHead = true;
-  //   // animateHeadBackToCenter()
-  //   // action.play();
-  //   // startBlinking()
-
-  //   // // NonInteractiveAvatar.visible = false;
-  //   // interactiveAvatarLoaded = true;
-  //  // growFade()
-  //  // dissolveEffectFinished = false //lol this is stupid
-
-
-  //   //handle swap
-  // }
-
-
 
   requestAnimationFrame(animate);
 
+
   renderer.clear();
 
-  camera.layers.set(1);
-  composer.render();
+  if (!interactiveAvatarLoaded) {
+    //   camera.layers.set(1);
+    composer.render();
+    //   renderer.clearDepth();
+    //   camera.layers.set(0);
+  }
 
-  renderer.clearDepth();
-  camera.layers.set(0);
   renderer.render(scene, camera);
 
-
-  // if(dissolveEffectFinished){
-  //   renderer.render(scene, camera);
-  // }else{
-  // composer.render();
-
-  // }
-
 }
+
 animate();
+console.log("scene loaded", performance.now())
+
+
+
+
 //functions for calculating head and neck movement
 function calculateTargetQuaternion(object, targetPosition) {
   const targetQuaternion = new THREE.Quaternion();
@@ -458,6 +479,7 @@ function createRenderer() {
 
   return renderer;
 }
+
 //create return controller
 function createControls() {
   let controls = new OrbitControls(camera, renderer.domElement);
@@ -483,69 +505,45 @@ function createControls() {
 
 
 
-
-
-
 function createSceneLighting() {
 
-    // const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    // directionalLight.position.set(5, 10, 7.5);
-    // directionalLight.castShadow = true;
-    // directionalLight.shadow.mapSize.width = 2048;
-    // directionalLight.shadow.mapSize.height = 2048;
-    // directionalLight.shadow.camera.near = 0.5;
-    // directionalLight.shadow.camera.far = 500;
-    // scene.add(directionalLight);
-    // Ambient light for soft global illumination
-    const hemiLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 0.4 ); 
-    const ambientLight = new THREE.AmbientLight("#666666", 10); // Soft white light
-    scene.add(ambientLight, hemiLight);
-    // Hemisphere light for sky and ground lighting
-    // // const hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 1);
-    // // hemisphereLight.position.set(0, 20, 0);
-    // // scene.add(hemisphereLight);
-    // // Spotlight to focus on the subject
-    // const spotLight = new THREE.SpotLight("#CDCDCD", 5);
-    
-    // spotLight.position.set(0, 1.2, 0);
-    // spotLight.target.position.set(0, 1.2, -1.5); // Point the spotlight at the subject
-    // spotLight.castShadow = true;
-    // spotLight.angle = Math.PI / 6;
-    // spotLight.penumbra = 0.1;
-    // spotLight.decay = 2;
-    // spotLight.distance = 50;
-    // // scene.add(spotLight);
-    // // scene.add(spotLight.target);
-    // // Point light for additional localized lighting
-   
-    const pointLight = new THREE.PointLight(0xffffff, 1, 100);
-    pointLight.position.set(0, 3, -2); // Position the point light above the subject
-    pointLight.castShadow = true;
-    scene.add(pointLight);
-   
-   
-    // Fill light to reduce shadows under the eyes
-    const fillLight = new THREE.PointLight(0xffffff, 0.5, 50);
-    fillLight.position.set(0, 1.5, -1); // Position the fill light in front of the subject
-    scene.add(fillLight);
+
+  // Ambient light for soft global illumination
+  const hemiLight = new THREE.HemisphereLight(0x0000ff, 0x00ff00, 0.4);
+  const ambientLight = new THREE.AmbientLight("#666666", 10); // Soft white light
+  scene.add(ambientLight, hemiLight);
+
+
+  // point light for the face
+  const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+  pointLight.position.set(0, 3, -2); // Position the point light above the subject
+  pointLight.castShadow = true;
+  scene.add(pointLight);
+
+
+  // Fill light to reduce shadows under the eyes
+  const fillLight = new THREE.PointLight(0xffffff, 0.5, 50);
+  fillLight.position.set(0, 1.5, -1); // Position the fill light in front of the subject
+  scene.add(fillLight);
 
 
 }
 
+
 function resetLights() {
+
   if (dirLight) {
     dirLight.intensity = 1.5;
-
   }
 
   if (hemiLight) {
     hemiLight.intensity = 2;
-
   }
 
   if (spotLight) {
     spotLight.intensity = 21;
   }
+
 }
 
 function dimLights() {
@@ -575,12 +573,7 @@ setCanvasSize()
 window.addEventListener('resize', resizeCanvas);
 window.addEventListener('load', resizeCanvas);
 //helper functions
-window.mobileCheck = function () {
-  let check = false;
-  (function (a) { if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true; })(navigator.userAgent || navigator.vendor || window.opera);
-  return check;
-};
-let isMobile = mobileCheck()
+
 
 function setCanvasSize() {
   canvas.style.width = window.innerWidth
@@ -588,6 +581,8 @@ function setCanvasSize() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
+
+
 function resizeCanvas() {
   if (isMobile && window.matchMedia("(orientation: portrait)").matches) {
     camera.zoom = 1;
@@ -595,24 +590,22 @@ function resizeCanvas() {
   if (isMobile && window.matchMedia("(orientation: landscape)").matches) {
     camera.zoom = 1.5;
   }
-  // renderer.setSize(canvas.width, canvas.height);
+
+
+
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-
   camera.aspect = canvas.clientWidth / canvas.clientHeight;
-
-  // renderPass.setSize(canvas.clientWidth, canvas.clientHeight);
   renderPass.setSize(canvas.clientWidth, canvas.clientHeight);
-  // fxaaPass.uniforms['resolution'].value.set(1 / canvas.clientWidth, 1 / canvas.clientHeight);
-  ssaaPass.setSize(canvas.clientWidth, canvas.clientHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
-
   camera.updateProjectionMatrix();
+
 }
 
 function setCustomCursor() {
   console.log("setting custom cursor")
   document.body.style.cursor = `url(${customCursorDataURL}), auto`;
 }
+
 function setCursor() {
   console.log("setting cursor, what the actual")
   document.body.style.cursor = 'default';
@@ -640,6 +633,7 @@ for (var i = 0; i < containersOverlappingWithTriggerColl.length; i++) {
       const u = (x / rect.width) * 2 - 1;
       const v = (y / rect.height) * 2 - 1;
       let mouse = new THREE.Vector2(u, -v);
+      console.log("mouse relative position not mobile", mouse)
       detectMouseOverSphereColl(mouse)
     } else {
       if (customCursorShowing) {
@@ -673,7 +667,9 @@ for (var i = 0; i < containersOverlappingWithTriggerColl.length; i++) {
     }
   });
 
-
+  containersOverlappingWithTriggerColl[i].addEventListener("touchstart", (event) => {
+    fingerDown = true;
+  });
 
 
   containersOverlappingWithTriggerColl[i].addEventListener('touchmove', (event) => {
@@ -706,6 +702,7 @@ for (var i = 0; i < containersOverlappingWithTriggerColl.length; i++) {
 
   //this is confusing, but basically if it's over a collider and then it isn't start aniamtion back to center
   containersOverlappingWithTriggerColl[i].addEventListener('touchend', (event) => {
+    fingerDown = false;
     const touch = event.touches[0]; // Get the first touch
     const x = touch.pageX;
     const y = touch.pageY;
@@ -777,9 +774,17 @@ animateHeadTriggerRectColl.addEventListener('touchmove', (event) => {
   const y = touch.pageY - rect.top;
   const u = (x / rect.width) * 2 - 1;
   const v = (y / rect.height) * 2 - 1;
-  const mouse = new THREE.Vector2(u, -v);
-  detectMouseOverSphereColl(mouse);
+  const finger = new THREE.Vector2(u, -v);
+  detectFingerOverSphereColl(finger);
 
+});
+
+animateHeadTriggerRectColl.addEventListener('touchend', (event) => {
+  fingerDown = false;
+})
+
+animateHeadTriggerRectColl.addEventListener('touchstart', (event) => {
+  fingerDown = true;
 });
 
 
@@ -805,6 +810,7 @@ function detectMouseOverSphereColl(mouse) {
           tween.stop()
         }
       }
+
       if (!customCursorShowing) {
         setCustomCursor();
         customCursorShowing = true;
@@ -820,6 +826,68 @@ function detectMouseOverSphereColl(mouse) {
     animateHeadBackToCenter()
   }
 }
+
+
+
+
+
+
+//detect if finger is over collider
+function detectFingerOverSphereColl(finger) {
+
+  raycaster.setFromCamera(finger, camera);
+  // Calculate objects intersecting the ray
+  const intersects = raycaster.intersectObjects(scene.children, true);
+  // Check if the sphere is intersected
+  for (let i = 0; i < intersects.length; i++) {
+    if (intersects[i].object === sphere) {
+      previousMouseIntersectionPoint.copy(finger);
+      if (leaveTimeout) {
+        clearTimeout(leaveTimeout)
+      }
+
+      if (tween) {
+        if (tween.isPlaying()) {
+          tween.stop()
+        }
+      }
+
+      if (!customCursorShowing) {
+        // setCustomCursor();
+        customCursorShowing = true;
+      }
+
+      const hitPoint = intersects[i].point;
+      cube.position.copy(hitPoint);
+      return;
+    }
+  }
+
+
+  if (customCursorShowing) {
+    customCursorShowing = false;
+    animateHeadBackToCenter()
+    // setCursor();
+  }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 window.detectMouseOverSphereColl = detectMouseOverSphereColl;
 //resets head back to center
 
@@ -848,6 +916,7 @@ function animateHeadBackToCenter() {
     })
   tween.start();
 }
+
 //adds random blinking animation
 let leftEyeBlink = null;
 let lastEventTime = 0;
@@ -859,6 +928,7 @@ function fireEvent() {
     setTimeout(fireEvent, minInterval);
   }
   const currentTime = Date.now();
+
   // Check if enough time has passed since the last event
   if (currentTime - lastEventTime >= minInterval) {
 
@@ -912,6 +982,7 @@ function startBlinking() {
 
 
 //sphere shader
+
 // Vertex Shader
 const vertexShader = `
 varying vec3 vNormal;
@@ -922,6 +993,8 @@ vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
 gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
 `;
+
+
 // Fragment Shader
 const fragmentShader = `
 varying vec3 vNormal;
@@ -936,13 +1009,17 @@ float alpha = 1.0 - edgeFactor;
 gl_FragColor = vec4(color, alpha);
 }
 `;
+
+
 // Create Shader Material
 const edgeHighlightMaterial = new THREE.ShaderMaterial({
   vertexShader: vertexShader,
   fragmentShader: fragmentShader,
   transparent: true // Enable transparency
 });
-//create our sphere collider and cube target
+
+
+// create our sphere collider and cube target
 // cube is the target. meaning the character should always look at the cube
 const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
 const cubeMaterial = new THREE.MeshBasicMaterial({
@@ -954,6 +1031,7 @@ const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 cube.position.set(0, 1.3, 2);
 cube.scale.set(0.1, 0.1, 0.1);
 scene.add(cube);
+
 // sphere represents target zone. if our mouse is over the sphere the cube will move to the intersection point of a raycast from our mouse screenspace position and the sphere
 const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
 const sphereMaterial = new THREE.MeshBasicMaterial({
@@ -961,6 +1039,8 @@ const sphereMaterial = new THREE.MeshBasicMaterial({
   transparent: true,
   opacity: 0
 });
+
+
 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 sphere.position.set(0, 1, -1.2); //0, 1.6, -1
 sphere.scale.set(7.75, 5, 1); //1.5, 1.5, 0.5
@@ -968,7 +1048,10 @@ scene.add(sphere);
 sphere.layers.set(2); // Only check layer 0
 // Apply the shader material to the sphere
 sphere.material = edgeHighlightMaterial;
-// load in and set our gltf models
+
+
+
+
 // Load the GLTF model
 function loadModels() {
 
@@ -985,39 +1068,30 @@ function loadModels() {
           console.log(node.name)
           node.layers.set(1);
         }
+
         if (node.name == "avaturn_body_1") {
           ourBodyBaseMaterial = node.material.clone()
-          ourBodyBaseMaterial.transparent = true;
-
-          // node.material.visible = false;
           ourBodyNode = node;
         }
+
         if (node.name == "avaturn_body_4") {
           ourEyesBaseMaterial = node.material.clone()
-          ourEyesBaseMaterial.transparent = true
-          // node.material.visible = false;
           ourEyesNode = node;
-          //  // node.material.transparent = true
         }
+
         if (node.name == "avaturn_body_3") {
-
-
           ourClothesBaseMaterial = node.material.clone()
-          ourClothesBaseMaterial.transparent = true;
-          // node.material.visible = false;
           ourClothesNode = node;
-          //  // node.material.transparent = true
         }
+
         if (node.name == "avaturn_body_2") {
           ourHairBaseMaterial = node.material.clone()
-          ourHairBaseMaterial.transparent = true
-          // node.material.visible = false;
           ourHairNode = node;
-          //   ourNode = node;
         }
 
 
       });
+
       createShaders()
       NonInteractiveAvatar.layers.set(1);
       NonInteractiveAvatar.position.set(0, 0, -2);
@@ -1061,6 +1135,8 @@ function loadModels() {
 
       if (object.isMesh) {
         object.layers.set(0);
+        // object.material.ACESFilmicToneMapping = true;
+        // object.material.colorSpace = THREE.LinearSRGBColorSpace;  
       }
       if (object.morphTargetInfluences) {
         if (faceMesh === null) {
@@ -1101,7 +1177,7 @@ function loadModels() {
     neckBoneOriginHelper.rotation.copy(neckBone.rotation);
 
     InteractiveAvatar.visible = true;
-    InteractiveAvatar.layers.set(1);
+    InteractiveAvatar.layers.set(0);
     scene.add(InteractiveAvatar);
     interactiveAvatarInScene = true;
 
@@ -1150,8 +1226,6 @@ function loadModels() {
       eyeBoneRightHelper.position.copy(eyeBoneRight.position);
       eyeBoneRightHelper.rotation.copy(eyeBoneRight.rotation);
 
-      //
-
 
     })
   })
@@ -1166,23 +1240,6 @@ function createTorus() {
   scene.add(torus);
   window.torus = torus;
 }
-
-
-
-
-// loader.load(avatarPath, function (gltf) {
-//   console.log("starting")
-//   model = gltf.scenes[0];
-//   let face = model.children[0]
-
-
-// loader.load(eyeModelPath, function (gltf) {
-
-// });
-
-
-// });
-// }
 
 
 //create shaders
@@ -1203,8 +1260,7 @@ function createShaders() {
 
     vertexShader: vs,
     fragmentShader: fs,
-    transparent: true, // Enable transparency
-    blending: THREE.NormalBlending, // Set blending mode
+
   });
 
   hairDissolveShader = new CustomShaderMaterial({
@@ -1221,8 +1277,7 @@ function createShaders() {
     },
     vertexShader: vs,
     fragmentShader: fs,
-    transparent: true, // Enable transparency
-    blending: THREE.NormalBlending, // Set blending mode
+
   });
 
 
@@ -1240,8 +1295,7 @@ function createShaders() {
     },
     vertexShader: vs,
     fragmentShader: fs,
-    transparent: true, // Enable transparency
-    blending: THREE.NormalBlending, // Set blending mode
+
   });
 
   bodyDissolveShader = new CustomShaderMaterial({
@@ -1259,11 +1313,8 @@ function createShaders() {
     },
     vertexShader: vs,
     fragmentShader: fs,
-    transparent: true, // Enable transparency
-    blending: THREE.NormalBlending, // Set blending mode
+
   });
-
-
 
   ourBodyNode.material = bodyDissolveShader;
   ourClothesNode.material = clothesDissolveShader;
@@ -1273,34 +1324,78 @@ function createShaders() {
 }
 
 
-function swapAvatars() {
-  // NonInteractiveAvatar.visible = false;
-  // InteractiveAvatar.visible = true;
-  growFade()
-  // animateHead = true;
-  // animateHeadBackToCenter();
-  // startBlinking();
 
-  // brightenTween = new TWEEN.Tween({ x: 55 })
-  //   .to({ x: 0 }, 600)
-  //   .easing(TWEEN.Easing.Cubic.Out)
-  //   .onComplete(() => {
+async function swapAvatars() {
 
-  //   })
-  //   .onUpdate((object) => {
-  //     clothesDissolveShader.uniforms.brightness.value = object.x
-  //     bodyDissolveShader.uniforms.brightness.value = object.x
-  //     hairDissolveShader.uniforms.brightness.value = object.x
-  //     shoesDissolveShader.uniforms.brightness.value = object.x
-  //   });
-  // brightenTween.start();
+  interactiveAvatarLoaded = true;
+  dissolveEffectFinished
+  if (tweenBodyDissolveShader.isPlaying()) {
+    tweenBodyDissolveShader.stop()
+  }
+  if (tweenClothesDissolveShader.isPlaying()) {
+    tweenClothesDissolveShader.stop()
+  }
+  if (tweenEyesDissolveShader.isPlaying()) {
+    tweenEyesDissolveShader.stop()
+  }
+  if (tweenHairDissolveShader.isPlaying()) {
+    tweenHairDissolveShader.stop()
+  }
+
+
+  tweenBodyDissolveShader = null;
+  tweenClothesDissolveShader = null;
+  tweenEyesDissolveShader = null;
+  tweenHairDissolveShader = null;
+
+  InteractiveAvatar.position.set(0, 0, -2);
+  NonInteractiveAvatar.position.set(0, 10, -2);
+  backgroundMesh.visible = false;
+
+
+
+  action.play();
+  await waitForSeconds(0.25)
+  animateHead = true;
+  startBlinking();
+  //animate towards current mouse position
+  await waitForSeconds(0.25)
+  if (isMobile) {
+    mobileAnimation = document.createElement('div');
+    mobileAnimation.id = 'mobileAnimation'; // Set the ID to 'mobileAnimation'
+    // <div class="bubble x5" style="--animation-duration: calc(25s + 10s * random())"></div>
+    mobileAnimation.className = 'bubble x1'; // Correctly assign the class
+    bubble++;
+    // Random duration between 25s and 35s
+    animationContainer.appendChild(mobileAnimation);
+    // mobileAnimation.className = 'moving-div'; // Correctly assign the class
+    // document.body.appendChild(mobileAnimation);
+    mobileAnimation.addEventListener("animationend", async (event) => {
+
+      //   console.log("animation iteration")
+      console.log(mobileAnimation.className, bubbleClasses[bubble], bubble)
+      let newclassname;
+      if(bubbleClasses[bubble + 1] != undefined){
+        newclassname = bubbleClasses[bubble++]
+      }else{
+        bubble = 0;
+        newclassname = bubbleClasses[bubble]
+      }
+      mobileAnimation.className = "none";
+      await waitForSeconds(1)
+      mobileAnimation.className = newclassname;
+      // mobileAnimation.style.top = `${Math.random() * 70}%`;
+      // const randomDuration = 2 + Math.random() * 4;
+      // mobileAnimation.style.setProperty('--animation-duration', `${randomDuration}s`);
+
+    });
+  }
+
+  await waitForSeconds(2)
+  NonInteractiveAvatar.parent.remove(NonInteractiveAvatar);
+
 
 }
-
-function loadingShader() {
-
-}
-
 
 function animateHairIn() {
   tweenHairDissolveShader = new TWEEN.Tween({ x: 1 })
@@ -1331,38 +1426,13 @@ function animateBodyIn() {
     .delay(300)
     // .easing(TWEEN.Easing.Cubic.InOut)
     .onComplete(() => {
-      // console.log("complete hat animation", performance.now())
-      //   dissolveEffectFinished = true
-      //   if(!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene){
-      //     swapAvatars()
-      //   }else{
-      //     console.log("start the animation shader")
-      //     loadingShader()
-      //   }
 
-      // if(!interactiveAvatarLoaded){
-      //   //animateBodyIn()
-      // }else{
-      //   swapAvatars()
-      // }
-      // if(!interactiveAvatarLoaded){
-      //   animateBodyIn()
-      // }else{
-      //   
-      // }
-      // tweenBodyDissolveShader.stop();
-      // tweenBodyDissolveShader.start();
     })
     .onUpdate((object) => {
       bodyDissolveShader.uniforms.threshold.value = object.x;
     })
     .start();
 
-
-  // tweenBodyDissolveShader.yoyo(true) 
-
-  // tweenBodyDissolveShader.repeat(10)
-  // tweenBodyDissolveShader.start();
 }
 
 
@@ -1388,19 +1458,6 @@ function animateEyesIn() {
     .delay(200)
     .onComplete(() => {
 
-
-      // if(!interactiveAvatarLoaded){
-      //   //animateBodyIn()
-      // }else{
-      //   swapAvatars()
-      // }
-      // if(!interactiveAvatarLoaded){
-      //   animateBodyIn()
-      // }else{
-      //   
-      // }
-      // tweenBodyDissolveShader.stop();
-      // tweenBodyDissolveShader.start();
     })
     .onUpdate((object) => {
       eyesDissolveShader.uniforms.threshold.value = object.x;
@@ -1410,65 +1467,9 @@ function animateEyesIn() {
 
 }
 
-//function for fading out dummy avatar
-async function growFade() {
 
-  if (tweenBodyDissolveShader.isPlaying()) {
-    tweenBodyDissolveShader.stop()
-  }
-  if (tweenClothesDissolveShader.isPlaying()) {
-    tweenClothesDissolveShader.stop()
-  }
-  if (tweenEyesDissolveShader.isPlaying()) {
-    tweenEyesDissolveShader.stop()
-  }
-
-
-  // if(tweenHairDissolveShader.isPlaying()){
-  //   tweenHairDissolveShader.stop()
-  // }
-  InteractiveAvatar.position.set(0, 0, -2);
-  NonInteractiveAvatar.position.set(0, 10, -2);
-
-
-
-  action.play();
-  await waitForSeconds(0.25)
-  animateHead = true;
-  startBlinking();
-  //animate towards current mouse position
-  await waitForSeconds(2)
-  NonInteractiveAvatar.parent.remove(NonInteractiveAvatar);
-  console.log("removing dummy avatar")
-  // Play idle animation
-
-
-  // shoesDissolveShader.uniforms.growFade.value = true;
-  // bodyDissolveShader.uniforms.growFade.value = true;
-  // hairDissolveShader.uniforms.growFade.value = true;
-  // clothesDissolveShader.uniforms.growFade.value = true;
-  // fadeOutShaders()
-
-}
 
 function fadeOutShaders() {
-
-
-  // brightenTween = new TWEEN.Tween({ x: 1})
-  //   .to({ x: 55}, 100)
-  //   // .easing(TWEEN.Easing.Cubic.Out)
-  //   .onComplete(() => {console.log("First tween completed")
-
-  //       // NonInteractiveAvatar.visible = false;
-  //   })
-
-  //   .onUpdate((object) => {
-  //     console.log("First tween going")
-  //     clothesDissolveShader.uniforms.brightness.value = object.x
-  //     bodyDissolveShader.uniforms.brightness.value = object.x
-  //     hairDissolveShader.uniforms.brightness.value = object.x
-  //     shoesDissolveShader.uniforms.brightness.value = object.x
-  //   });
 
   fadeOutTween = new TWEEN.Tween({ x: 75 })
     .to({ x: -2 }, 1000)
@@ -1495,7 +1496,6 @@ function fadeOutShaders() {
   console.log("starting fade out ", performance.now())
 
 }
-window.growFade = growFade;
 
 async function animateAll() {
   await waitForSeconds(1.5)
@@ -1531,8 +1531,6 @@ window.animateTogether = animateTogether;
 
 
 
-
-
 let vs = `
       uniform bool growFade;
       varying vec2 vUv;
@@ -1556,35 +1554,33 @@ let fs = `
       uniform float threshold;
       uniform sampler2D noiseTexture; //alpha noise texture for diffuse effect
           void main() {
+
+
             vec3 noise = texture2D(noiseTexture, vUv).rgb;
             float dissolve = noise.g;
+     
+     
             if (dissolve < threshold) {
-               discard;
-             }
-
+              discard;
+            }
            float edge = threshold + (thickness / 100.0);
 
-           if(threshold > 0.1){
+            if(threshold > 0.1){
 
-             if (dissolve < edge ) {
-               csm_FragColor = vec4(vec3(edgeColor), 1.0) * brightness;
-               csm_Emissive = vec3(edgeColor); //vec3(1.0, 0.0, 0.0);
-              }
-            }
+            if (dissolve < edge ) {
 
-            float multiply = csm_Metalness;
-
-            if(multiply == 0.0){
-                multiply = 0.5;
-            }
-            if(dim){
-              multiply = 0.1;
-              }
-            csm_FragColor = vec4(vec3(csm_FragColor.rgb) * multiply , 1.0)  ;              //vec4(1.0, 1.0, 1.0, 0.2);
+               csm_Emissive = edgeColor * 20.0;
+          
+            } else{
+           
+        
+          }
+         
+        }  
+          csm_UnlitFac =  csm_UnlitFac;
 
       }
     `;
-
 
 
 
@@ -1703,11 +1699,10 @@ void main()	{
 
 
 
-let matcapTexture = new THREE.TextureLoader().load('https://aryehmischel-portfolio-bucket.s3.us-east-2.amazonaws.com/matcap3.jpg');
+let matcapTexture = new THREE.TextureLoader().load(assetPath + 'matcap3.jpg');
 
 let torus = null;
 function addTorus() {
-  // dimLights()
 
   bodyDissolveShader.uniforms.dim.value = true;
   clothesDissolveShader.uniforms.dim.value = true;
@@ -1744,7 +1739,7 @@ function addTorus() {
   const geometry = new THREE.TorusGeometry(0.5, 0.2, 16, 100);
   torus = new THREE.Mesh(geometry, torusMaterial);
   torus.axis = new THREE.Vector3(1.0, 0, 0.),
-  torus.position.y = 1.6;
+    torus.position.y = 1.6;
   torus.position.z = -1.2;
 
   torus.scale.set(0.2, 0.2, 0.2);
