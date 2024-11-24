@@ -24,7 +24,8 @@ window.mobileCheck = function () {
 mobileCheck()
 let mobileAnimation = null;
 let fingerDown = false;
-
+let animationContainer = document.getElementById('animationContainer');
+console.log(animationContainer)
 
 
 const assetPath = "https://d368ik34cg55zg.cloudfront.net/"
@@ -1356,13 +1357,24 @@ async function swapAvatars() {
   if (isMobile) {
     mobileAnimation = document.createElement('div');
     mobileAnimation.id = 'mobileAnimation'; // Set the ID to 'mobileAnimation'
-    mobileAnimation.className = 'moving-div'; // Correctly assign the class
-    document.body.appendChild(mobileAnimation);
+    // <div class="bubble x5" style="--animation-duration: calc(25s + 10s * random())"></div>
+    mobileAnimation.className = 'bubble x3'; // Correctly assign the class
+ // Random duration between 25s and 35s
+    mobileAnimation.style.position = 'absolute';
+
+    animationContainer.appendChild(mobileAnimation);
+    // mobileAnimation.className = 'moving-div'; // Correctly assign the class
+    // document.body.appendChild(mobileAnimation);
     mobileAnimation.addEventListener("animationend", async (event) => {
-      console.log("animation iteration")
+    //   console.log("animation iteration")
+    console.log(mobileAnimation.className)
+      let newclassname =  mobileAnimation.className === "bubble x5" ? "bubble x3" : "bubble x5";
       mobileAnimation.className = "none";
-      await waitForSeconds(2)
-      mobileAnimation.className = "moving-div";
+      await waitForSeconds(1)
+      mobileAnimation.className = newclassname;
+      mobileAnimation.style.top = `${Math.random() * 70}%`;
+      const randomDuration = 2 + Math.random() * 4;
+      mobileAnimation.style.setProperty('--animation-duration', `${randomDuration}s`);
 
     });
   }

@@ -1,16 +1,20 @@
-<!DOCTYPE html><!--  This site was created in Webflow. https://webflow.com  --><!--  Last Published: Sun Nov 17 2024 22:22:20 GMT+0000 (Coordinated Universal Time)  -->
+<!DOCTYPE html>
+<!--  This site was created in Webflow. https://webflow.com  --><!--  Last Published: Sun Nov 17 2024 22:22:20 GMT+0000 (Coordinated Universal Time)  -->
 <html data-wf-page="66e587d27c6fe1d7d03310ed" data-wf-site="66e587d27c6fe1d7d0331081">
+
 <head>
   <meta charset="utf-8">
   <title>Aryeh - Portfolio Website</title>
   <meta content="Hello, I’m Aryeh Mischel. I love creating VR experiences." name="description">
   <meta content="Aryeh Mischel - Portfolio Website" property="og:title">
-  <meta content="Hello, I’m Johnson Smith. A creative designer with a passion for crafting visual experiences and creative websites." property="og:description">
+  <meta
+    content="Hello, I’m Johnson Smith. A creative designer with a passion for crafting visual experiences and creative websites."
+    property="og:description">
   <meta content="https://d368ik34cg55zg.cloudfront.net/faviconVR.png" property="og:image">
   <meta content="Aryeh Mischel - Portfolio Website" property="twitter:title">
   <meta content="Hello, I’m Aryeh Mischel. I love creating VR experiences." property="twitter:description">
-  
-  
+
+
 
 
 
@@ -20,17 +24,19 @@
   <meta content="summary_large_image" name="twitter:card">
   <meta content="width=device-width, initial-scale=1" name="viewport">
   <meta content="Webflow" name="generator">
- 
- 
- 
+
+
+
   <link href="css/normalize.css" rel="stylesheet" type="text/css">
   <link href="css/webflow.css" rel="stylesheet" type="text/css">
   <link href="css/aryehs-stunning-site-23900b.webflow.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
-  <script type="text/javascript">WebFont.load({  google: {    families: ["PT Sans:400,400italic,700,700italic","Outfit:500"]  }});</script>
-  <script type="text/javascript">!function(o,c){var n=c.documentElement,t=" w-mod-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);</script>
+  <script
+    type="text/javascript">WebFont.load({ google: { families: ["PT Sans:400,400italic,700,700italic", "Outfit:500"] } });</script>
+  <script
+    type="text/javascript">!function (o, c) { var n = c.documentElement, t = " w-mod-"; n.className += t + "js", ("ontouchstart" in o || o.DocumentTouch && c instanceof DocumentTouch) && (n.className += t + "touch") }(window, document);</script>
   <link href="./faviconVR.png" rel="shortcut icon" type="image/png">
   <link href="images/webclip.png" rel="apple-touch-icon">
   <style>
@@ -46,14 +52,118 @@
     }
 
     @keyframes example {
-      0%   {left:0px; top:0px;}
-      25%  {left:200px; top:0px;}
-      50%  {left:200px; top:200px;}
-      75%  {left:0px; top:200px;}
-      100% {left:0px; top:0px;}
+      0% {
+        left: 0px;
+        top: 0px;
+      }
+
+      25% {
+        left: 200px;
+        top: 0px;
+      }
+
+      50% {
+        left: 200px;
+        top: 200px;
+      }
+
+      75% {
+        left: 0px;
+        top: 200px;
+      }
+
+      100% {
+        left: 0px;
+        top: 0px;
+      }
     }
   </style>
-  
+
+  <style>
+    @keyframes animateBubble {
+      0% {
+        margin-left: 0px;
+        margin-bottom: 20px;
+      }
+
+      25% {
+        margin-left: 25%;
+        margin-bottom: 35px;
+      }
+
+      50% {
+        margin-left: 50%;
+        margin-bottom: 15px;
+      }
+
+      75% {
+        margin-left: 75%;
+        margin-bottom: -5px;
+      }
+
+      100% {
+        margin-left: 100%;
+        margin-bottom: 0px;
+      }
+    }
+
+    .x5 {
+      animation: animateBubble var(--animation-duration, 6s) linear 1, sideWays 4s ease-in-out 1 alternate;
+      left: 0;
+      top: 20%;
+      transform: scale(0.5);
+      position: absolute;
+    }
+
+    /* OBJECTS */
+    .bubble {
+      border-radius: 50%;
+      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2), inset 0px 10px 30px 5px rgba(255, 255, 255, 1);
+      height: 200px;
+      position: absolute;
+      width: 200px;
+      z-index: 5;
+    }
+
+    .bubble:after {
+      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 70%);
+      border-radius: 50%;
+      box-shadow: inset 0 20px 30px rgba(255, 255, 255, 0.3);
+      content: "";
+      height: 180px;
+      left: 10px;
+      position: absolute;
+      width: 180px;
+    }
+
+    .x3 {
+      -webkit-animation: animateBubble 5s linear 1, sideWays 1s ease-in-out 1 alternate;
+      -moz-animation: animateBubble 5s linear 1, sideWays 1s ease-in-out 1 alternate;
+      animation: animateBubble 5s linear 1, sideWays 1s ease-in-out 1 alternate;
+      position: absolute;
+      left: 0%;
+      top: 5%;
+
+      -webkit-transform: scale(0.7);
+      -moz-transform: scale(0.7);
+      transform: scale(0.7);
+    }
+
+
+    .x2 {
+      -webkit-animation: animateBubble 20s linear infinite, sideWays 4s ease-in-out 1 alternate;
+      -moz-animation: animateBubble 20s linear infinite, sideWays 4s ease-in-out 1 alternate;
+      animation: animateBubble 20s linear infinite, sideWays 4s ease-in-out 1 alternate;
+      position: absolute;
+      left: 5%;
+      top: 80%;
+
+      -webkit-transform: scale(0.4);
+      -moz-transform: scale(0.4);
+      transform: scale(0.4);
+    }
+  </style>
+
   <style>
     .my-canvas-container {
       /* Border color and width */
@@ -69,24 +179,48 @@
       align-items: center;
       z-index: 1;
     }
-    
+
     #myCanvas {
       display: block;
       /* Remove default margins/padding */
-      width:2000px;  /*100%;*/
-      height:2000px; /*100%;*/
+      width: 2000px;
+      /*100%;*/
+      height: 2000px;
+      /*100%;*/
       z-index: 1;
     }
-    </style>
+  </style>
+  <style>
+    body {
+      overflow-x: hidden;
+    }
+
+    .animationContainer {
+      position: absolute;
+      overflow-x: hidden;
+      /* Ensure overflow-x is hidden */
+      width: 100%;
+      /* Ensure the container takes the full width */
+      height: 100vh;
+      /* Adjust height as needed */
+    }
+  </style>
 
 </head>
-<body class="body-2">
- 
-  <div data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" class="navbar intersects-with-coll w-nav">
+
+<body class="body-2" style="overflow-x: hidden;">
+  <div class="animationContainer" id="animationContainer">
+
+  </div>
+  <div data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease"
+    role="banner" class="navbar intersects-with-coll w-nav">
     <div data-w-id="03aa365d-5a97-c030-89a8-6b2e3f75ae4f" class="fixed-nav-menu-container">
       <div data-w-id="03aa365d-5a97-c030-89a8-6b2e3f75ae5f" class="menu-toggle close">
-        <div class="menu-lines w-embed"><svg width="14" height="14" viewbox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7.05929 5.93367L12.009 0.983887L13.4232 2.3981L8.47349 7.34787L13.4232 12.2976L12.009 13.7118L7.05929 8.76207L2.10952 13.7118L0.695312 12.2976L5.64509 7.34787L0.695312 2.3981L2.10952 0.983887L7.05929 5.93367Z" fill="currentColor"></path>
+        <div class="menu-lines w-embed"><svg width="14" height="14" viewbox="0 0 14 14" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M7.05929 5.93367L12.009 0.983887L13.4232 2.3981L8.47349 7.34787L13.4232 12.2976L12.009 13.7118L7.05929 8.76207L2.10952 13.7118L0.695312 12.2976L5.64509 7.34787L0.695312 2.3981L2.10952 0.983887L7.05929 5.93367Z"
+              fill="currentColor"></path>
           </svg></div>
         <div class="border-circle"></div>
         <div class="fill-circle"></div>
@@ -104,14 +238,16 @@
     </div>
     <div class="nav-container">
       <div data-w-id="03aa365d-5a97-c030-89a8-6b2e3f75ae62" class="menu-toggle">
-        <div class="menu-lines w-embed"><svg width="22" height="10" viewbox="0 0 22 10" xmlns="http://www.w3.org/2000/svg">
+        <div class="menu-lines w-embed"><svg width="22" height="10" viewbox="0 0 22 10"
+            xmlns="http://www.w3.org/2000/svg">
             <rect width="22" height="1.53841" rx="0.769206" fill="currentColor"></rect>
             <rect y="8.46155" width="15.7143" height="1.53841" rx="0.769206" fill="currentColor"></rect>
           </svg></div>
         <div class="fill-circle"></div>
         <div class="border-circle"></div>
       </div>
-      <a href="index.html" aria-current="page" class="brand w-nav-brand w--current"><img src="images/AryehLogo.svg" loading="lazy" alt="" class="logo"></a>
+      <a href="index.html" aria-current="page" class="brand w-nav-brand w--current"><img src="images/AryehLogo.svg"
+          loading="lazy" alt="" class="logo"></a>
       <nav role="navigation" class="nav-menu-container w-nav-menu">
         <div class="nav-links-wrapper">
           <a href="documents/Resume__AryehMischel.docx" target="_blank" class="nav-link w-inline-block">
@@ -143,14 +279,18 @@
             <div class="hero-image-4 w-embed w-script">
               <div class="my-canvas-container" id="canvas-container">
                 <canvas id="myCanvas"></canvas>
-           
+
               </div>
             </div>
             <h1 class="display-2-relative">— VR Enthusiast</h1>
             <div class="hero-text-wrapper">
-              <div data-w-id="be055982-7578-0bdb-fdcd-334f23ea3ba3" class="hero-loop-animation-wrapper"><img loading="lazy" src="images/Arrow.svg" alt="Arrow" class="arrow-image"><img style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0)" loading="lazy" alt="Looped Text" src="images/Looped-Text.svg" class="looped-text"></div>
+              <div data-w-id="be055982-7578-0bdb-fdcd-334f23ea3ba3" class="hero-loop-animation-wrapper"><img
+                  loading="lazy" src="images/Arrow.svg" alt="Arrow" class="arrow-image"><img
+                  style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0)"
+                  loading="lazy" alt="Looped Text" src="images/Looped-Text.svg" class="looped-text"></div>
               <div class="hero-text">
-                <p class="about-me-text">A full stack developer specializing in creating 3D experiences for native applications and the web. </p>
+                <p class="about-me-text">A full stack developer specializing in creating 3D experiences for native
+                  applications and the web. </p>
               </div>
             </div>
           </div>
@@ -159,7 +299,8 @@
     </div>
   </section>
   <article id="Work" class="anchor-div"></article>
-  <section id="work-section" data-w-id="78a16231-3e64-e28b-e597-866552759aaa" class="work-section doesn-t-intersects-with-coll">
+  <section id="work-section" data-w-id="78a16231-3e64-e28b-e597-866552759aaa"
+    class="work-section doesn-t-intersects-with-coll">
     <h2 class="h2">Projects</h2>
     <div class="w-layout-blockcontainer main-container-2 w-container">
       <div class="work-blocks-wrapper">
@@ -168,18 +309,27 @@
             <div class="work-block-wrapper-5">
               <div class="work-block-4">
                 <div class="tech-icons">
-                  <div class="technologythumb first"><img src="images/webxr.png" loading="lazy" alt="" class="image-4 webxr"></div>
-                  <div class="technologythumb two"><img src="images/Frame-87_1.svg" loading="lazy" alt="" class="image-4"></div>
+                  <div class="technologythumb first"><img src="images/webxr.png" loading="lazy" alt=""
+                      class="image-4 webxr"></div>
+                  <div class="technologythumb two"><img src="images/Frame-87_1.svg" loading="lazy" alt=""
+                      class="image-4"></div>
                 </div>
                 <a href="xr-viewer.html" class="work-block-link-wrapper w-inline-block">
-                  <div class="work-block-image-wrapper-4"><img class="thumbnail-images first" src="images/webXRLayersThumb_1.1.1.png" alt="" style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" sizes="300px" data-w-id="05d8347c-ebf8-d622-81a1-47ead66461a8" loading="lazy" srcset="images/webXRLayersThumb_1.1.1-p-500.png 500w, images/webXRLayersThumb_1.1.1-p-800.png 800w, images/webXRLayersThumb_1.1.1.png 1080w"></div>
+                  <div class="work-block-image-wrapper-4"><img class="thumbnail-images first"
+                      src="images/webXRLayersThumb_1.1.1.png" alt=""
+                      style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)"
+                      sizes="300px" data-w-id="05d8347c-ebf8-d622-81a1-47ead66461a8" loading="lazy"
+                      srcset="images/webXRLayersThumb_1.1.1-p-500.png 500w, images/webXRLayersThumb_1.1.1-p-800.png 800w, images/webXRLayersThumb_1.1.1.png 1080w">
+                  </div>
                 </a>
-                <a data-w-id="05d8347c-ebf8-d622-81a1-47ead66461a9" href="#" class="work-block-text-wrapper-5 w-inline-block">
+                <a data-w-id="05d8347c-ebf8-d622-81a1-47ead66461a9" href="#"
+                  class="work-block-text-wrapper-5 w-inline-block">
                   <div class="div-block-33">
                     <h1 class="thumbnail-title-3">XR-Viewer</h1>
                   </div>
                   <div class="work-block-para-wrapper-2">
-                    <p class="paragraph-small-xr-viewer"><strong class="bold-text-7">Under Development </strong> -<br>A WebXR application for viewing, storing, and sharing immersive content.</p>
+                    <p class="paragraph-small-xr-viewer"><strong class="bold-text-7">Under Development </strong> -<br>A
+                      WebXR application for viewing, storing, and sharing immersive content.</p>
                   </div>
                   <div class="thumbnail-link-2">
                     <div style="width:25px" class="link-line first"></div>
@@ -191,18 +341,28 @@
             <div class="work-block-wrapper-5">
               <div class="work-block-4">
                 <div class="tech-icons">
-                  <div class="technologythumb first"><img src="images/Frame-88.svg" loading="lazy" alt="" class="image-4 webxr"></div>
-                  <div class="technologythumb two"><img src="images/OpenXR-Logo.webp" loading="lazy" sizes="50px" srcset="images/OpenXR-Logo-p-500.webp 500w, images/OpenXR-Logo-p-800.webp 800w, images/OpenXR-Logo.webp 855w" alt="" class="image-4 webxr"></div>
+                  <div class="technologythumb first"><img src="images/Frame-88.svg" loading="lazy" alt=""
+                      class="image-4 webxr"></div>
+                  <div class="technologythumb two"><img src="images/OpenXR-Logo.webp" loading="lazy" sizes="50px"
+                      srcset="images/OpenXR-Logo-p-500.webp 500w, images/OpenXR-Logo-p-800.webp 800w, images/OpenXR-Logo.webp 855w"
+                      alt="" class="image-4 webxr"></div>
                 </div>
                 <a href="beat-saber-clone.html" class="work-block-link-wrapper w-inline-block">
-                  <div class="work-block-image-wrapper-4"><img class="thumbnail-images second" src="images/hooldus.jpg" alt="" style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" sizes="300px" data-w-id="05d8347c-ebf8-d622-81a1-47ead66461b8" loading="lazy" srcset="images/hooldus-p-500.jpg 500w, images/hooldus-p-800.jpg 800w, images/hooldus.jpg 1024w"></div>
+                  <div class="work-block-image-wrapper-4"><img class="thumbnail-images second" src="images/hooldus.jpg"
+                      alt=""
+                      style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)"
+                      sizes="300px" data-w-id="05d8347c-ebf8-d622-81a1-47ead66461b8" loading="lazy"
+                      srcset="images/hooldus-p-500.jpg 500w, images/hooldus-p-800.jpg 800w, images/hooldus.jpg 1024w">
+                  </div>
                 </a>
-                <a data-w-id="5de9ed06-d4f6-0297-2f5f-151e4dee8476" href="#" class="work-block-text-wrapper-5 w-inline-block">
+                <a data-w-id="5de9ed06-d4f6-0297-2f5f-151e4dee8476" href="#"
+                  class="work-block-text-wrapper-5 w-inline-block">
                   <div class="div-block-33">
                     <h1 class="thumbnail-title-3">Beat Saber </h1>
                   </div>
                   <div class="work-block-para-wrapper-2">
-                    <p class="paragraph-small-xr-viewer">A <strong>beat saber-inspired VR game</strong> I built for a Hong Kong  based startup.  <br>‍</p>
+                    <p class="paragraph-small-xr-viewer">A <strong>beat saber-inspired VR game</strong> I built for a
+                      Hong Kong  based startup.  <br>‍</p>
                   </div>
                   <div class="thumbnail-link-pickaplace">
                     <div style="width:25px" class="link-line second"></div>
@@ -214,18 +374,27 @@
             <div class="work-block-wrapper-5">
               <div class="work-block-4">
                 <div class="tech-icons">
-                  <div class="technologythumb first"><img src="images/webxr.png" loading="lazy" alt="" class="image-4 webxr"></div>
-                  <div class="technologythumb two"><img src="images/Frame-89.svg" loading="lazy" alt="" class="image-4"></div>
+                  <div class="technologythumb first"><img src="images/webxr.png" loading="lazy" alt=""
+                      class="image-4 webxr"></div>
+                  <div class="technologythumb two"><img src="images/Frame-89.svg" loading="lazy" alt="" class="image-4">
+                  </div>
                 </div>
                 <a href="pick-a-place.html" class="work-block-link-wrapper w-inline-block">
-                  <div class="work-block-image-wrapper-4"><img class="thumbnail-images third" src="images/Screenshot-1.png" alt="" style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform-style:preserve-3d" sizes="300px" data-w-id="05d8347c-ebf8-d622-81a1-47ead66461c8" loading="lazy" srcset="images/Screenshot-1-p-500.png 500w, images/Screenshot-1-p-800.png 800w, images/Screenshot-1-p-1080.png 1080w, images/Screenshot-1.png 1247w"></div>
+                  <div class="work-block-image-wrapper-4"><img class="thumbnail-images third"
+                      src="images/Screenshot-1.png" alt=""
+                      style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform-style:preserve-3d"
+                      sizes="300px" data-w-id="05d8347c-ebf8-d622-81a1-47ead66461c8" loading="lazy"
+                      srcset="images/Screenshot-1-p-500.png 500w, images/Screenshot-1-p-800.png 800w, images/Screenshot-1-p-1080.png 1080w, images/Screenshot-1.png 1247w">
+                  </div>
                 </a>
-                <a data-w-id="c4e70634-00b6-cea7-3abe-9f957da17ce6" href="#" class="work-block-text-wrapper-5 w-inline-block">
+                <a data-w-id="c4e70634-00b6-cea7-3abe-9f957da17ce6" href="#"
+                  class="work-block-text-wrapper-5 w-inline-block">
                   <div class="div-block-33">
                     <h1 class="thumbnail-title-3-copy">Pick-a-place</h1>
                   </div>
                   <div class="work-block-para-wrapper-2">
-                    <p class="paragraph-small-2-pickaplace"><strong>Interactive 360 Gallery</strong>. <br>A static WebXR site where users can view and interact with 360 scenes.</p>
+                    <p class="paragraph-small-2-pickaplace"><strong>Interactive 360 Gallery</strong>. <br>A static WebXR
+                      site where users can view and interact with 360 scenes.</p>
                   </div>
                   <div class="thumbnail-link-pickaplace">
                     <div style="width:25px" class="link-line third"></div>
@@ -239,7 +408,9 @@
         <div class="work-link">
           <a data-w-id="05d8347c-ebf8-d622-81a1-47ead66461d5" href="#" class="link w-inline-block">
             <div class="button-7">See more work</div>
-            <div class="link-arrow-wrapper-6"><img style="-webkit-transform:translate3d(0px, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0px, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0px, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0px, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" loading="lazy" alt="Link Arrow" src="images/Link-arrow.svg" class="link-arrow"></div>
+            <div class="link-arrow-wrapper-6"><img
+                style="-webkit-transform:translate3d(0px, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0px, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0px, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0px, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)"
+                loading="lazy" alt="Link Arrow" src="images/Link-arrow.svg" class="link-arrow"></div>
           </a>
         </div>
       </div>
@@ -252,7 +423,8 @@
       <div class="w-layout-grid skills-grid">
         <h1 class="skills-title">Game Development</h1>
         <div class="tech-block-parent">
-          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/UnityLogo.png" class="image-7">
+          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/UnityLogo.png"
+              class="image-7">
             <div class="tech-thumb-title-copy">Unity</div>
           </div>
         </div>
@@ -270,49 +442,61 @@
           <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/webxr.png" class="image-7">
             <div class="tech-thumb-title">WebXR</div>
           </div>
-          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/WebGLLogo.png" class="image-7-wegbgl">
+          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/WebGLLogo.png"
+              class="image-7-wegbgl">
             <div class="tech-thumb-title">WebGL</div>
           </div>
         </div>
         <h1 class="skills-title">Back End &amp; Database </h1>
         <div id="w-node-e2e12b6a-e754-1f14-6ced-d1cf7c69be09-d03310ed" class="backend">
-          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/nodejs-original-wordmark.svg" class="image-7">
+          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/nodejs-original-wordmark.svg"
+              class="image-7">
             <div class="tech-thumb-title"> NodeJS</div>
           </div>
-          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/png-transparent-.png" class="image-7">
+          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/png-transparent-.png"
+              class="image-7">
             <div class="tech-thumb-title">Express</div>
           </div>
-          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/mysql-logo-vector-1.svg" class="image-7">
+          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/mysql-logo-vector-1.svg"
+              class="image-7">
             <div class="tech-thumb-title">MySQL</div>
           </div>
-          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/microsoft-sql-server-logo.svg" class="image-7">
+          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/microsoft-sql-server-logo.svg"
+              class="image-7">
             <div class="tech-thumb-title">MS SQL</div>
           </div>
         </div>
         <h1 class="skills-title">Tools &amp; Technologies</h1>
         <div id="w-node-e2e12b6a-e754-1f14-6ced-d1cf7c69bded-d03310ed" class="tools-technology">
-          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/dockerLogo.png" class="image-7">
+          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/dockerLogo.png"
+              class="image-7">
             <div class="tech-thumb-title">Docker</div>
           </div>
-          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/Figma-logo.svg" class="figma-image">
+          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/Figma-logo.svg"
+              class="figma-image">
             <div class="tech-thumb-title">Figma</div>
           </div>
-          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/git-plain.svg" class="image-7">
+          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/git-plain.svg"
+              class="image-7">
             <div class="tech-thumb-title">Git</div>
           </div>
-          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/Blender_logo_no_text.svg" class="image-7">
+          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/Blender_logo_no_text.svg"
+              class="image-7">
             <div class="tech-thumb-title">Blender</div>
           </div>
         </div>
         <h1 class="skills-title">Cloud Services</h1>
         <div id="w-node-e2e12b6a-e754-1f14-6ced-d1cf7c69be1a-d03310ed" class="div-block-2">
-          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/icons8-google.svg" class="image-7">
+          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/icons8-google.svg"
+              class="image-7">
             <div class="tech-thumb-title-google">Picker API</div>
           </div>
-          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/icons8-google.svg" class="image-7">
+          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/icons8-google.svg"
+              class="image-7">
             <div class="drive-api">Drive API</div>
           </div>
-          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/Amazon_Web_Services_Logo.svg" class="image-7">
+          <div class="technology-block"><img width="30" loading="lazy" alt="" src="images/Amazon_Web_Services_Logo.svg"
+              class="image-7">
             <div class="tech-thumb-title-aws">   Cloud  <br> Services</div>
           </div>
         </div>
@@ -322,14 +506,21 @@
   <section class="footer-section">
     <div class="w-layout-blockcontainer main-container w-container">
       <div class="footer-container">
-        <div class="user-image-wrapper"><img src="images/placeholderSayHelloImageResized2.png" loading="lazy" sizes="(max-width: 479px) 100vw, 200px" srcset="images/placeholderSayHelloImageResized2-p-500.png 500w, images/placeholderSayHelloImageResized2-p-800.png 800w, images/placeholderSayHelloImageResized2.png 1000w" alt="" class="user-image"></div>
+        <div class="user-image-wrapper"><img src="images/placeholderSayHelloImageResized2.png" loading="lazy"
+            sizes="(max-width: 479px) 100vw, 200px"
+            srcset="images/placeholderSayHelloImageResized2-p-500.png 500w, images/placeholderSayHelloImageResized2-p-800.png 800w, images/placeholderSayHelloImageResized2.png 1000w"
+            alt="" class="user-image"></div>
         <h3 class="say-hello-h2">Say Hello.</h3>
         <div class="footer-contact-details-wrapper">
           <div class="social-link-blocks-wrapper">
             <a href="#" class="social-link-block w-inline-block"></a>
-            <a href="https://www.linkedin.com/in/aryeh-mischel" target="_blank" class="social-link-block w-inline-block"><img src="images/icons8-linkedin-2.svg" loading="lazy" alt=""></a>
-            <a href="https://github.com/AryehMischel" target="_blank" class="social-link-block w-inline-block"><img src="images/icons8-github.svg" loading="lazy" alt=""></a>
-            <a href="https://lichess.org/@/SquishyMuffinz" target="_blank" class="social-link-block w-inline-block"><img src="images/png-transparent-lichess-hd-logo-thumbnail.png" loading="lazy" alt=""></a>
+            <a href="https://www.linkedin.com/in/aryeh-mischel" target="_blank"
+              class="social-link-block w-inline-block"><img src="images/icons8-linkedin-2.svg" loading="lazy"
+                alt=""></a>
+            <a href="https://github.com/AryehMischel" target="_blank" class="social-link-block w-inline-block"><img
+                src="images/icons8-github.svg" loading="lazy" alt=""></a>
+            <a href="https://lichess.org/@/SquishyMuffinz" target="_blank" class="social-link-block w-inline-block"><img
+                src="images/png-transparent-lichess-hd-logo-thumbnail.png" loading="lazy" alt=""></a>
             <a href="#" class="social-link-block w-inline-block"></a>
           </div>
         </div>
@@ -343,9 +534,24 @@
       <div class="page-scroll-line"></div>
     </div>
   </address>
-  <a data-w-id="42a5dc3c-6573-cfcf-3383-ab798a0e5fe1" href="mailto:aryehmischel@gmail.com" class="mail-link-wrapper w-inline-block"><img src="images/Mail-icon_1Mail-icon.png" loading="lazy" alt="" class="mail-icon"><img src="images/about-link-arrow.svg" loading="lazy" alt="" class="mail-link-arrow-icon"></a>
-  <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=66e587d27c6fe1d7d0331081" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+  <a data-w-id="42a5dc3c-6573-cfcf-3383-ab798a0e5fe1" href="mailto:aryehmischel@gmail.com"
+    class="mail-link-wrapper w-inline-block"><img src="images/Mail-icon_1Mail-icon.png" loading="lazy" alt=""
+      class="mail-icon"><img src="images/about-link-arrow.svg" loading="lazy" alt="" class="mail-link-arrow-icon"></a>
+  <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=66e587d27c6fe1d7d0331081"
+    type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+    crossorigin="anonymous"></script>
   <script src="js/webflow.js" type="text/javascript"></script>
 </body>
+
 </html>
 
+<!-- <script>
+  document.addEventListener('DOMContentLoaded', () => {
+      const bubbles = document.querySelectorAll('.bubble');
+
+      bubbles.forEach(bubble => {
+          const randomDuration = 2 + Math.random() * 4; // Random duration between 25s and 35s
+          bubble.style.setProperty('--animation-duration', `${randomDuration}s`);
+      });
+  });
+</script> -->
