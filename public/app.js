@@ -25,7 +25,12 @@ mobileCheck()
 let mobileAnimation = null;
 let fingerDown = false;
 let animationContainer = document.getElementById('animationContainer');
+let bubble = 0;
+let bubbleClasses = ["bubble x1", "bubble x2", "bubble x3", "bubble x4", "bubble x5", "bubble x6", "bubble x7", "bubble x8"];
 console.log(animationContainer)
+
+
+
 
 
 const assetPath = "https://d368ik34cg55zg.cloudfront.net/"
@@ -276,7 +281,7 @@ function animate(time) {
       const relativeY = 1 - (triggerCenterY - canvasRect.top) / canvasRect.height * 2;
 
       // console.log("animated box Relative Position: ", relativeX, relativeY);
-     detectMouseOverSphereColl(new THREE.Vector2( relativeX.toFixed(2), relativeY.toFixed(2)));
+      detectMouseOverSphereColl(new THREE.Vector2(relativeX.toFixed(2), relativeY.toFixed(2)));
 
     }
 
@@ -284,121 +289,121 @@ function animate(time) {
 
 
 
-  headBoneHelper.lookAt(targetPosition);
-  let [yaw, pitch] = calculateYawAndPitchDifference(headBoneHelper.rotation, headBoneOriginHelper.rotation);
-  const time = Date.now() * 0.001;
-  const targetQuaternion = calculateTargetQuaternion(neckBone, cube.position);
-  const correctionQuaternion = new THREE.Quaternion();
-  correctionQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI); // Rotate 180 degrees around the Y-axis
-  const correctedTargetQuaternion = targetQuaternion.clone().multiply(correctionQuaternion);
-  headBone.quaternion.slerp(correctedTargetQuaternion, 0.02);
-  if (true || Math.abs(THREE.MathUtils.radToDeg(yaw)) > 6 || Math.abs(THREE.MathUtils.radToDeg(pitch)) > 4) {
-    //animate neck
-    const offsetQuaternion = new THREE.Quaternion();
-    offsetQuaternion.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), Math.PI * -0.19); // Adjust the axis and angle as needed
-    const finalTargetQuaternion = correctedTargetQuaternion.multiply(offsetQuaternion);
-    const halfwayQuaternion = new THREE.Quaternion().copy(neckBoneOriginHelper.quaternion).slerp(finalTargetQuaternion, 0.35);
-    neckBone.quaternion.slerp(halfwayQuaternion, 0.03);
+    headBoneHelper.lookAt(targetPosition);
+    let [yaw, pitch] = calculateYawAndPitchDifference(headBoneHelper.rotation, headBoneOriginHelper.rotation);
+    const time = Date.now() * 0.001;
+    const targetQuaternion = calculateTargetQuaternion(neckBone, cube.position);
+    const correctionQuaternion = new THREE.Quaternion();
+    correctionQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI); // Rotate 180 degrees around the Y-axis
+    const correctedTargetQuaternion = targetQuaternion.clone().multiply(correctionQuaternion);
+    headBone.quaternion.slerp(correctedTargetQuaternion, 0.02);
+    if (true || Math.abs(THREE.MathUtils.radToDeg(yaw)) > 6 || Math.abs(THREE.MathUtils.radToDeg(pitch)) > 4) {
+      //animate neck
+      const offsetQuaternion = new THREE.Quaternion();
+      offsetQuaternion.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), Math.PI * -0.19); // Adjust the axis and angle as needed
+      const finalTargetQuaternion = correctedTargetQuaternion.multiply(offsetQuaternion);
+      const halfwayQuaternion = new THREE.Quaternion().copy(neckBoneOriginHelper.quaternion).slerp(finalTargetQuaternion, 0.35);
+      neckBone.quaternion.slerp(halfwayQuaternion, 0.03);
+    }
+    /*else {
+      const offsetQuaternion = new THREE.Quaternion();
+      offsetQuaternion.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), Math.PI * -0.19); // Adjust the axis and angle as needed
+      const finalTargetQuaternion = correctedTargetQuaternion.multiply(offsetQuaternion);
+      // const halfwayQuaternion = new THREE.Quaternion().copy(neckBoneOriginHelper.quaternion).slerp(finalTargetQuaternion, 0.35);
+      neckBone.quaternion.slerp(neckBoneOriginHelper.quaternion, 0.015);
+    } */
+    //  else{
+    //   const offsetQuaternion = new THREE.Quaternion();
+    //   offsetQuaternion.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), Math.PI * -0.19); // Adjust the axis and angle as needed
+    //   const finalTargetQuaternion = correctedTargetQuaternion.multiply(offsetQuaternion);
+    //   const halfwayQuaternion = new THREE.Quaternion().copy(neckBoneOriginHelper.quaternion).slerp(finalTargetQuaternion, 0.35);
+    //   neckBone.quaternion.slerp(halfwayQuaternion, 0.01);
+    // }
+    // if (!freezeEyes) {
+
+    rotateEyes();
+    // }
   }
-  /*else {
-    const offsetQuaternion = new THREE.Quaternion();
-    offsetQuaternion.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), Math.PI * -0.19); // Adjust the axis and angle as needed
-    const finalTargetQuaternion = correctedTargetQuaternion.multiply(offsetQuaternion);
-    // const halfwayQuaternion = new THREE.Quaternion().copy(neckBoneOriginHelper.quaternion).slerp(finalTargetQuaternion, 0.35);
-    neckBone.quaternion.slerp(neckBoneOriginHelper.quaternion, 0.015);
-  } */
-  //  else{
-  //   const offsetQuaternion = new THREE.Quaternion();
-  //   offsetQuaternion.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), Math.PI * -0.19); // Adjust the axis and angle as needed
-  //   const finalTargetQuaternion = correctedTargetQuaternion.multiply(offsetQuaternion);
-  //   const halfwayQuaternion = new THREE.Quaternion().copy(neckBoneOriginHelper.quaternion).slerp(finalTargetQuaternion, 0.35);
-  //   neckBone.quaternion.slerp(halfwayQuaternion, 0.01);
+
+
   // }
-  // if (!freezeEyes) {
-
-  rotateEyes();
-  // }
-}
-
-
-// }
 
 
 
 
-//tween stuff
+  //tween stuff
 
-//rotate head to center tween
-if (tween) {
-  tween.update()
-}
+  //rotate head to center tween
+  if (tween) {
+    tween.update()
+  }
 
-if (eyeBlinkingTween) {
-  eyeBlinkingTween.update()
-}
+  if (eyeBlinkingTween) {
+    eyeBlinkingTween.update()
+  }
 
-if (tweenBack) {
-  tweenBack.update()
-}
-
-
-//dissolve shaders
-if (tweenBodyDissolveShader) {
-  tweenBodyDissolveShader.update()
-}
-if (tweenHairDissolveShader) {
-  tweenHairDissolveShader.update()
-}
-if (tweenClothesDissolveShader) {
-  tweenClothesDissolveShader.update()
-}
-if (tweenEyesDissolveShader) {
-  tweenEyesDissolveShader.update()
-}
+  if (tweenBack) {
+    tweenBack.update()
+  }
 
 
-if (brightenTween) {
-  brightenTween.update()
-}
-
-if (fadeOutTween) {
-  fadeOutTween.update()
-}
-
-
-
-
-if (NonInteractiveAvatar && !dissolveEffectStarted) {
-  dissolveEffectStarted = true;
-  animateTogether()
-}
+  //dissolve shaders
+  if (tweenBodyDissolveShader) {
+    tweenBodyDissolveShader.update()
+  }
+  if (tweenHairDissolveShader) {
+    tweenHairDissolveShader.update()
+  }
+  if (tweenClothesDissolveShader) {
+    tweenClothesDissolveShader.update()
+  }
+  if (tweenEyesDissolveShader) {
+    tweenEyesDissolveShader.update()
+  }
 
 
-if (torusMaterial) {
-  torusMaterial.uniforms.time.value += 0.01;
-}
+  if (brightenTween) {
+    brightenTween.update()
+  }
 
-if (!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene && dissolveEffectFinished) {
-  interactiveAvatarLoaded = true;
-  swapAvatars()
-  removeTorus()
-
-
-}
-
-requestAnimationFrame(animate);
+  if (fadeOutTween) {
+    fadeOutTween.update()
+  }
 
 
-renderer.clear();
 
-if (!interactiveAvatarLoaded) {
-  //   camera.layers.set(1);
-  composer.render();
-  //   renderer.clearDepth();
-  //   camera.layers.set(0);
-} 
 
-renderer.render(scene, camera);
+  if (NonInteractiveAvatar && !dissolveEffectStarted) {
+    dissolveEffectStarted = true;
+    animateTogether()
+  }
+
+
+  if (torusMaterial) {
+    torusMaterial.uniforms.time.value += 0.01;
+  }
+
+  if (!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene && dissolveEffectFinished) {
+    interactiveAvatarLoaded = true;
+    swapAvatars()
+    removeTorus()
+
+
+  }
+
+  requestAnimationFrame(animate);
+
+
+  renderer.clear();
+
+  if (!interactiveAvatarLoaded) {
+    //   camera.layers.set(1);
+    composer.render();
+    //   renderer.clearDepth();
+    //   camera.layers.set(0);
+  }
+
+  renderer.render(scene, camera);
 
 }
 
@@ -1319,6 +1324,7 @@ function createShaders() {
 }
 
 
+
 async function swapAvatars() {
 
   interactiveAvatarLoaded = true;
@@ -1358,23 +1364,29 @@ async function swapAvatars() {
     mobileAnimation = document.createElement('div');
     mobileAnimation.id = 'mobileAnimation'; // Set the ID to 'mobileAnimation'
     // <div class="bubble x5" style="--animation-duration: calc(25s + 10s * random())"></div>
-    mobileAnimation.className = 'bubble x3'; // Correctly assign the class
- // Random duration between 25s and 35s
-    mobileAnimation.style.position = 'absolute';
-
+    mobileAnimation.className = 'bubble x1'; // Correctly assign the class
+    bubble++;
+    // Random duration between 25s and 35s
     animationContainer.appendChild(mobileAnimation);
     // mobileAnimation.className = 'moving-div'; // Correctly assign the class
     // document.body.appendChild(mobileAnimation);
     mobileAnimation.addEventListener("animationend", async (event) => {
-    //   console.log("animation iteration")
-    console.log(mobileAnimation.className)
-      let newclassname =  mobileAnimation.className === "bubble x5" ? "bubble x3" : "bubble x5";
+
+      //   console.log("animation iteration")
+      console.log(mobileAnimation.className, bubbleClasses[bubble], bubble)
+      let newclassname;
+      if(bubbleClasses[bubble + 1] != undefined){
+        newclassname = bubbleClasses[bubble++]
+      }else{
+        bubble = 0;
+        newclassname = bubbleClasses[bubble]
+      }
       mobileAnimation.className = "none";
       await waitForSeconds(1)
       mobileAnimation.className = newclassname;
-      mobileAnimation.style.top = `${Math.random() * 70}%`;
-      const randomDuration = 2 + Math.random() * 4;
-      mobileAnimation.style.setProperty('--animation-duration', `${randomDuration}s`);
+      // mobileAnimation.style.top = `${Math.random() * 70}%`;
+      // const randomDuration = 2 + Math.random() * 4;
+      // mobileAnimation.style.setProperty('--animation-duration', `${randomDuration}s`);
 
     });
   }

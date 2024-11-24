@@ -107,13 +107,63 @@
       }
     }
 
-    .x5 {
-      animation: animateBubble var(--animation-duration, 6s) linear 1, sideWays 4s ease-in-out 1 alternate;
-      left: 0;
-      top: 20%;
-      transform: scale(0.5);
-      position: absolute;
+
+    @keyframes animateBubble2 {
+      0% {
+        margin-left: 0px;
+        margin-bottom: -20px;
+      }
+
+      25% {
+        margin-left: 25%;
+        margin-bottom: 35px;
+      }
+
+      50% {
+        margin-left: 50%;
+        margin-bottom: 15px;
+      }
+
+      75% {
+        margin-left: 75%;
+        margin-bottom: -5px;
+      }
+
+      100% {
+        margin-left: 100%;
+        margin-bottom: 0px;
+      }
     }
+
+
+    @keyframes animateBubble3 {
+      0% {
+        margin-left: 0px;
+        margin-top: 0px;
+      }
+
+      25% {
+        margin-left: 25%;
+        margin-top: 75px;
+      }
+
+      50% {
+        margin-left: 50%;
+        margin-top: 100px;
+      }
+
+      75% {
+        margin-left: 75%;
+        margin-top: 140px;
+      }
+
+      100% {
+        margin-left: 100%;
+        margin-top: 200px;
+      }
+    }
+
+
 
     /* OBJECTS */
     .bubble {
@@ -136,10 +186,40 @@
       width: 180px;
     }
 
+
+
+    .x1 {
+      -webkit-animation: animateBubble3 9s linear 1, sideWays 5s ease-in-out 1 alternate;
+      -moz-animation: animateBubble3 9s linear 1, sideWays 5s ease-in-out 1 alternate;
+      animation: animateBubble3 9s linear 1, sideWays 5s ease-in-out 1 alternate;
+
+      left: -5%;
+      top: 10%;
+
+      -webkit-transform: scale(0.6);
+      -moz-transform: scale(0.6);
+      transform: scale(0.6);
+    }
+
+
+
+    .x2 {
+      -webkit-animation: animateBubble2 4s linear 1, sideWays 4s ease-in-out 1 alternate;
+      -moz-animation: animateBubble2 4s linear 1, sideWays 4s ease-in-out 1 alternate;
+      animation: animateBubble2 4s linear 1, sideWays 4s ease-in-out 1 alternate;
+      position: absolute;
+      left: 5%;
+      top: 30%;
+
+      -webkit-transform: scale(0.4);
+      -moz-transform: scale(0.4);
+      transform: scale(0.4);
+    }
+
     .x3 {
-      -webkit-animation: animateBubble 5s linear 1, sideWays 1s ease-in-out 1 alternate;
-      -moz-animation: animateBubble 5s linear 1, sideWays 1s ease-in-out 1 alternate;
-      animation: animateBubble 5s linear 1, sideWays 1s ease-in-out 1 alternate;
+      -webkit-animation: animateBubble2 5s linear 1, sideWays 1s ease-in-out 1 alternate;
+      -moz-animation: animateBubble2 5s linear 1, sideWays 1s ease-in-out 1 alternate;
+      animation: animateBubble2 5s linear 1, sideWays 1s ease-in-out 1 alternate;
       position: absolute;
       left: 0%;
       top: 5%;
@@ -150,17 +230,77 @@
     }
 
 
-    .x2 {
-      -webkit-animation: animateBubble 20s linear infinite, sideWays 4s ease-in-out 1 alternate;
-      -moz-animation: animateBubble 20s linear infinite, sideWays 4s ease-in-out 1 alternate;
-      animation: animateBubble 20s linear infinite, sideWays 4s ease-in-out 1 alternate;
-      position: absolute;
-      left: 5%;
-      top: 80%;
+    .x4 {
+      -webkit-animation: animateBubble2 11s linear 1, sideWays 3s ease-in-out 1 alternate;
+      -moz-animation: animateBubble2 11s linear 1, sideWays 3s ease-in-out 1 alternate;
+      animation: animateBubble2 11s linear 1, sideWays 3s ease-in-out 1 alternate;
 
-      -webkit-transform: scale(0.4);
-      -moz-transform: scale(0.4);
-      transform: scale(0.4);
+      left: 20%;
+      top: 60%;
+
+      -webkit-transform: scale(0.3);
+      -moz-transform: scale(0.3);
+      transform: scale(0.3);
+    }
+
+    .x5 {
+      animation: animateBubble var(--animation-duration, 6s) linear 1, sideWays 4s ease-in-out 1 alternate;
+      left: 0;
+      top: 70%;
+      transform: scale(0.5);
+    }
+
+
+    .x6 {
+      -webkit-animation: animateBubble 4s linear 1, sideWays 2s ease-in-out 1 alternate;
+      -moz-animation: animateBubble 4s linear 1, sideWays 2s ease-in-out 1 alternate;
+      animation: animateBubble 4s linear 1, sideWays 2s ease-in-out 1 alternate;
+
+      left: 50%;
+      top: 0;
+
+      -webkit-transform: scale(0.8);
+      -moz-transform: scale(0.8);
+      transform: scale(0.8);
+    }
+
+    .x7 {
+      -webkit-animation: animateBubble 4s linear 1, sideWays 2s ease-in-out 1 alternate;
+      -moz-animation: animateBubble 4s linear 1, sideWays 2s ease-in-out 1 alternate;
+      animation: animateBubble 4s linear 1, sideWays 2s ease-in-out 1 alternate;
+
+      left: 50%;
+      top: 42%;
+
+      -webkit-transform: scale(0.8);
+      -moz-transform: scale(0.8);
+      transform: scale(0.8);
+    }
+
+    .x8 {
+      -webkit-animation: animateBubble 4s linear 1, sideWays 3s ease-in-out 1 alternate;
+      -moz-animation: animateBubble 4s linear 1, sideWays 3s ease-in-out 1 alternate;
+      animation: animateBubble 4s linear 1, sideWays 3s ease-in-out 1 alternate;
+
+      left: 80%;
+      top: 10%;
+
+      -webkit-transform: scale(0.3);
+      -moz-transform: scale(0.3);
+      transform: scale(0.3);
+    }
+
+    .pop { animation: explode .07s  forwards ease-out; }
+    
+    @keyframes explode {
+      0% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(1.3);
+        opacity: 0;
+      }
     }
   </style>
 
