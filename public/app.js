@@ -15,7 +15,7 @@ import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { GammaCorrectionShader } from 'three/examples/jsm/Addons.js';
 
-
+console.log("loaded all modules", performance.now())
 
 let isMobile = false;
 window.mobileCheck = function () {
@@ -406,6 +406,7 @@ renderer.render(scene, camera);
 }
 
 animate();
+console.log("scene loaded", performance.now())
 
 
 
@@ -1361,6 +1362,13 @@ async function swapAvatars() {
     mobileAnimation.id = 'mobileAnimation'; // Set the ID to 'mobileAnimation'
     mobileAnimation.className = 'moving-div'; // Correctly assign the class
     document.body.appendChild(mobileAnimation);
+    mobileAnimation.addEventListener("animationiteration", async (event) => {
+      console.log("animation iteration")
+      mobileAnimation.className = "none";
+      await waitForSeconds(2)
+      mobileAnimation.className = "moving-div";
+
+    });
   }
 
   await waitForSeconds(2)
