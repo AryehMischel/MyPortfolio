@@ -1358,7 +1358,7 @@ async function swapAvatars() {
     mobileAnimation.id = 'mobileAnimation'; // Set the ID to 'mobileAnimation'
     mobileAnimation.className = 'moving-div'; // Correctly assign the class
     document.body.appendChild(mobileAnimation);
-    mobileAnimation.addEventListener("animationiteration", async (event) => {
+    mobileAnimation.addEventListener("animationend", async (event) => {
       console.log("animation iteration")
       mobileAnimation.className = "none";
       await waitForSeconds(2)
