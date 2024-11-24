@@ -22,9 +22,8 @@ window.mobileCheck = function () {
   (function (a) { if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) isMobile = true; })(navigator.userAgent || navigator.vendor || window.opera);
 };
 mobileCheck()
-console.log("isMobile ", isMobile)
-
-
+let mobileAnimation = null;
+let fingerDown = false;
 
 
 
@@ -212,7 +211,7 @@ renderer.toneMappingExposure = 1;
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(canvas.width, canvas.height);
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.colorManagement = true;  
+renderer.colorManagement = true;
 
 const composer = new EffectComposer(renderer);
 const renderPass = new RenderPass(scene, camera);
@@ -261,125 +260,148 @@ function animate(time) {
 
   // if (!isMobile) {
 
-    if (InteractiveAvatar && animateHead) {
+  if (InteractiveAvatar && animateHead) {
+    if (isMobile && !fingerDown && mobileAnimation) {
+      // Get the bounding rectangles of the canvas and the animateHeadTriggerRectColl element
+      const canvasRect = canvas.getBoundingClientRect();
+      const triggerRect = mobileAnimation.getBoundingClientRect();
+      // Calculate the relative position of the triggerRect within the canvas
+      const triggerCenterX = triggerRect.left + triggerRect.width / 2;
+      const triggerCenterY = triggerRect.top + triggerRect.height / 2;
 
-      headBoneHelper.lookAt(targetPosition);
-      let [yaw, pitch] = calculateYawAndPitchDifference(headBoneHelper.rotation, headBoneOriginHelper.rotation);
-      const time = Date.now() * 0.001;
-      const targetQuaternion = calculateTargetQuaternion(neckBone, cube.position);
-      const correctionQuaternion = new THREE.Quaternion();
-      correctionQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI); // Rotate 180 degrees around the Y-axis
-      const correctedTargetQuaternion = targetQuaternion.clone().multiply(correctionQuaternion);
-      headBone.quaternion.slerp(correctedTargetQuaternion, 0.02);
-      if (true || Math.abs(THREE.MathUtils.radToDeg(yaw)) > 6 || Math.abs(THREE.MathUtils.radToDeg(pitch)) > 4) {
-        //animate neck
-        const offsetQuaternion = new THREE.Quaternion();
-        offsetQuaternion.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), Math.PI * -0.19); // Adjust the axis and angle as needed
-        const finalTargetQuaternion = correctedTargetQuaternion.multiply(offsetQuaternion);
-        const halfwayQuaternion = new THREE.Quaternion().copy(neckBoneOriginHelper.quaternion).slerp(finalTargetQuaternion, 0.35);
-        neckBone.quaternion.slerp(halfwayQuaternion, 0.03);
-      }
-      /*else {
-        const offsetQuaternion = new THREE.Quaternion();
-        offsetQuaternion.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), Math.PI * -0.19); // Adjust the axis and angle as needed
-        const finalTargetQuaternion = correctedTargetQuaternion.multiply(offsetQuaternion);
-        // const halfwayQuaternion = new THREE.Quaternion().copy(neckBoneOriginHelper.quaternion).slerp(finalTargetQuaternion, 0.35);
-        neckBone.quaternion.slerp(neckBoneOriginHelper.quaternion, 0.015);
-      } */
-      //  else{
-      //   const offsetQuaternion = new THREE.Quaternion();
-      //   offsetQuaternion.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), Math.PI * -0.19); // Adjust the axis and angle as needed
-      //   const finalTargetQuaternion = correctedTargetQuaternion.multiply(offsetQuaternion);
-      //   const halfwayQuaternion = new THREE.Quaternion().copy(neckBoneOriginHelper.quaternion).slerp(finalTargetQuaternion, 0.35);
-      //   neckBone.quaternion.slerp(halfwayQuaternion, 0.01);
-      // }
-      // if (!freezeEyes) {
+      const canvasCenterX = canvasRect.left + canvasRect.width / 2;
+      const canvasCenterY = canvasRect.top + canvasRect.height / 2;
 
-      rotateEyes();
-      // }
+      const relativeX = (triggerCenterX - canvasRect.left) / canvasRect.width * 2 - 1;
+      // const relativeY = (triggerCenterY - canvasRect.top) / canvasRect.height * 2 - 1;
+      const relativeY = 1 - (triggerCenterY - canvasRect.top) / canvasRect.height * 2;
+
+      // console.log("animated box Relative Position: ", relativeX, relativeY);
+     detectMouseOverSphereColl(new THREE.Vector2( relativeX.toFixed(2), relativeY.toFixed(2)));
+
     }
 
 
+
+
+
+  headBoneHelper.lookAt(targetPosition);
+  let [yaw, pitch] = calculateYawAndPitchDifference(headBoneHelper.rotation, headBoneOriginHelper.rotation);
+  const time = Date.now() * 0.001;
+  const targetQuaternion = calculateTargetQuaternion(neckBone, cube.position);
+  const correctionQuaternion = new THREE.Quaternion();
+  correctionQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI); // Rotate 180 degrees around the Y-axis
+  const correctedTargetQuaternion = targetQuaternion.clone().multiply(correctionQuaternion);
+  headBone.quaternion.slerp(correctedTargetQuaternion, 0.02);
+  if (true || Math.abs(THREE.MathUtils.radToDeg(yaw)) > 6 || Math.abs(THREE.MathUtils.radToDeg(pitch)) > 4) {
+    //animate neck
+    const offsetQuaternion = new THREE.Quaternion();
+    offsetQuaternion.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), Math.PI * -0.19); // Adjust the axis and angle as needed
+    const finalTargetQuaternion = correctedTargetQuaternion.multiply(offsetQuaternion);
+    const halfwayQuaternion = new THREE.Quaternion().copy(neckBoneOriginHelper.quaternion).slerp(finalTargetQuaternion, 0.35);
+    neckBone.quaternion.slerp(halfwayQuaternion, 0.03);
+  }
+  /*else {
+    const offsetQuaternion = new THREE.Quaternion();
+    offsetQuaternion.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), Math.PI * -0.19); // Adjust the axis and angle as needed
+    const finalTargetQuaternion = correctedTargetQuaternion.multiply(offsetQuaternion);
+    // const halfwayQuaternion = new THREE.Quaternion().copy(neckBoneOriginHelper.quaternion).slerp(finalTargetQuaternion, 0.35);
+    neckBone.quaternion.slerp(neckBoneOriginHelper.quaternion, 0.015);
+  } */
+  //  else{
+  //   const offsetQuaternion = new THREE.Quaternion();
+  //   offsetQuaternion.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), Math.PI * -0.19); // Adjust the axis and angle as needed
+  //   const finalTargetQuaternion = correctedTargetQuaternion.multiply(offsetQuaternion);
+  //   const halfwayQuaternion = new THREE.Quaternion().copy(neckBoneOriginHelper.quaternion).slerp(finalTargetQuaternion, 0.35);
+  //   neckBone.quaternion.slerp(halfwayQuaternion, 0.01);
   // }
+  // if (!freezeEyes) {
+
+  rotateEyes();
+  // }
+}
+
+
+// }
 
 
 
 
-  //tween stuff
+//tween stuff
 
-  //rotate head to center tween
-  if (tween) {
-    tween.update()
-  }
+//rotate head to center tween
+if (tween) {
+  tween.update()
+}
 
-  if (eyeBlinkingTween) {
-    eyeBlinkingTween.update()
-  }
+if (eyeBlinkingTween) {
+  eyeBlinkingTween.update()
+}
 
-  if (tweenBack) {
-    tweenBack.update()
-  }
-
-
-  //dissolve shaders
-  if (tweenBodyDissolveShader) {
-    tweenBodyDissolveShader.update()
-  }
-  if (tweenHairDissolveShader) {
-    tweenHairDissolveShader.update()
-  }
-  if (tweenClothesDissolveShader) {
-    tweenClothesDissolveShader.update()
-  }
-  if (tweenEyesDissolveShader) {
-    tweenEyesDissolveShader.update()
-  }
+if (tweenBack) {
+  tweenBack.update()
+}
 
 
-  if (brightenTween) {
-    brightenTween.update()
-  }
-
-  if (fadeOutTween) {
-    fadeOutTween.update()
-  }
-
-
-
-
-  if (NonInteractiveAvatar && !dissolveEffectStarted) {
-    dissolveEffectStarted = true;
-    animateTogether()
-  }
+//dissolve shaders
+if (tweenBodyDissolveShader) {
+  tweenBodyDissolveShader.update()
+}
+if (tweenHairDissolveShader) {
+  tweenHairDissolveShader.update()
+}
+if (tweenClothesDissolveShader) {
+  tweenClothesDissolveShader.update()
+}
+if (tweenEyesDissolveShader) {
+  tweenEyesDissolveShader.update()
+}
 
 
-  if (torusMaterial) {
-    torusMaterial.uniforms.time.value += 0.01;
-  }
+if (brightenTween) {
+  brightenTween.update()
+}
 
-  if (!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene && dissolveEffectFinished) {
-    interactiveAvatarLoaded = true;
-    swapAvatars()
-    removeTorus()
-
-
-  }
-
-  requestAnimationFrame(animate);
+if (fadeOutTween) {
+  fadeOutTween.update()
+}
 
 
-  renderer.clear();
 
-  if (!interactiveAvatarLoaded) {
+
+if (NonInteractiveAvatar && !dissolveEffectStarted) {
+  dissolveEffectStarted = true;
+  animateTogether()
+}
+
+
+if (torusMaterial) {
+  torusMaterial.uniforms.time.value += 0.01;
+}
+
+if (!interactiveAvatarLoaded && eyeBoneLeft && interactiveAvatarInScene && dissolveEffectFinished) {
+  interactiveAvatarLoaded = true;
+  swapAvatars()
+  removeTorus()
+
+
+}
+
+requestAnimationFrame(animate);
+
+
+renderer.clear();
+
+if (!interactiveAvatarLoaded) {
   //   camera.layers.set(1);
-     composer.render();
+  composer.render();
   //   renderer.clearDepth();
   //   camera.layers.set(0);
-   } else{
-    console.log("dissolve finishedd")
-   }
+} else {
+  console.log("dissolve finishedd")
+}
 
-  renderer.render(scene, camera);
+renderer.render(scene, camera);
 
 }
 
@@ -608,6 +630,7 @@ for (var i = 0; i < containersOverlappingWithTriggerColl.length; i++) {
       const u = (x / rect.width) * 2 - 1;
       const v = (y / rect.height) * 2 - 1;
       let mouse = new THREE.Vector2(u, -v);
+      console.log("mouse relative position not mobile", mouse)
       detectMouseOverSphereColl(mouse)
     } else {
       if (customCursorShowing) {
@@ -641,7 +664,9 @@ for (var i = 0; i < containersOverlappingWithTriggerColl.length; i++) {
     }
   });
 
-
+  containersOverlappingWithTriggerColl[i].addEventListener("touchstart", (event) => {
+    fingerDown = true;
+  });
 
 
   containersOverlappingWithTriggerColl[i].addEventListener('touchmove', (event) => {
@@ -674,6 +699,7 @@ for (var i = 0; i < containersOverlappingWithTriggerColl.length; i++) {
 
   //this is confusing, but basically if it's over a collider and then it isn't start aniamtion back to center
   containersOverlappingWithTriggerColl[i].addEventListener('touchend', (event) => {
+    fingerDown = false;
     const touch = event.touches[0]; // Get the first touch
     const x = touch.pageX;
     const y = touch.pageY;
@@ -750,6 +776,14 @@ animateHeadTriggerRectColl.addEventListener('touchmove', (event) => {
 
 });
 
+animateHeadTriggerRectColl.addEventListener('touchend', (event) => {
+  fingerDown = false;
+})
+
+animateHeadTriggerRectColl.addEventListener('touchstart', (event) => {
+  fingerDown = true;
+});
+
 
 
 
@@ -773,7 +807,7 @@ function detectMouseOverSphereColl(mouse) {
           tween.stop()
         }
       }
-      
+
       if (!customCursorShowing) {
         setCustomCursor();
         customCursorShowing = true;
@@ -1288,7 +1322,7 @@ function createShaders() {
 
 
 async function swapAvatars() {
-  
+
   interactiveAvatarLoaded = true;
   dissolveEffectFinished
   if (tweenBodyDissolveShader.isPlaying()) {
@@ -1316,12 +1350,19 @@ async function swapAvatars() {
 
 
 
-
   action.play();
   await waitForSeconds(0.25)
   animateHead = true;
   startBlinking();
   //animate towards current mouse position
+  await waitForSeconds(0.25)
+  if (isMobile) {
+    mobileAnimation = document.createElement('div');
+    mobileAnimation.id = 'mobileAnimation'; // Set the ID to 'mobileAnimation'
+    mobileAnimation.className = 'moving-div'; // Correctly assign the class
+    document.body.appendChild(mobileAnimation);
+  }
+
   await waitForSeconds(2)
   NonInteractiveAvatar.parent.remove(NonInteractiveAvatar);
 
