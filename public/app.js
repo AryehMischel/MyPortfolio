@@ -982,13 +982,13 @@ function animateHairIn() {
     .easing(TWEEN.Easing.Cubic.InOut)
     .delay(1400)
     .onComplete(() => {
-      console.log("complete hat animation", performance.now())
+      console.log("completed dissolve animation", performance.now())
 
       if (!interactiveAvatarLoaded && interactiveAvatarInScene) {
 
         swapAvatars()
       } else {
-        console.log("start the donut animation again...")
+        console.log("interactive Avatar not loaded in...")
         dissolveShaderPlaying = false;
         dissolveEffectFinished = true;
         addTorus()
@@ -1314,6 +1314,12 @@ workSection.addEventListener("mouseenter", (event) => {
   }
 });
 
+workSection.addEventListener("touchstart", (event) => {
+  if (isAvatarTracking) {
+    disableAvatarTracking()
+  }
+});
+
 
 
 animateHeadTriggerRectColl.addEventListener('mouseleave', (event) => {
@@ -1350,6 +1356,37 @@ animateHeadTriggerRectColl.addEventListener('mousemove', (event) => {
 
 
 
+//touch events for head trigger collider
+animateHeadTriggerRectColl.addEventListener('touchmove', (event) => {
+  const rect = canvas.getBoundingClientRect();
+  const touch = event.touches[0]; // Get the first touch
+  const x = touch.pageX - rect.left;
+  const y = touch.pageY - rect.top;
+  const u = (x / rect.width) * 2 - 1;
+  const v = (y / rect.height) * 2 - 1;
+  const finger = new Vector2(u, -v);
+  detectMouseOverSphereColl(finger);
+
+});
+
+animateHeadTriggerRectColl.addEventListener('touchend', (event) => {
+  fingerDown = false;
+  if (isAvatarTracking) {
+    disableAvatarTracking()
+  }
+})
+
+animateHeadTriggerRectColl.addEventListener('touchstart', (event) => {
+  fingerDown = true;
+  const rect = canvas.getBoundingClientRect();
+  const touch = event.touches[0]; // Get the first touch
+  const x = touch.pageX - rect.left;
+  const y = touch.pageY - rect.top;
+  const u = (x / rect.width) * 2 - 1;
+  const v = (y / rect.height) * 2 - 1;
+  const finger = new Vector2(u, -v);
+  detectMouseOverSphereColl(finger);
+});
 
 
 
