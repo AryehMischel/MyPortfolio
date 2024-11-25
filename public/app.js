@@ -1,4 +1,4 @@
-import { Scene, Matrix4, Raycaster, MeshBasicMaterial, SphereGeometry, Quaternion, Euler, MathUtils, Object3D, AnimationMixer, AmbientLight, PointLight, HemisphereLight, TorusGeometry, TextureLoader, Vector2, Vector3, Vector4, Color, Mesh, DoubleSide, ACESFilmicToneMapping, PCFSoftShadowMap, PlaneGeometry, ShaderMaterial, PerspectiveCamera, WebGLRenderer } from 'three';
+import { Scene, Clock, Matrix4, Raycaster, MeshBasicMaterial, SphereGeometry, Quaternion, Euler, MathUtils, Object3D, AnimationMixer, AmbientLight, PointLight, HemisphereLight, TorusGeometry, TextureLoader, Vector2, Vector3, Vector4, Color, Mesh, DoubleSide, ACESFilmicToneMapping, PCFSoftShadowMap, PlaneGeometry, ShaderMaterial, PerspectiveCamera, WebGLRenderer } from 'three';
 import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
@@ -79,11 +79,15 @@ const doubleNoise = textureLoader.load(rootPath + 'doubleNoise2.png');
 //animations
 let mobileAnimation = null;
 
+var clock = new Clock();
+const animationMixer = new AnimationMixer();
+let action = null;
+
 //different css animations attached to each class
 let bubbleClasses = ["bubble x1", "bubble x2", "bubble x3", "bubble x4", "bubble x5"];
 let bubbleIndex = 0;
-const mixer = new AnimationMixer();
-let action = null;
+
+
 
 //morph targets for manual face animation
 let faceMesh = null;
@@ -137,7 +141,7 @@ let animationContainer = document.getElementById('animationContainer'); //contai
 let workSection = document.getElementById("work-section")
 
 //transform objects
-let targetPosition = new Vector3();
+let targetPosition = new Vector3(0, 1.8, 0);
 
 //argument variables
 let leaveTimeout = null;
@@ -231,12 +235,22 @@ scene.add(backgroundMesh);
 function animate(time) {
 
 
+  //animate avatar blinking
   if(eyeBlinkingInTween){
     eyeBlinkingInTween.update();
   }
+
   if(eyeBlinkingOutTween){
     eyeBlinkingOutTween.update();
   }
+
+
+  //avatar face mocop idle animation
+ if (animationMixer) {
+    var deltaSeconds = clock.getDelta();
+    animationMixer.update(deltaSeconds);
+  }
+
 
 
   // spinning torus animation (loading animation)
@@ -528,8 +542,9 @@ function loadModels() {
 
     gltf.animations.forEach((clip) => {
       if (clip.name === "ArmatureAction") {
+        console.log("ArmatureAction animation loaded");
         idleAnimation = clip;
-        action = mixer.clipAction(idleAnimation, interactiveAvatar);
+        action = animationMixer.clipAction(idleAnimation, interactiveAvatar);
       }
     });
 
@@ -1150,13 +1165,13 @@ async function swapAvatars() {
 
 
 
-
   // action.play();
   await waitForSeconds(0.25)
   animateHead = true;
   startBlinking();
-  //animate towards current mouse position
+  action.play();
   await waitForSeconds(0.25)
+
   if (isMobile) {
     mobileAnimation = document.createElement('div');
     mobileAnimation.id = 'mobileAnimation'; // Set the ID to 'mobileAnimation'
@@ -1189,10 +1204,6 @@ async function swapAvatars() {
 
   await waitForSeconds(2)
   nonInteractiveAvatar.parent.remove(nonInteractiveAvatar);
-
-
-  // nonInteractiveAvatar.parent.remove(nonInteractiveAvatar);
-
 
 }
 
