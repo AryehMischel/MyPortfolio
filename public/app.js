@@ -20,7 +20,7 @@ const waitForSeconds = (seconds) => {
 
 // client network speed
 let speedInMbps = null;
-let networkSpeedThreshold = 12; //not accurate at all 
+let networkSpeedThreshold = 18; //not accurate at all 
 
 // src's
 let rootPath = "https://d368ik34cg55zg.cloudfront.net/"
