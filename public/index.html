@@ -164,6 +164,13 @@
     }
 
 
+    @keyframes pop_bubble {
+        100% {
+            transform: scale(var(--scale, 1));
+        }
+    }
+
+
 
     /* OBJECTS */
     .bubble {
@@ -290,9 +297,9 @@
       transform: scale(0.3);
     }
 
-    .pop { animation: explode .07s  forwards ease-out; }
+
     
-    @keyframes explode {
+    /* @keyframes explode {
       0% {
         opacity: 1;
       }
@@ -301,7 +308,63 @@
         transform: scale(1.3);
         opacity: 0;
       }
+    } */
+
+    @keyframes pop_bubble {
+        100% {
+            transform: scale(var(--scale, 1));
+        }
     }
+
+    .pop1{ 
+      --scale: 0.8;
+      animation:animateBubble3 9s linear 1, sideWays 5s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
+    }
+
+    .pop2 {
+        --scale: 0.6;
+        animation: animateBubble  20s linear 1, sideWays 4s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
+    }
+
+    .pop3 {
+      --scale: 0.9;
+        animation: animateBubble2 5s linear 1, sideWays 1s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
+    }
+
+    .pop4 {
+      --scale: 0.5;
+        animation: animateBubble2 11s linear 1, sideWays 3s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
+    }
+
+    .pop5 {
+      --scale: 0.7;
+        animation: animateBubble var(--animation-duration, 6s) linear 1, sideWays 4s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
+    }
+
+    .pop6 {
+      --scale: 1.0;
+        animation: animateBubble 4s linear 1, sideWays 2s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
+    }
+
+    .pop7 {
+      --scale: 1.0;
+        animation: animateBubble 4s linear 1, sideWays 2s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
+    }
+
+    .pop8 {
+      --scale: 0.5;
+        animation: animateBubble 4s linear 1, sideWays 3s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
+    }
+
+ 
+
+
+
+
+
+
+
+
   </style>
 
   <style>

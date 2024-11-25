@@ -85,6 +85,7 @@ let action = null;
 
 //different css animations attached to each class
 let bubbleClasses = ["bubble x1", "bubble x2", "bubble x3", "bubble x4", "bubble x5"];
+let popBubbleClasses = ["pop1", "pop2", "pop3", "pop4", "pop5", "pop6", "pop7", "pop8"];
 let bubbleIndex = 0;
 
 
@@ -1188,49 +1189,86 @@ async function swapAvatars() {
 
 
   // action.play();
-  await waitForSeconds(0.25)
   animateHead = true;
   startBlinking();
   action.play();
-  await waitForSeconds(0.25)
+
+  await waitForSeconds(1.2)
 
   if (isMobile) {
-    mobileAnimation = document.createElement('div');
-    mobileAnimation.id = 'mobileAnimation'; // Set the ID to 'mobileAnimation'
-    // <div class="bubble x5" style="--animation-duration: calc(25s + 10s * random())"></div>
-    mobileAnimation.className = 'bubble x1'; // Correctly assign the class
-    bubbleIndex++;
-    // Random duration between 25s and 35s
-    animationContainer.appendChild(mobileAnimation);
-    // mobileAnimation.className = 'moving-div'; // Correctly assign the class
-    // document.body.appendChild(mobileAnimation);
-    mobileAnimation.addEventListener("animationend", async (event) => {
-      trackBubble = false;
-      if(!fingerDown){
-        animateAvatarToOrigin();
-      }
-      //   console.log("animation iteration")
-      console.log(mobileAnimation.className, bubbleClasses[bubbleIndex], bubbleIndex)
-      let newclassname;
-      if (bubbleClasses[bubbleIndex + 1] != undefined) {
-        newclassname = bubbleClasses[bubbleIndex++]
-      } else {
-        bubbleIndex = 0;
-        newclassname = bubbleClasses[bubbleIndex]
-      }
-      mobileAnimation.className = "none";
-      await waitForSeconds(1)
-      mobileAnimation.className = newclassname;
-      trackBubble = true;
-      // mobileAnimation.style.top = `${Math.random() * 70}%`;
-      // const randomDuration = 2 + Math.random() * 4;
-      // mobileAnimation.style.setProperty('--animation-duration', `${randomDuration}s`);
-    });
+    spawnBubble()
   }
 
   await waitForSeconds(2)
   nonInteractiveAvatar.parent.remove(nonInteractiveAvatar);
 
+}
+
+function spawnBubble(){
+
+  mobileAnimation = document.createElement('div');
+  mobileAnimation.id = 'mobileAnimation'; 
+  mobileAnimation.className = 'bubble x1';
+
+
+  // Random duration between 25s and 35s
+  animationContainer.appendChild(mobileAnimation);
+  
+  mobileAnimation.addEventListener("popped", async (event) => {
+    console.log("this bubble has been popped")
+  })
+
+  mobileAnimation.addEventListener("click", async (event) => {
+    var pop = new Audio('http://contentservice.mc.reyrey.net/audio_v1.0.0/?id=e049b733-1543-51fd-9ce9-680f57226aa1')
+    pop.play()
+    console.log("this bubble has been click-popped")
+    mobileAnimation.classList.add(popBubbleClasses[bubbleIndex])
+    await new Promise(r => setTimeout(r, 100));
+    mobileAnimation.className = ''
+    mobileAnimation.style.display = 'none';
+    trackBubble = false;
+
+    let newclassname;
+    if (bubbleClasses[bubbleIndex + 1] != undefined) {
+      newclassname = bubbleClasses[bubbleIndex++]
+    } else {
+      bubbleIndex = 0;
+      newclassname = bubbleClasses[bubbleIndex]
+    }
+    if(!fingerDown){
+      animateAvatarToOrigin();
+
+    }
+    await waitForSeconds(1)
+    mobileAnimation.style.display = 'block';
+    mobileAnimation.className = newclassname;
+    trackBubble = true;
+  })
+
+  mobileAnimation.addEventListener("animationend", async (event) => {
+   
+    trackBubble = false;
+    if(!fingerDown){
+      animateAvatarToOrigin();
+    }
+    //   console.log("animation iteration")
+    console.log(mobileAnimation.className, bubbleClasses[bubbleIndex], bubbleIndex)
+    let newclassname;
+    if (bubbleClasses[bubbleIndex + 1] != undefined) {
+      newclassname = bubbleClasses[bubbleIndex++]
+    } else {
+      bubbleIndex = 0;
+      newclassname = bubbleClasses[bubbleIndex]
+    }
+    mobileAnimation.className = "none";
+    await waitForSeconds(1)
+    mobileAnimation.className = newclassname;
+    trackBubble = true;
+    // mobileAnimation.style.top = `${Math.random() * 70}%`;
+    // const randomDuration = 2 + Math.random() * 4;
+    // mobileAnimation.style.setProperty('--animation-duration', `${randomDuration}s`);
+  });
+  
 }
 
 
