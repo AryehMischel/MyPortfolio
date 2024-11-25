@@ -129,6 +129,16 @@ let dissolveEffectFinished = false; //flag to check if the dissolve effect has f
 let isMobile = false; //flag to check if the user is on a mobile device
 let animateHead = false; //flag to animate the head
 let fingerDown = false;
+let trackBubble = true;
+
+
+
+console.log("before mobile check", performance.now());
+window.mobileCheck = function () {
+  (function (a) { if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) isMobile = true; })(navigator.userAgent || navigator.vendor || window.opera);
+};
+mobileCheck()
+console.log("after mobile check", performance.now());
 
 
 
@@ -236,17 +246,17 @@ function animate(time) {
 
 
   //animate avatar blinking
-  if(eyeBlinkingInTween){
+  if (eyeBlinkingInTween) {
     eyeBlinkingInTween.update();
   }
 
-  if(eyeBlinkingOutTween){
+  if (eyeBlinkingOutTween) {
     eyeBlinkingOutTween.update();
   }
 
 
   //avatar face mocop idle animation
- if (animationMixer) {
+  if (animationMixer) {
     var deltaSeconds = clock.getDelta();
     animationMixer.update(deltaSeconds);
   }
@@ -270,14 +280,26 @@ function animate(time) {
     updateDissolveShaders();
   }
 
-  if(animateAvatarToOriginTween){
+  if (animateAvatarToOriginTween) {
     animateAvatarToOriginTween.update();
     console.log("updating")
   }
 
   if (interactiveAvatar && animateHead) {
+
     if (isMobile) {
-      //do some mobile related things
+      if (isMobile && !fingerDown && mobileAnimation && trackBubble) {
+
+        const canvasRect = canvas.getBoundingClientRect();
+        const triggerRect = mobileAnimation.getBoundingClientRect();
+        const triggerCenterX = triggerRect.left + triggerRect.width / 2;
+        const triggerCenterY = triggerRect.top + triggerRect.height / 2;
+        const relativeX = (triggerCenterX - canvasRect.left) / canvasRect.width * 2 - 1;
+        const relativeY = 1 - (triggerCenterY - canvasRect.top) / canvasRect.height * 2;
+        detectMouseOverSphereColl(new Vector2(relativeX.toFixed(2), relativeY.toFixed(2)));
+
+      }
+
     }
     rotateHead();
     rotateEyes();
@@ -646,7 +668,7 @@ function loadModels() {
 
 function createSiluetteMesh() {
   const textureLoader = new TextureLoader();
-  const avatarSiluetteTexture = textureLoader.load(rootPath +'silluetteNoBackground.png');
+  const avatarSiluetteTexture = textureLoader.load(rootPath + 'silluetteNoBackground.png');
 
   const planeGeometry = new PlaneGeometry(1.5, 1.5);
   const planeMaterial = new ShaderMaterial({
@@ -963,7 +985,7 @@ function animateHairIn() {
       console.log("complete hat animation", performance.now())
 
       if (!interactiveAvatarLoaded && interactiveAvatarInScene) {
-   
+
         swapAvatars()
       } else {
         console.log("start the donut animation again...")
@@ -1060,10 +1082,10 @@ const targetInterval = 4000; // Average interval for 15 events per minute (4000 
 function fireEvent() {
   let blinkAmount = { value: 0 };
 
-    if (!morphTargetDictionary) {
-      console.error("No morph targets found");
-      setTimeout(fireEvent, minInterval);
-    }
+  if (!morphTargetDictionary) {
+    console.error("No morph targets found");
+    setTimeout(fireEvent, minInterval);
+  }
 
   const currentTime = Date.now();
   if (currentTime - lastEventTime >= minInterval) {
@@ -1072,7 +1094,7 @@ function fireEvent() {
     let randomDelay = Math.floor(Math.random() * 150) + 50;
     eyeBlinkingInTween = new TWEEN.Tween(blinkAmount)
       .to({ value: 1 }, 100)
-      .easing(TWEEN.Easing.Sinusoidal.InOut) 
+      .easing(TWEEN.Easing.Sinusoidal.InOut)
       .onComplete(() => {
         eyeBlinkingInTween = null;
       })
@@ -1183,7 +1205,10 @@ async function swapAvatars() {
     // mobileAnimation.className = 'moving-div'; // Correctly assign the class
     // document.body.appendChild(mobileAnimation);
     mobileAnimation.addEventListener("animationend", async (event) => {
-
+      trackBubble = false;
+      if(!fingerDown){
+        animateAvatarToOrigin();
+      }
       //   console.log("animation iteration")
       console.log(mobileAnimation.className, bubbleClasses[bubbleIndex], bubbleIndex)
       let newclassname;
@@ -1196,6 +1221,7 @@ async function swapAvatars() {
       mobileAnimation.className = "none";
       await waitForSeconds(1)
       mobileAnimation.className = newclassname;
+      trackBubble = true;
       // mobileAnimation.style.top = `${Math.random() * 70}%`;
       // const randomDuration = 2 + Math.random() * 4;
       // mobileAnimation.style.setProperty('--animation-duration', `${randomDuration}s`);
@@ -1240,33 +1266,34 @@ function createRaycaster() {
 
 //animate the avatar back towards center origin orientation
 function animateAvatarToOrigin() {
-    //instead of animate the head we should just find the last mouse uv coords and just animate them to to 0, 0
-    if (animateAvatarToOriginTween && animateAvatarToOriginTween.isPlaying()) {
-      console.error("should never happen")
-      animateAvatarToOriginTween.stop()
-    }
-    let mouse2 = { u: previousMouseIntersectionPoint.x, v: previousMouseIntersectionPoint.y };
-    let center = { u: 0, v: 0 };
+  //instead of animate the head we should just find the last mouse uv coords and just animate them to to 0, 0
+  if (animateAvatarToOriginTween && animateAvatarToOriginTween.isPlaying()) {
+    //this should probably be avoided 
+    //animateAvatarToOriginTween.stop()
+    return;
+  }
+  let mouse2 = { u: previousMouseIntersectionPoint.x, v: previousMouseIntersectionPoint.y };
+  let center = { u: 0, v: 0 };
 
-    animateAvatarToOriginTween = new TWEEN.Tween(mouse2)
-      .to(center, 1000) // Interpolating to the end vector
-      .easing(TWEEN.Easing.Circular.InOutt)    
-      .onComplete(()=>{
-        animateAvatarToOriginTween = null;
-      })       // Ease-out for smooth animation
-      .onUpdate(() => {
-        let mouse2Vector = new Vector2(mouse2.u, mouse2.v);
-        raycaster.setFromCamera(mouse2Vector, camera);
-        // Calculate objects intersecting the ray
-        const intersects = raycaster.intersectObjects(scene.children, true);
-        // Check if the sphere is intersected
-        for (let i = 0; i < intersects.length; i++) {
-          if (intersects[i].object === sphere3DCollider) {
-            targetPosition = intersects[i].point;
-          }
+  animateAvatarToOriginTween = new TWEEN.Tween(mouse2)
+    .to(center, 1000) // Interpolating to the end vector
+    .easing(TWEEN.Easing.Circular.InOutt)
+    .onComplete(() => {
+      animateAvatarToOriginTween = null;
+    })       // Ease-out for smooth animation
+    .onUpdate(() => {
+      let mouse2Vector = new Vector2(mouse2.u, mouse2.v);
+      raycaster.setFromCamera(mouse2Vector, camera);
+      // Calculate objects intersecting the ray
+      const intersects = raycaster.intersectObjects(scene.children, true);
+      // Check if the sphere is intersected
+      for (let i = 0; i < intersects.length; i++) {
+        if (intersects[i].object === sphere3DCollider) {
+          targetPosition = intersects[i].point;
         }
-      })
-      animateAvatarToOriginTween.start();
+      }
+    })
+  animateAvatarToOriginTween.start();
 }
 
 // functions for detecting mouse and touch events for interactive avatar
@@ -1292,7 +1319,7 @@ workSection.addEventListener("mouseenter", (event) => {
 animateHeadTriggerRectColl.addEventListener('mouseleave', (event) => {
   const mouseX = event.clientX;
   const mouseY = event.clientY;
-  if(isMouseOverElement(mouseX, mouseY, animateHeadTriggerRectColl)) {
+  if (isMouseOverElement(mouseX, mouseY, animateHeadTriggerRectColl)) {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -1335,7 +1362,7 @@ for (var i = 0; i < containersOverlappingWithTriggerColl.length; i++) {
     detectMouseThroughOverlappingElement(event);
   });
 
- 
+
   containersOverlappingWithTriggerColl[i].addEventListener('mouseleave', (event) => {
     detectMouseLeavingOverlappingElement(event)
   });
