@@ -1218,32 +1218,17 @@ function spawnBubble(){
     console.log("this bubble has been popped")
   })
 
-  mobileAnimation.addEventListener("click", async (event) => {
-    var pop = new Audio('http://contentservice.mc.reyrey.net/audio_v1.0.0/?id=e049b733-1543-51fd-9ce9-680f57226aa1')
-    pop.play()
-    console.log("this bubble has been click-popped")
-    mobileAnimation.classList.add(popBubbleClasses[bubbleIndex])
-    await new Promise(r => setTimeout(r, 100));
-    mobileAnimation.className = ''
-    mobileAnimation.style.display = 'none';
-    trackBubble = false;
+  // mobileAnimation.addEventListener("touchenter", async (event) => {
+  //   await popBubble()
+  // })
 
-    let newclassname;
-    if (bubbleClasses[bubbleIndex + 1] != undefined) {
-      newclassname = bubbleClasses[bubbleIndex++]
-    } else {
-      bubbleIndex = 0;
-      newclassname = bubbleClasses[bubbleIndex]
-    }
-    if(!fingerDown){
-      animateAvatarToOrigin();
-
-    }
-    await waitForSeconds(1)
-    mobileAnimation.style.display = 'block';
-    mobileAnimation.className = newclassname;
-    trackBubble = true;
+  mobileAnimation.addEventListener("touchstart", async (event) => {
+    await popBubble()
   })
+
+  // mobileAnimation.addEventListener("click", async (event) => {
+  //   await popBubble()
+  // })
 
   mobileAnimation.addEventListener("animationend", async (event) => {
    
@@ -1271,7 +1256,31 @@ function spawnBubble(){
   
 }
 
+async function popBubble(){
+  var pop = new Audio('http://contentservice.mc.reyrey.net/audio_v1.0.0/?id=e049b733-1543-51fd-9ce9-680f57226aa1')
+    pop.play()
+    console.log("this bubble has been click-popped")
+    mobileAnimation.classList.add(popBubbleClasses[bubbleIndex])
+    await new Promise(r => setTimeout(r, 100));
+    mobileAnimation.className = ''
+    mobileAnimation.style.display = 'none';
+    trackBubble = false;
 
+    let newclassname;
+    if (bubbleClasses[bubbleIndex + 1] != undefined) {
+      newclassname = bubbleClasses[bubbleIndex++]
+    } else {
+      bubbleIndex = 0;
+      newclassname = bubbleClasses[bubbleIndex]
+    }
+    if(!fingerDown){
+      animateAvatarToOrigin();
+    }
+    await waitForSeconds(1)
+    mobileAnimation.style.display = 'block';
+    mobileAnimation.className = newclassname;
+    trackBubble = true;
+}
 
 
 // sphere collider is our world space target for raycasting. 
