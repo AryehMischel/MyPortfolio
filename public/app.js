@@ -91,8 +91,8 @@ let targetInfluences = null;
 let morphTargetDictionary = null;
 
 //blinking animation
-let leftEyeBlink = null;
-let rightEyeBlink = null;
+let eyeBlinkingInTween = null;
+let eyeBlinkingOutTween = null;
 
 //main idle animation
 let idleAnimation = null;
@@ -229,6 +229,15 @@ scene.add(backgroundMesh);
 
 // Render the scene
 function animate(time) {
+
+
+  if(eyeBlinkingInTween){
+    eyeBlinkingInTween.update();
+  }
+  if(eyeBlinkingOutTween){
+    eyeBlinkingOutTween.update();
+  }
+
 
   // spinning torus animation (loading animation)
   if (torusMaterial) {
@@ -535,9 +544,6 @@ function loadModels() {
           faceMesh = object;
           targetInfluences = faceMesh.morphTargetInfluences;
           morphTargetDictionary = faceMesh.morphTargetDictionary;
-          window.targetInfluences = targetInfluences;
-          window.morphTargetDictionary = morphTargetDictionary;
-          leftEyeBlink = { "value": targetInfluences[0] };
         }
       }
 
@@ -569,15 +575,10 @@ function loadModels() {
     neckBoneOriginHelper.rotation.copy(neckBone.rotation);
 
     interactiveAvatar.layers.set(0);
-    // removeTorus();
-    // silluetteMesh.visible = false;
-    // backgroundMesh.visible = false;
-    // usePostProcessing = false;
     scene.add(interactiveAvatar);
-    // console.log("Interactive Avatar Loaded ", performance.now());
     interactiveAvatarInScene = true;
 
-    //load in eyeball model
+    //load eyeball model
     loader.load(avatarEyeModelPath, function (gltf) {
       const eyeModel = gltf.scenes[0];
       eyeModel.traverse((object) => {
@@ -626,22 +627,6 @@ function loadModels() {
   })
 
 }
-
-
-
-//Loading Models
-
-function loadNonInteractiveAvatar() {
-
-
-}
-
-function loadInteractiveAvatar() {
-
-
-
-}
-
 
 
 function createSiluetteMesh() {
@@ -1048,6 +1033,84 @@ function updateDissolveShaders() {
   }
 }
 
+
+
+//blinking animation
+//adds random blinking animation
+
+let lastEventTime = 0;
+const minInterval = 250; // Minimum interval between events in milliseconds
+const targetInterval = 4000; // Average interval for 15 events per minute (4000 ms)
+
+function fireEvent() {
+  let blinkAmount = { value: 0 };
+
+    if (!morphTargetDictionary) {
+      console.error("No morph targets found");
+      setTimeout(fireEvent, minInterval);
+    }
+
+  const currentTime = Date.now();
+  if (currentTime - lastEventTime >= minInterval) {
+
+    let randomNumber2Between200And350 = Math.floor(Math.random() * 350) + 200;
+    let randomDelay = Math.floor(Math.random() * 150) + 50;
+    eyeBlinkingInTween = new TWEEN.Tween(blinkAmount)
+      .to({ value: 1 }, 100)
+      .easing(TWEEN.Easing.Sinusoidal.InOut) 
+      .onComplete(() => {
+        eyeBlinkingInTween = null;
+      })
+      .onUpdate(() => {
+        targetInfluences[0] = blinkAmount.value;
+        targetInfluences[7] = blinkAmount.value;
+      });
+
+    eyeBlinkingOutTween = new TWEEN.Tween(blinkAmount)
+      .to({ value: 0 }, randomNumber2Between200And350) // 250 milliseconds
+      .easing(TWEEN.Easing.Sinusoidal.InOut) // Apply quadratic easing
+      .delay(randomDelay)
+      .onComplete(() => {
+        eyeBlinkingOutTween = null;
+      })
+      .onUpdate(() => {
+        targetInfluences[0] = blinkAmount.value;
+        targetInfluences[7] = blinkAmount.value;
+      });
+
+    eyeBlinkingInTween.chain(eyeBlinkingOutTween);
+    eyeBlinkingInTween.start();
+    // Update the last event time
+    lastEventTime = currentTime;
+    // Schedule the next event
+    scheduleNextEvent();
+  } else {
+    // If the event can't be fired yet, schedule the next check
+    setTimeout(fireEvent, minInterval);
+  }
+}
+
+
+function scheduleNextEvent() {
+  console.log("blinking time")
+  const randomDelay = Math.random() * 2000; // Random delay up to 2 seconds
+  const nextEventDelay = targetInterval + randomDelay - 1000; // Ensure it's still around 15/min
+  setTimeout(fireEvent, nextEventDelay);
+}
+
+
+//start the blinking
+function startBlinking() {
+  scheduleNextEvent();
+
+}
+
+
+
+
+
+
+
 //swap dummy avatar for interactive avatar
 async function swapAvatars() {
   console.log("show be deleting the dummy avatar...")
@@ -1091,7 +1154,7 @@ async function swapAvatars() {
   // action.play();
   await waitForSeconds(0.25)
   animateHead = true;
-  // startBlinking();
+  startBlinking();
   //animate towards current mouse position
   await waitForSeconds(0.25)
   if (isMobile) {
