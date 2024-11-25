@@ -214,8 +214,7 @@
       -webkit-animation: animateBubble2 4s linear 1, sideWays 4s ease-in-out 1 alternate;
       -moz-animation: animateBubble2 4s linear 1, sideWays 4s ease-in-out 1 alternate;
       animation: animateBubble2 4s linear 1, sideWays 4s ease-in-out 1 alternate;
-      position: absolute;
-      left: 5%;
+      left: -5%;
       top: 30%;
 
       -webkit-transform: scale(0.4);
@@ -227,7 +226,6 @@
       -webkit-animation: animateBubble2 5s linear 1, sideWays 1s ease-in-out 1 alternate;
       -moz-animation: animateBubble2 5s linear 1, sideWays 1s ease-in-out 1 alternate;
       animation: animateBubble2 5s linear 1, sideWays 1s ease-in-out 1 alternate;
-      position: absolute;
       left: 0%;
       top: 5%;
 
@@ -318,36 +316,42 @@
 
     .pop1{ 
       --scale: 0.8;
-      animation:animateBubble3 9s linear 1, sideWays 5s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
+      animation: animateBubble3 9s linear 1, sideWays 5s ease-in-out 1 alternate, 
+      pop_bubble 0.1s ease-in-out 1;
     }
 
     .pop2 {
         --scale: 0.6;
-        animation: animateBubble  20s linear 1, sideWays 4s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
+        animation: animateBubble2 4s linear 1, sideWays 4s ease-in-out 1 alternate, 
+        pop_bubble 0.1s ease-in-out 1;
     }
 
     .pop3 {
       --scale: 0.9;
-        animation: animateBubble2 5s linear 1, sideWays 1s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
+        animation: animateBubble2 5s linear 1, sideWays 1s ease-in-out 1 alternate, 
+        sideWays 1s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
     }
 
     .pop4 {
-      --scale: 0.5;
-        animation: animateBubble2 11s linear 1, sideWays 3s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
+      --scale:0.5;
+        animation: animateBubble2 11s linear 1, sideWays 3s ease-in-out 1 alternate, 
+        pop_bubble 0.1s ease-in-out 1;
     }
 
     .pop5 {
       --scale: 0.7;
-        animation: animateBubble var(--animation-duration, 6s) linear 1, sideWays 4s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
+        animation: animateBubble var(--animation-duration, 6s) linear 1, sideWays 4s ease-in-out 1 alternate,
+         pop_bubble 0.1s ease-in-out 1;
     }
 
     .pop6 {
-      --scale: 1.0;
-        animation: animateBubble 4s linear 1, sideWays 2s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
+      --scale: 0.8;
+        animation: animateBubble 4s linear 1, sideWays 2s ease-in-out 1 alternate,
+        pop_bubble 0.1s ease-in-out 1;
     }
 
     .pop7 {
-      --scale: 1.0;
+      --scale: 0.6
         animation: animateBubble 4s linear 1, sideWays 2s ease-in-out 1 alternate, pop_bubble 0.1s ease-in-out 1;
     }
 

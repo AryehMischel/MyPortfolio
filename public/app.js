@@ -5,8 +5,6 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import * as TWEEN from '@tweenjs/tween.js'
-import { PostProcessing } from 'three/webgpu';
-import { update } from '@tweenjs/tween.js';
 
 
 //GLOBAL VARIABLES
@@ -85,7 +83,7 @@ let action = null;
 
 //different css animations attached to each class
 let bubbleClasses = ["bubble x1", "bubble x2", "bubble x3", "bubble x4", "bubble x5"];
-let popBubbleClasses = ["pop1", "pop2", "pop3", "pop4", "pop5", "pop6", "pop7", "pop8"];
+let popBubbleClasses = ["pop1", "pop2", "pop3", "pop4", "pop5"];
 let bubbleIndex = 0;
 
 
@@ -116,6 +114,9 @@ let animateAvatarToOriginTween = null;
 //colliders
 const animateHeadTriggerRectColl = document.getElementById('head-trigger-collider');
 let containersOverlappingWithTriggerColl = document.getElementsByClassName("intersects-with-coll")
+
+//audio clips
+var pop = new Audio('http://contentservice.mc.reyrey.net/audio_v1.0.0/?id=e049b733-1543-51fd-9ce9-680f57226aa1')
 
 //flags
 let customCursorShowing = false;
@@ -1204,82 +1205,75 @@ async function swapAvatars() {
 
 }
 
-function spawnBubble(){
+
+
+
+
+
+function spawnBubble() {
 
   mobileAnimation = document.createElement('div');
-  mobileAnimation.id = 'mobileAnimation'; 
+  mobileAnimation.id = 'mobileAnimation';
   mobileAnimation.className = 'bubble x1';
-
 
   // Random duration between 25s and 35s
   animationContainer.appendChild(mobileAnimation);
-  
-  mobileAnimation.addEventListener("popped", async (event) => {
-    console.log("this bubble has been popped")
-  })
-
-  // mobileAnimation.addEventListener("touchenter", async (event) => {
-  //   await popBubble()
-  // })
 
   mobileAnimation.addEventListener("touchstart", async (event) => {
+  
     await popBubble()
   })
 
-  // mobileAnimation.addEventListener("click", async (event) => {
-  //   await popBubble()
-  // })
 
   mobileAnimation.addEventListener("animationend", async (event) => {
-   
+    //ignore pop animation
+    if (event.animationName.startsWith("pop")) {
+      return;
+    }
+    
+    
+    mobileAnimation.className = "none";
     trackBubble = false;
-    if(!fingerDown){
+    
+    if (!fingerDown) {
       animateAvatarToOrigin();
     }
-    //   console.log("animation iteration")
-    console.log(mobileAnimation.className, bubbleClasses[bubbleIndex], bubbleIndex)
-    let newclassname;
-    if (bubbleClasses[bubbleIndex + 1] != undefined) {
-      newclassname = bubbleClasses[bubbleIndex++]
+
+    if (bubbleClasses.length > bubbleIndex + 1) {
+        bubbleIndex++;
     } else {
-      bubbleIndex = 0;
-      newclassname = bubbleClasses[bubbleIndex]
+        bubbleIndex = 0;
     }
-    mobileAnimation.className = "none";
     await waitForSeconds(1)
-    mobileAnimation.className = newclassname;
+    //spawn next bubble
+    mobileAnimation.className = bubbleClasses[bubbleIndex]
     trackBubble = true;
-    // mobileAnimation.style.top = `${Math.random() * 70}%`;
-    // const randomDuration = 2 + Math.random() * 4;
-    // mobileAnimation.style.setProperty('--animation-duration', `${randomDuration}s`);
+
   });
-  
+
 }
 
-async function popBubble(){
-  var pop = new Audio('http://contentservice.mc.reyrey.net/audio_v1.0.0/?id=e049b733-1543-51fd-9ce9-680f57226aa1')
-    pop.play()
-    console.log("this bubble has been click-popped")
-    mobileAnimation.classList.add(popBubbleClasses[bubbleIndex])
-    await new Promise(r => setTimeout(r, 100));
-    mobileAnimation.className = ''
-    mobileAnimation.style.display = 'none';
-    trackBubble = false;
+async function popBubble() {
+  mobileAnimation.classList.add(popBubbleClasses[bubbleIndex])
 
-    let newclassname;
-    if (bubbleClasses[bubbleIndex + 1] != undefined) {
-      newclassname = bubbleClasses[bubbleIndex++]
-    } else {
-      bubbleIndex = 0;
-      newclassname = bubbleClasses[bubbleIndex]
-    }
-    if(!fingerDown){
-      animateAvatarToOrigin();
-    }
-    await waitForSeconds(1)
-    mobileAnimation.style.display = 'block';
-    mobileAnimation.className = newclassname;
-    trackBubble = true;
+  await waitForSeconds(0.1)
+  pop.play();
+  mobileAnimation.style.display = 'none';
+  trackBubble = false;
+
+  if (bubbleClasses.length > bubbleIndex + 1) {
+    bubbleIndex++;
+  } else {
+    bubbleIndex = 0;
+  }
+
+  if (!fingerDown) {
+    animateAvatarToOrigin();
+  }
+  await waitForSeconds(1)
+  mobileAnimation.className = bubbleClasses[bubbleIndex];
+  mobileAnimation.style.display = 'block';
+  trackBubble = true;
 }
 
 
@@ -1315,8 +1309,6 @@ function createRaycaster() {
 function animateAvatarToOrigin() {
   //instead of animate the head we should just find the last mouse uv coords and just animate them to to 0, 0
   if (animateAvatarToOriginTween && animateAvatarToOriginTween.isPlaying()) {
-    //this should probably be avoided 
-    //animateAvatarToOriginTween.stop()
     return;
   }
   let mouse2 = { u: previousMouseIntersectionPoint.x, v: previousMouseIntersectionPoint.y };
