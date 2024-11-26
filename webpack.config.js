@@ -1,4 +1,6 @@
 const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   entry: './public/app.js',  // Entry point for your application
@@ -19,5 +21,13 @@ module.exports = {
     contentBase: path.join(__dirname, 'public'), // Serve files from the 'public' directory
     port: 3000, // The port to serve the content on
   },
-  mode: 'development', // Use 'production' for optimized code in production
+  // plugins: [
+  //   new BundleAnalyzerPlugin()
+  // ],
+  mode: 'production', // Use 'production' for optimized code in production
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+    usedExports: true, // Enable tree-shaking
+  },
 };
