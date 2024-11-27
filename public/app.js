@@ -132,6 +132,7 @@ let isMobile = false; //flag to check if the user is on a mobile device
 let animateHead = false; //flag to animate the head
 let fingerDown = false;
 let trackBubble = true;
+let donutLoading = false;
 
 
 
@@ -274,6 +275,10 @@ function animate(time) {
     animateDissolveShaders();
   }
 
+  if(interactiveAvatarInScene && interactiveAvatarLoaded && dissolveEffectFinished && donutLoading ){
+    hideTorus()
+  }
+
   // Update the dissolve shader via TWEEN animation
   if (dissolveShaderPlaying) {
     updateDissolveShaders();
@@ -376,7 +381,7 @@ function createSceneLighting() {
 
 
 function addTorus() {
-
+  donutLoading = true;
   if (torus) {
     torus.visible = true;
     return;
@@ -422,6 +427,7 @@ function removeTorus() {
 }
 
 function hideTorus() {
+  donutLoading = false;
   if (torus) {
     torus.visible = false;
   }
