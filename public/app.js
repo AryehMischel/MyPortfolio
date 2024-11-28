@@ -245,6 +245,13 @@ scene.add(backgroundMesh);
 function animate(time) {
 
 
+  //avatar face mocop idle animation
+  if (animationMixer) {
+    var deltaSeconds = clock.getDelta();
+    animationMixer.update(deltaSeconds);
+  }
+
+
   //animate avatar blinking
   if (eyeBlinkingInTween) {
     eyeBlinkingInTween.update();
@@ -255,11 +262,7 @@ function animate(time) {
   }
 
 
-  //avatar face mocop idle animation
-  if (animationMixer) {
-    var deltaSeconds = clock.getDelta();
-    animationMixer.update(deltaSeconds);
-  }
+
 
 
 
@@ -475,7 +478,6 @@ function colorCorrectedBackGroundMesh() {
   });
 
   backgroundMaterial.toneMapped = false
-  window.backgroundMaterial = backgroundMaterial;
   backgroundMaterial.needsUpdate = true;
   const backgroundMesh = new Mesh(backgroundGeometry, backgroundMaterial);
   return backgroundMesh;
@@ -1088,10 +1090,10 @@ function fireEvent() {
   if (currentTime - lastEventTime >= minInterval) {
 
     let randomNumber2Between200And350 = Math.floor(Math.random() * 350) + 200;
-    let randomDelay = Math.floor(Math.random() * 150) + 50;
+    // let randomDelay = Math.floor(Math.random() * 150) + 50;
     eyeBlinkingInTween = new TWEEN.Tween(blinkAmount)
-      .to({ value: 1 }, 100)
-      .easing(TWEEN.Easing.Sinusoidal.InOut)
+      .to({ value: 0.8 }, 100)
+      .easing(TWEEN.Easing.Sinusoidal.In)
       .onComplete(() => {
         eyeBlinkingInTween = null;
       })
@@ -1101,9 +1103,8 @@ function fireEvent() {
       });
 
     eyeBlinkingOutTween = new TWEEN.Tween(blinkAmount)
-      .to({ value: 0 }, randomNumber2Between200And350) // 250 milliseconds
-      .easing(TWEEN.Easing.Sinusoidal.InOut) // Apply quadratic easing
-      .delay(randomDelay)
+      .to({ value: 0 }, randomNumber2Between200And350) 
+      .easing(TWEEN.Easing.Sinusoidal.In) 
       .onComplete(() => {
         eyeBlinkingOutTween = null;
       })
@@ -1135,11 +1136,7 @@ function scheduleNextEvent() {
 //start the blinking
 function startBlinking() {
   scheduleNextEvent();
-
 }
-
-
-
 
 
 
