@@ -436,23 +436,6 @@ function hideTorus() {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // create and return a color corrected background mesh
 function colorCorrectedBackGroundMesh() {
   const backgroundGeometry = new PlaneGeometry(20, 20);
